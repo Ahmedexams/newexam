@@ -9,37 +9,37 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background-color: #05070c; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .main-card { width: 100%; max-width: 400px; background-color: #0c1322; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); padding: 28px 24px; display: flex; flex-direction: column; }
-        .top-gradient-bar { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #9333ea, #06b6d4); }
-        .card-header { text-align: right; direction: rtl; margin-bottom: 25px; margin-top: 5px; }
-        .card-header h2 { color: #ffffff; font-size: 22px; font-weight: 700; margin-bottom: 2px; }
-        .card-header h3 { color: #ffffff; font-size: 19px; font-weight: 600; margin-bottom: 8px; }
-        .card-header p { color: #64748b; font-size: 13px; font-weight: 400; }
-        .progress-line { width: 100%; height: 2px; background-color: #1e293b; margin-bottom: 30px; }
-        .page-section { animation: fadeIn 0.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .login-form { display: flex; flex-direction: column; gap: 20px; direction: rtl; margin-bottom: 40px; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        .input-group label { color: #a855f7; font-size: 14px; font-weight: 600; padding-right: 4px; }
-        .input-group input { background-color: #111827; border: 1px solid #1e293b; border-radius: 14px; padding: 14px 16px; color: #ffffff; font-size: 14px; outline: none; transition: all 0.3s ease; }
-        .input-group input:focus { border-color: #06b6d4; box-shadow: 0 0 12px rgba(6, 182, 212, 0.2); background-color: #141b2d; }
-        .login-btn { background-color: transparent; border: 1.5px solid #06b6d4; color: #06b6d4; padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
-        .login-btn:hover { background-color: #06b6d4; color: #05070c; box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); transform: translateY(-2px); }
-        .content-area { direction: rtl; text-align: right; margin-bottom: 40px; }
-        .section-title { color: #ffffff; font-size: 17px; font-weight: 700; margin-bottom: 15px; padding-right: 2px; }
-        .exams-list { display: flex; flex-direction: column; gap: 14px; }
-        .exam-item { background-color: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; transition: all 0.3s ease; }
-        .exam-details { display: flex; flex-direction: column; gap: 6px; }
-        .exam-name { color: #ffffff; font-size: 15px; font-weight: 600; }
-        .exam-meta { color: #64748b; font-size: 12px; }
-        .exam-action { background-color: rgba(6, 182, 212, 0.1); color: #06b6d4; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; }
-        .card-footer { display: flex; justify-content: center; align-items: center; text-align: center; padding-top: 20px; border-top: 1px solid #141b2d; }
-        .author-text { color: #64748b; font-size: 14px; font-weight: 500; }
-        .author-text a { text-decoration: none; font-weight: bold; color: #ec4899; margin-left: 4px; }
-    </style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+body { background-color: #f0fdfa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+.main-card { width: 100%; max-width: 400px; background-color: #ffffff; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(13, 148, 136, 0.08); padding: 28px 24px; display: flex; flex-direction: column; border: 1px solid #ccfbf1; }
+.top-gradient-bar { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, #0ea5e9, #10b981); }
+.card-header { text-align: right; direction: rtl; margin-bottom: 25px; margin-top: 5px; }
+.card-header h2 { color: #0f172a; font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+.card-header h3 { color: #0ea5e9; font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+.card-header p { color: #64748b; font-size: 13px; font-weight: 500; }
+.progress-line { width: 100%; height: 2px; background-color: #f1f5f9; margin-bottom: 30px; }
+.page-section { animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.login-form { display: flex; flex-direction: column; gap: 20px; direction: rtl; margin-bottom: 40px; }
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group label { color: #0f172a; font-size: 14px; font-weight: 700; padding-right: 4px; }
+.input-group input { background-color: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; padding: 14px 16px; color: #0f172a; font-size: 14px; outline: none; transition: all 0.3s ease; font-weight: 600;}
+.input-group input:focus { border-color: #0ea5e9; background-color: #ffffff; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+.login-btn { background-color: #0ea5e9; border: none; color: #ffffff; padding: 15px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2); }
+.login-btn:hover { background-color: #0284c7; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3); }
+.content-area { direction: rtl; text-align: right; margin-bottom: 40px; }
+.section-title { color: #0f172a; font-size: 17px; font-weight: 800; margin-bottom: 15px; padding-right: 2px; }
+.exams-list { display: flex; flex-direction: column; gap: 14px; }
+.exam-item { background-color: #ffffff; border: 2px solid #f1f5f9; border-radius: 16px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; transition: all 0.3s ease; }
+.exam-item:hover { border-color: #0ea5e9; transform: translateX(-5px); box-shadow: 5px 10px 20px rgba(14, 165, 233, 0.05); }
+.exam-details { display: flex; flex-direction: column; gap: 6px; }
+.exam-name { color: #0f172a; font-size: 15px; font-weight: 700; }
+.exam-meta { color: #64748b; font-size: 12px; font-weight: 600;}
+.exam-action { background-color: rgba(16, 185, 129, 0.1); color: #10b981; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 800; }
+.card-footer { display: flex; justify-content: center; align-items: center; text-align: center; padding-top: 20px; border-top: 2px solid #f1f5f9; }
+.author-text { color: #64748b; font-size: 14px; font-weight: 600; }
+.author-text a { text-decoration: none; font-weight: 800; color: #0ea5e9; margin-left: 4px; }
+
 </head>
 <body>
 
