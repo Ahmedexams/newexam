@@ -88,7 +88,11 @@
     <a href="https://wa.me/201016781843" target="_blank" class="neon" style="text-decoration: none;">Created BY Ahmed Hamed</a>
    </div>
   </footer>
-  <script>
+ <script>
+      if (sessionStorage.getItem('student_auth') !== 'verified') {
+        window.location.replace('index.html');
+    }
+
   const firebaseConfig = {
     apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
     authDomain: "pharma-exam-2026.firebaseapp.com",
