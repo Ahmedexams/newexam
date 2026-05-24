@@ -113,25 +113,40 @@
             }).catch(() => { showError(btn, 'خطأ في الاتصال!'); });
         }
 
-        function fetchExamsFromServer() {
-            database.ref('exams').once('value').then((snapshot) => {
+                function fetchExamsFromServer() {
+            // استخدمنا on بدل once عشان القفل يشتغل في نفس اللحظة بدون ريفريش
+            database.ref('exams').on('value', (snapshot) => {
                 const examsContainer = document.getElementById('dynamicExamsList');
                 examsContainer.innerHTML = ''; 
+                
                 const examsData = snapshot.val();
                 
                 if (examsData) {
                     Object.keys(examsData).forEach((key) => {
                         const exam = examsData[key];
-                        // لو فيه امتحان فاضي يتجاهله
                         if(exam && exam.name) {
+                            // فحص هل الامتحان مقفول ولا مفتوح
+                            const isClosed = exam.status === 'closed';
+                            
+                            // لو مقفول هنشيل اللينك ونحط رسالة، لو مفتوح هنحط اللينك عادي
+                            const itemOpenTag = isClosed 
+                                ? `<div class="exam-item" style="cursor:not-allowed;" onclick="alert('عذراً، هذا الامتحان مغلق حالياً 🔒')">` 
+                                : `<a href="${exam.url || '#'}" class="exam-item">`;
+                            const itemCloseTag = isClosed ? `</div>` : `</a>`;
+                            
+                            // شكل زرار الدخول
+                            const actionBtn = isClosed 
+                                ? `<div class="exam-action" style="background-color:#1e293b; color:#ef4444; box-shadow:none;">مغلق 🔒</div>` 
+                                : `<div class="exam-action">دخول</div>`;
+
                             const examHTML = `
-                                <a href="${exam.url || '#'}" class="exam-item">
+                                ${itemOpenTag}
                                     <div class="exam-details">
                                         <span class="exam-name">${exam.name}</span>
                                         <span class="exam-meta">${exam.questionsCount} سؤال</span>
                                     </div>
-                                    <div class="exam-action">دخول</div>
-                                </a>
+                                    ${actionBtn}
+                                ${itemCloseTag}
                             `;
                             examsContainer.innerHTML += examHTML;
                         }
@@ -148,6 +163,7 @@
                 }, 400);
             });
         }
+
 
         function showError(button, message) {
             button.style.borderColor = '#ef4444'; button.style.color = '#ef4444'; button.innerText = message;
