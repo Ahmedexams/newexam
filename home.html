@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة اختبارات - HTML_JI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: #05070c; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .main-card { width: 100%; max-width: 400px; background-color: #0c1322; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); padding: 28px 24px; display: flex; flex-direction: column; }
+        .top-gradient-bar { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #9333ea, #06b6d4); }
+        .card-header { text-align: right; direction: rtl; margin-bottom: 25px; margin-top: 5px; }
+        .card-header h2 { color: #ffffff; font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+        .card-header h3 { color: #ffffff; font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+        .card-header p { color: #64748b; font-size: 13px; font-weight: 400; }
+        .progress-line { width: 100%; height: 2px; background-color: #1e293b; margin-bottom: 30px; }
+        .page-section { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .login-form { display: flex; flex-direction: column; gap: 20px; direction: rtl; margin-bottom: 40px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { color: #a855f7; font-size: 14px; font-weight: 600; padding-right: 4px; }
+        .input-group input { background-color: #111827; border: 1px solid #1e293b; border-radius: 14px; padding: 14px 16px; color: #ffffff; font-size: 14px; outline: none; transition: all 0.3s ease; }
+        .input-group input:focus { border-color: #06b6d4; box-shadow: 0 0 12px rgba(6, 182, 212, 0.2); background-color: #141b2d; }
+        .login-btn { background-color: transparent; border: 1.5px solid #06b6d4; color: #06b6d4; padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
+        .login-btn:hover { background-color: #06b6d4; color: #05070c; box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); transform: translateY(-2px); }
+        .content-area { direction: rtl; text-align: right; margin-bottom: 40px; }
+        .section-title { color: #ffffff; font-size: 17px; font-weight: 700; margin-bottom: 15px; padding-right: 2px; }
+        .exams-list { display: flex; flex-direction: column; gap: 14px; }
+        .exam-item { background-color: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; transition: all 0.3s ease; }
+        .exam-details { display: flex; flex-direction: column; gap: 6px; }
+        .exam-name { color: #ffffff; font-size: 15px; font-weight: 600; }
+        .exam-meta { color: #64748b; font-size: 12px; }
+        .exam-action { background-color: rgba(6, 182, 212, 0.1); color: #06b6d4; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+        .card-footer { display: flex; justify-content: center; align-items: center; text-align: center; padding-top: 20px; border-top: 1px solid #141b2d; }
+        .author-text { color: #64748b; font-size: 14px; font-weight: 500; }
+        .author-text a { text-decoration: none; font-weight: bold; color: #ec4899; margin-left: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="top-gradient-bar"></div>
+        <div class="card-header" id="cardHeader">
+            <h2>منصة اختبارات</h2>
+            <h3>HTML_JI</h3>
+            <p id="headerSubtitle">أهلاً بك، يرجى إدخال بياناتك لتسجيل الدخول</p>
+        </div>
+        <div class="progress-line"></div>
+
+        <div id="loginSection" class="page-section">
+            <div class="login-form">
+                <div class="input-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم..." autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور...">
+                </div>
+                <button class="login-btn" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+            </div>
+        </div>
+
+        <div id="examsSection" class="page-section" style="display: none;">
+            <div class="content-area">
+                <div class="section-title">الامتحانات المتاحة:</div>
+                <div class="exams-list" id="dynamicExamsList"></div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="author-text">
+                Created BY <a href="https://wa.me/201016781843" target="_blank">AHMED HAMED</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+            authDomain: "ahmedexams-3e267.firebaseapp.com",
+            databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
+            projectId: "ahmedexams-3e267",
+            storageBucket: "ahmedexams-3e267.firebasestorage.app",
+            messagingSenderId: "151411096023",
+            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function handleLogin() {
+            const btn = document.getElementById('loginBtn');
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+
+            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+
+            btn.style.backgroundColor = '#06b6d4'; btn.style.color = '#05070c'; btn.innerText = 'جاري التحقق...';
+
+            database.ref('credentials').once('value').then((snapshot) => {
+                const creds = snapshot.val();
+                if (!creds) { showError(btn, 'قاعدة البيانات فارغة!'); return; }
+                
+                if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                    btn.style.backgroundColor = '#10b981'; btn.style.borderColor = '#10b981'; btn.style.color = '#ffffff'; btn.innerText = 'تم التحقق!';
+                    fetchExamsFromServer();
+                } else { showError(btn, 'بيانات غير صحيحة!'); }
+            }).catch(() => { showError(btn, 'خطأ في الاتصال!'); });
+        }
+
+        function fetchExamsFromServer() {
+            database.ref('exams').once('value').then((snapshot) => {
+                const examsContainer = document.getElementById('dynamicExamsList');
+                examsContainer.innerHTML = ''; 
+                const examsData = snapshot.val();
+                
+                if (examsData) {
+                    Object.keys(examsData).forEach((key) => {
+                        const exam = examsData[key];
+                        // لو فيه امتحان فاضي يتجاهله
+                        if(exam && exam.name) {
+                            const examHTML = `
+                                <a href="${exam.url || '#'}" class="exam-item">
+                                    <div class="exam-details">
+                                        <span class="exam-name">${exam.name}</span>
+                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
+                                    </div>
+                                    <div class="exam-action">دخول</div>
+                                </a>
+                            `;
+                            examsContainer.innerHTML += examHTML;
+                        }
+                    });
+                } else {
+                    examsContainer.innerHTML = '<p style="color:#64748b; text-align:center; font-size:13px;">لا توجد امتحانات متاحة حالياً.</p>';
+                }
+
+                setTimeout(() => {
+                    document.getElementById('headerSubtitle').style.display = 'none';
+                    document.getElementById('cardHeader').style.marginBottom = '15px';
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('examsSection').style.display = 'block';
+                }, 400);
+            });
+        }
+
+        function showError(button, message) {
+            button.style.borderColor = '#ef4444'; button.style.color = '#ef4444'; button.innerText = message;
+            setTimeout(() => { button.style.backgroundColor = 'transparent'; button.style.borderColor = '#06b6d4'; button.style.color = '#06b6d4'; button.innerText = 'تسجيل الدخول'; }, 2000);
+        }
+    </script>
+</body>
+</html>
