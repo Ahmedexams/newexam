@@ -107,7 +107,10 @@
                 const creds = snapshot.val();
                 if (!creds) { showError(btn, 'قاعدة البيانات فارغة!'); return; }
                 
+            
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                   sessionStorage.setItem('student_auth', 'verified');
+
                     btn.style.background = '#10b981'; btn.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.3)'; btn.innerText = 'تم التحقق!';
                     fetchExamsFromServer();
                 } else { showError(btn, 'بيانات غير صحيحة!'); }
