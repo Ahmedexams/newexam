@@ -248,6 +248,13 @@
                 handleLogout();
             }
         });
+          // التحكم في زرار الرجوع للموبايل والمتصفح
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      // غير 'exams.html' لاسم صفحة الاختبارات بتاعتك
+      window.location.replace('exams.html'); 
+  };
+
     </script>
 </body>
 </html>
