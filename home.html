@@ -11,7 +11,6 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <!-- مكتبة قراءة نوع الجهاز -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
 
     <style>
@@ -50,7 +49,6 @@
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
         
-        /* المربع الزجاجي للفوتر الجديد */
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 10px 24px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
         .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
@@ -104,7 +102,6 @@
             </div>
         </div>
 
-        <!-- الفوتر المربع الزجاجي يظهر هنا بعد الدخول -->
         <div class="footer fade-in" id="developerFooter" style="display: none;">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
                 <span class="neon">Developed BY Ahmed Hamed</span>
@@ -125,10 +122,8 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 [كود الحماية الجديد]: بيشتغل أول ما الصفحة تفتح عشان يفحص الطالب مسجل ولا لأ
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem('student_auth') === 'verified') {
-                // لو مسجل دخول من قبل، اطلب الامتحانات فوراً وخبّي اللوجن
                 fetchExamsFromServer();
             }
         });
@@ -152,12 +147,26 @@
         }
 
         function saveToFirebase(username, device, loc) {
+            const timeNow = new Date().toLocaleString('ar-EG');
+            
+            // الحفظ في قاعدة البيانات
             database.ref('login_logs').push({
                 username: username,
                 device: device,
                 location: loc,
-                time: new Date().toLocaleString('ar-EG')
+                time: timeNow
             });
+
+            // إرسال الإشعار لتليجرام
+            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
+            const token = "8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g";
+            const chatId = "8446500978";
+            
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: chatId, text: msg })
+            }).catch(e => console.log(e));
         }
 
         function handleLogin() {
@@ -178,7 +187,6 @@
                     
                     logDeviceData(usernameInput);
 
-                    // 🟢 غيرنا دي لـ localStorage عشان المتصفح ميفرمتهاش مع الريفريش
                     localStorage.setItem('student_auth', 'verified');
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
@@ -235,7 +243,6 @@
         }
 
         function handleLogout() {
-            // 🟢 مسح الذاكرة الدائمة عشان يسجل خروج بجد
             localStorage.removeItem('student_auth');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
@@ -253,18 +260,15 @@
             if (location.hash === '#exams') history.back();
         }
 
-        // 🟢 ظبطتلك كود الرجوع عشان يتوافق مع النظام المدمج بتاعك ويمنع اللخبطة
         window.addEventListener('popstate', function(event) {
             if (document.getElementById('examsSection').style.display === 'block') {
                 if(localStorage.getItem('student_auth') === 'verified') {
-                    // لو الطالب مسجل دخول وداس رجوع من الموبايل، المتصفح يحبسه في صفحة الامتحانات ميخرجهوش للوجن غصب عنه
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
                 } else {
                     handleLogout();
                 }
             }
         });
-
     </script>
 </body>
 </html>
