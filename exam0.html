@@ -12,7 +12,6 @@
     .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:12px;}
     
-    /* زرار الرجوع */
     .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
     .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
 
@@ -38,7 +37,6 @@
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
     .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
     
-    /* أيقونة القراءة الصوتية */
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
 
@@ -74,36 +72,27 @@
      <div class="back-btn" onclick="window.location.replace('home.html')">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
      </div>
-        
      <div class="premium-logo">
         <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#6ee7ff" />
-                    <stop offset="100%" stop-color="#a78bfa" />
+                    <stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" />
                 </linearGradient>
             </defs>
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
      </div>
      <div>
       <h1 style="margin-bottom: 4px;">Online Exam</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+          
       </p>
      </div>
     </div>
     <div class="pillbar">
-     <div class="pill">
-      تم الحل: <b id="answered">0</b> / <b id="total">0</b>
-     </div>
-     <div class="pill">
-      النتيجة: <b id="score">0</b>
-     </div>
-     <div class="progress">
-      <span id="bar"></span>
-     </div>
+     <div class="pill">تم الحل: <b id="answered">0</b> / <b id="total">0</b></div>
+     <div class="pill">النتيجة: <b id="score">0</b></div>
+     <div class="progress"><span id="bar"></span></div>
     </div>
    </div>
   </header>
@@ -115,19 +104,12 @@
   <div class="toast" id="toast"></div>
 
   <script>
-  // إجبار المتصفح للعودة لصفحة الاختبارات (حماية الرجوع)
+  // حماية الرجوع
   document.addEventListener('DOMContentLoaded', function() {
       window.history.pushState('exam', null, '');
-      window.onpopstate = function() {
-          window.location.replace('home.html');
-      };
+      window.onpopstate = function() { window.location.replace('home.html'); };
   });
 
-  let studentRef = null;
-  let examQuestions = [];
-  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
-
-  // مصفوفة الأسئلة 
   const ALL_QUESTIONS = [
     { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
     { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
@@ -166,66 +148,53 @@
     { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
   ];
 
-  // دالة التهيئة لعرض الأسئلة 
+  let state = { answered: 0, score: 0, locked: [] };
+  const grid = document.getElementById("grid");
+  const answeredEl = document.getElementById("answered");
+  const scoreEl = document.getElementById("score");
+  const barEl = document.getElementById("bar");
+  const toastEl = document.getElementById("toast");
+
+  // تشغيل البرنامج فوراً عند فتح الصفحة
+  window.onload = function() {
+      initApp();
+      // الاتصال بالفايربيز في الخلفية بدون ما يعطل الأسئلة
+      setTimeout(initFirebase, 500);
+  };
+
   function initApp() {
-      try {
-          const savedData = localStorage.getItem('myExamSessionData');
-          if (savedData) {
-              const parsed = JSON.parse(savedData);
-              if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
-                  examQuestions = parsed.questions;
-                  state = parsed.state;
-              } else {
-                  examQuestions = ALL_QUESTIONS;
-                  state.locked = Array(examQuestions.length).fill(false);
-                  state.selectedOptions = Array(examQuestions.length).fill(null);
-                  saveProgress();
-              }
-          } else {
-              examQuestions = ALL_QUESTIONS;
-              state.locked = Array(examQuestions.length).fill(false);
-              state.selectedOptions = Array(examQuestions.length).fill(null);
-              saveProgress();
-          }
-      } catch(e) {
-          examQuestions = ALL_QUESTIONS;
-          state.locked = Array(examQuestions.length).fill(false);
-          state.selectedOptions = Array(examQuestions.length).fill(null);
-      }
-      
-      document.getElementById("total").textContent = examQuestions.length;
+      state.answered = 0;
+      state.score = 0;
+      state.locked = Array(ALL_QUESTIONS.length).fill(false);
+      document.getElementById("total").textContent = ALL_QUESTIONS.length;
       render();
   }
 
-  // وضع الفايربيز جوه صندوق حماية عشان لو المتصفح منعه، الأسئلة تظهر عادي
-  try {
-      const firebaseConfig = {
-        apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
-        authDomain: "pharma-exam-2026.firebaseapp.com",
-        databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
-        projectId: "pharma-exam-2026",
-        storageBucket: "pharma-exam-2026.firebasestorage.app",
-        messagingSenderId: "687076956495",
-        appId: "1:687076956495:web:285781fa362d0d83314d3a"
-      };
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-      
-      db.ref('research_settings/exam_status').on('value', (snap) => {
-        if (snap.val() === 'closed') {
-          document.getElementById("overlay").style.display = "flex";
-        } else {
-          document.getElementById("overlay").style.display = "none";
-        }
-      });
-  } catch(error) {
-      console.log("Offline Mode: Firebase blocked by browser.");
-  }
-
-  function saveProgress() {
+  function initFirebase() {
       try {
-          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
-      } catch(e) {}
+          const firebaseConfig = {
+            apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
+            authDomain: "pharma-exam-2026.firebaseapp.com",
+            databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
+            projectId: "pharma-exam-2026",
+            storageBucket: "pharma-exam-2026.firebasestorage.app",
+            messagingSenderId: "687076956495",
+            appId: "1:687076956495:web:285781fa362d0d83314d3a"
+          };
+          if (!firebase.apps.length) {
+              firebase.initializeApp(firebaseConfig);
+          }
+          const db = firebase.database();
+          db.ref('research_settings/exam_status').on('value', (snap) => {
+            if (snap.val() === 'closed') {
+              document.getElementById("overlay").style.display = "flex";
+            } else {
+              document.getElementById("overlay").style.display = "none";
+            }
+          });
+      } catch(error) {
+          console.warn("Firebase check bypassed to keep questions showing.");
+      }
   }
 
   function speakText(text) {
@@ -239,18 +208,10 @@
           } else {
               showToast("المساعد الصوتي غير مدعوم", false);
           }
-      } catch(e) {
-          showToast("تعذر تشغيل الصوت", false);
-      }
+      } catch(e) { showToast("تعذر تشغيل الصوت", false); }
   }
 
-  const grid = document.getElementById("grid");
-  const answeredEl = document.getElementById("answered");
-  const scoreEl = document.getElementById("score");
-  const barEl = document.getElementById("bar");
-  const toastEl = document.getElementById("toast");
-
-  function showToast(msg, isCorrect){
+  function showToast(msg){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     setTimeout(()=>toastEl.classList.remove("show"), 1500);
@@ -259,19 +220,17 @@
   function updateHUD(){
     answeredEl.textContent = state.answered;
     scoreEl.textContent = state.score;
-    barEl.style.width = (state.answered / examQuestions.length * 100) + "%";
+    barEl.style.width = (state.answered / ALL_QUESTIONS.length * 100) + "%";
   }
 
   function render(){
     grid.innerHTML = '';
-    examQuestions.forEach((item, idx) => {
+    ALL_QUESTIONS.forEach((item, idx) => {
       const card = document.createElement("section");
       card.className = "card";
       
       const qtop = document.createElement("div");
       qtop.className = "qtop";
-      
-      // إصلاح مشكلة التنصيص هنا عشان الزرار ميضربش الكود
       const safeText = item.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
       
       qtop.innerHTML = `
@@ -290,34 +249,23 @@
         opt.className = "opt";
         opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
         
-        if (state.locked[idx]) {
-            opt.classList.add("locked");
-            if (oIdx === item.correct) opt.classList.add("correct");
-            if (oIdx === state.selectedOptions[idx] && oIdx !== item.correct) opt.classList.add("wrong");
-        }
-
         opt.onclick = () => {
           if (state.locked[idx]) return;
           state.locked[idx] = true;
-          state.selectedOptions[idx] = oIdx;
           state.answered++;
           
           if (oIdx === item.correct) {
             opt.classList.add("correct");
             state.score++;
-            showToast("✅ إجابة صحيحة", true);
-            if(studentRef) {
-                try { studentRef.update({ score: state.score }); } catch(err) {}
-            }
+            showToast("✅ إجابة صحيحة");
           } else {
             opt.classList.add("wrong");
             optsDiv.children[item.correct].classList.add("correct");
-            showToast("❌ إجابة خاطئة", false);
+            showToast("❌ إجابة خاطئة");
           }
           
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
-          saveProgress(); 
         };
         optsDiv.appendChild(opt);
       });
@@ -328,10 +276,6 @@
     });
     updateHUD();
   }
-
-  // تشغيل المنصة بأمان
-  initApp();
-  
   </script>
  </body>
 </html>
