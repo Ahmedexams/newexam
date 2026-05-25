@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Research Bank Exam</title>
+  <title>Online Exam</title>
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
@@ -11,7 +11,17 @@
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
     .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:12px;}
-    .logo{ width:44px;height:44px;border-radius:14px; background: radial-gradient(14px 14px at 30% 30%, rgba(110,231,255,.9), transparent 60%), radial-gradient(14px 14px at 70% 70%, rgba(167,139,250,.9), transparent 60%), linear-gradient(135deg, rgba(26,43,85,.8), rgba(15,23,48,.9)); border:1px solid rgba(110,231,255,.25); box-shadow: 0 0 22px rgba(110,231,255,.12), 0 0 22px rgba(167,139,250,.10); }
+    
+    /* زرار الرجوع */
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
+    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
+
+    .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
+    .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
+    .premium-logo::after { filter: blur(8px); opacity: 0.8; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
+
     h1{margin:0;font-size:18px;letter-spacing:.2px}
     .sub{margin:0;color:var(--muted);font-size:12px}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
@@ -19,14 +29,19 @@
     .pill b{color:var(--text);font-weight:900}
     .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
     .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 84px;}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
     .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
     @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
     .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    
+    /* أيقونة القراءة الصوتية */
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
@@ -35,10 +50,12 @@
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
-    footer{ position:fixed; left:0; right:0; bottom:0; padding:12px 14px; background: linear-gradient(180deg, rgba(7,9,18,.0), rgba(7,9,18,.85)); border-top:1px solid rgba(26,43,85,.55); backdrop-filter: blur(10px); }
-    .footin{ max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; font-weight:1000; letter-spacing:.6px; font-size:14px; }
-    .neon{ background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; }
-    @keyframes flow{ 0%{background-position: 0% 50%} 100%{background-position: 220% 50%} }
+    
+    /* تصميم المعلم الذكي */
+    .tutor-box { margin-top: 15px; padding: 14px; border-radius: 14px; background: rgba(110, 231, 255, 0.05); border: 1px solid rgba(110, 231, 255, 0.2); color: var(--glow1); font-size: 13px; font-weight: 700; line-height: 1.6; animation: fadeIn 0.4s ease; text-align: right; direction: rtl;}
+    .tutor-box b { color: var(--text); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; direction: ltr; display: inline-block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
@@ -50,20 +67,38 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
  </head>
  <body>
-  <!-- شاشة الإغلاق اللحظي -->
   <div id="overlay">
    <div class="modal" id="modalContent">
     <h2 style="color:var(--bad); margin-top:0;">الامتحان مغلق 🔒</h2>
-    <p style="color:var(--muted)">عذراً، تم إغلاق الامتحان من قبل Ahmed Hamed.</p>
+    <p style="color:var(--muted)">عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.</p>
    </div>
   </div>
+
   <header>
    <div class="headin">
     <div class="brand">
-     <div class="logo"></div>
+        
+     <div class="back-btn" onclick="window.location.replace('home.html')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
+        
+     <div class="premium-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ee7ff" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                </linearGradient>
+            </defs>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+     </div>
      <div>
-      <h1>Research Bank Exam</h1>
-      <p class="sub">Comprehensive Nursing Research Question Bank - 35 Questions</p>
+      <h1 style="margin-bottom: 4px;">Online Exam</h1>
+      <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+          اللهم صلِّ وسلم على نبينا محمد ﷺ ❤️
+      </p>
      </div>
     </div>
     <div class="pillbar">
@@ -79,19 +114,19 @@
     </div>
    </div>
   </header>
+
   <div class="wrap">
    <div class="grid" id="grid"></div>
   </div>
+
   <div class="toast" id="toast"></div>
-  <footer>
-   <div class="footin">
-    <a href="https://wa.me/201016781843" target="_blank" class="neon" style="text-decoration: none;">Created BY Ahmed Hamed</a>
-   </div>
-  </footer>
- <script>
-      if (sessionStorage.getItem('student_auth') !== 'verified') {
-        window.location.replace('index.html');
-    }
+
+  <script>
+  // حماية زرار الرجوع للموبايل
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      window.location.replace('home.html');
+  };
 
   const firebaseConfig = {
     apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
@@ -106,31 +141,9 @@
   const db = firebase.database();
 
   let studentRef = null;
-  let sName = "طالب مجهول";
   let sessionInitialized = false;
 
-  function getAccurateDeviceName() {
-      try {
-          var parser = new UAParser();
-          var result = parser.getResult();
-          var deviceStr = "";
-          if (result.device.vendor && result.device.model) {
-              deviceStr = result.device.vendor + " " + result.device.model;
-          } else if (result.device.type === "mobile" || result.device.type === "tablet") {
-              deviceStr = result.device.type + " (" + result.os.name + ")";
-          } else if (result.os.name) {
-              deviceStr = result.os.name + " (" + (result.browser.name || "Browser") + ")";
-          } else {
-              deviceStr = "جهاز غير معروف";
-          }
-          if (window.innerWidth < 768 && !deviceStr.toLowerCase().includes("mobile") && !result.device.model) {
-              deviceStr += " [شاشة هاتف]";
-          }
-          return deviceStr;
-      } catch(e) { return "تعذر القراءة"; }
-  }
-
-  // تم التعديل هنا: استخدام المسار المعزول لامتحان الـ Research
+  // التحقق من حالة الامتحان من الفايربيز (مفتوح/مغلق)
   db.ref('research_settings/exam_status').on('value', (snap) => {
     if (snap.val() === 'closed') {
       document.getElementById("overlay").style.display = "flex";
@@ -138,37 +151,12 @@
       document.getElementById("overlay").style.display = "none";
       if (!sessionInitialized) {
         sessionInitialized = true;
-        initStudentSession(); 
       }
     }
   });
 
-  function initStudentSession() {
-    // تم التعديل هنا: التسجيل في قائمة طلاب الـ Research المعزولة
-    studentRef = db.ref('research_students').push();
-    fetch('https://api.db-ip.com/v2/free/self')
-      .then(res => res.json())
-      .then(data => saveStudentData(data.ipAddress, `${data.city}, ${data.countryName}`))
-      .catch(() => {
-          fetch('https://ipinfo.io/json')
-            .then(res => res.json())
-            .then(data => saveStudentData(data.ip, `${data.city}, ${data.country}`))
-            .catch(() => saveStudentData("غير معروف", "غير معروف"));
-      });
-  }
-
-  function saveStudentData(ip, loc) {
-    studentRef.set({
-      name: sName,
-      ip: ip,
-      location: loc,
-      device: getAccurateDeviceName(),
-      time: new Date().toLocaleTimeString('ar-EG'),
-      score: 0
-    });
-  }
-
-  const QUESTIONS = [
+  // مصفوفة الأسئلة - هتعرض كل الأسئلة اللي هتحطها هنا
+  const ALL_QUESTIONS = [
     { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
     { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
     { q: "Writing a brief critical summary of each article is called", options: ["Data analysis", "Annotated bibliography", "Thematic organization", "Integration"], correct: 1 },
@@ -206,36 +194,99 @@
     { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
   ];
 
-  const state = { answered: 0, score: 0, locked: Array(QUESTIONS.length).fill(false) };
+  let examQuestions = [];
+  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
+  
+  function initApp() {
+      try {
+          const savedData = localStorage.getItem('myExamSessionData');
+          if (savedData) {
+              const parsed = JSON.parse(savedData);
+              // التأكد إن الطالب مغيرش في الأسئلة عشان نتجنب الأخطاء
+              if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
+                  examQuestions = parsed.questions;
+                  state = parsed.state;
+              } else {
+                  examQuestions = ALL_QUESTIONS;
+                  state.locked = Array(examQuestions.length).fill(false);
+                  state.selectedOptions = Array(examQuestions.length).fill(null);
+                  saveProgress();
+              }
+          } else {
+              // هيعرض كل الأسئلة بالكامل
+              examQuestions = ALL_QUESTIONS;
+              state.locked = Array(examQuestions.length).fill(false);
+              state.selectedOptions = Array(examQuestions.length).fill(null);
+              saveProgress();
+          }
+      } catch(e) {
+          examQuestions = ALL_QUESTIONS;
+          state.locked = Array(examQuestions.length).fill(false);
+          state.selectedOptions = Array(examQuestions.length).fill(null);
+      }
+      
+      document.getElementById("total").textContent = examQuestions.length;
+      render();
+  }
+
+  function saveProgress() {
+      try {
+          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
+      } catch(e) {
+          // تجاهل الخطأ في حالة حظر المتصفح
+      }
+  }
+
+  // المساعد الصوتي
+  function speakText(text) {
+      try {
+          if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel(); 
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = 'en-US';
+              utterance.rate = 0.9;
+              window.speechSynthesis.speak(utterance);
+          } else {
+              showToast("المساعد الصوتي غير مدعوم في هذا التطبيق", false);
+          }
+      } catch(e) {
+          showToast("تعذر تشغيل الصوت", false);
+      }
+  }
+
   const grid = document.getElementById("grid");
   const answeredEl = document.getElementById("answered");
-  const totalEl = document.getElementById("total");
   const scoreEl = document.getElementById("score");
   const barEl = document.getElementById("bar");
   const toastEl = document.getElementById("toast");
 
-  totalEl.textContent = QUESTIONS.length;
-
-  function showToast(msg){
+  function showToast(msg, isCorrect){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 1200);
+    setTimeout(()=>toastEl.classList.remove("show"), 1500);
   }
 
   function updateHUD(){
     answeredEl.textContent = state.answered;
     scoreEl.textContent = state.score;
-    barEl.style.width = (state.answered / QUESTIONS.length * 100) + "%";
+    barEl.style.width = (state.answered / examQuestions.length * 100) + "%";
   }
 
   function render(){
-    QUESTIONS.forEach((item, idx) => {
+    grid.innerHTML = '';
+    examQuestions.forEach((item, idx) => {
       const card = document.createElement("section");
       card.className = "card";
       
       const qtop = document.createElement("div");
       qtop.className = "qtop";
-      qtop.innerHTML = `<p class="qtext">${item.q}</p><div class="qno">${idx + 1}</div>`;
+      qtop.innerHTML = `
+        <p class="qtext">${item.q}</p>
+        <div class="tts-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </div>
+        <div class="qno">${idx + 1}</div>
+      `;
 
       const optsDiv = document.createElement("div");
       optsDiv.className = "opts";
@@ -244,34 +295,63 @@
         const opt = document.createElement("div");
         opt.className = "opt";
         opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
+        
+        // استعادة الحالة لو كان مجاوب قبل كده
+        if (state.locked[idx]) {
+            opt.classList.add("locked");
+            if (oIdx === item.correct) opt.classList.add("correct");
+            if (oIdx === state.selectedOptions[idx] && oIdx !== item.correct) opt.classList.add("wrong");
+        }
+
         opt.onclick = () => {
           if (state.locked[idx]) return;
           state.locked[idx] = true;
+          state.selectedOptions[idx] = oIdx;
           state.answered++;
+          
           if (oIdx === item.correct) {
             opt.classList.add("correct");
             state.score++;
-            showToast("✅ إجابة صحيحة");
+            showToast("✅ إجابة صحيحة", true);
             if(studentRef) studentRef.update({ score: state.score });
           } else {
             opt.classList.add("wrong");
             optsDiv.children[item.correct].classList.add("correct");
-            showToast("❌ إجابة خاطئة");
+            showToast("❌ إجابة خاطئة", false);
+            
+            // المعلم الافتراضي (الذكاء الاصطناعي)
+            const tutorBox = document.createElement("div");
+            tutorBox.className = "tutor-box";
+            tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
+            card.appendChild(tutorBox);
           }
+          
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
+          saveProgress(); // حفظ التقدم بعد كل إجابة
         };
         optsDiv.appendChild(opt);
       });
 
       card.appendChild(qtop);
       card.appendChild(optsDiv);
+      
+      // استعادة المعلم الافتراضي لو كان مجاوب غلط وعمل ريفريش
+      if (state.locked[idx] && state.selectedOptions[idx] !== item.correct) {
+          const tutorBox = document.createElement("div");
+          tutorBox.className = "tutor-box";
+          tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
+          card.appendChild(tutorBox);
+      }
+
       grid.appendChild(card);
     });
     updateHUD();
   }
 
-  render();
+  // تشغيل المنصة
+  initApp();
+  
   </script>
  </body>
 </html>
