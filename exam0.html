@@ -21,7 +21,7 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
 
-    /* ضبط الخطوط لتكون تقيلة جداً */
+    /* الخطوط العريضة والتقيلة جداً للاختبار */
     h1{margin:0;font-size:20px; font-weight: 900; letter-spacing:.2px}
     .sub{margin:0;color:var(--muted);font-size:13px; font-weight: 800;}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
@@ -132,7 +132,7 @@
 
   function verifyOneTimeTicket() {
       try {
-          // 1. تهيئة تطبيق الامتحان الأصلي ومراقبة حالته
+          // تهيئة تطبيق الامتحان
           const examApp = firebase.initializeApp({
             apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
             authDomain: "pharma-exam-2026.firebaseapp.com",
@@ -143,7 +143,7 @@
             appId: "1:687076956495:web:285781fa362d0d83314d3a"
           }, "examApp");
           
-          // 2. تهيئة تطبيق الـ Home لقراءة التذكرة وحرقها
+          // تهيئة تطبيق الـ Home لمطابقة التذكرة الصحيحة
           const homeApp = firebase.initializeApp({
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -158,7 +158,7 @@
           const userParam = urlParams.get('u');
           const tokenParam = urlParams.get('t');
 
-          // إذا كان الطالب قد تم التحقق منه مسبقاً في نفس التاب (للسماح بالـ Refresh البسيط)
+          // السماح بعمل ريفريش في نفس التاب فقط
           if (sessionStorage.getItem('exam_session_verified') === 'true') {
               startExam(examApp);
               return;
@@ -167,19 +167,16 @@
           if (userParam && tokenParam) {
               const homeDb = homeApp.database();
               
-              // جلب التذكرة النشطة من الفايربيز
-              homeDb.ref('active_tokens/' + userParam).once('value').then((snapshot) => {
+              // 🟢 تم التصحيح والربط على مسار active_tickets الموحد
+              homeDb.ref('active_tickets/' + userParam).once('value').then((snapshot) => {
                   const data = snapshot.val();
                   
-                  // مطابقة التذكرة وأنها لم تتعدى دقيقتين منذ إنشائها
                   if (data && data.token === tokenParam && (Date.now() - data.timestamp < 120000)) {
                       
-                      // 🔥 [الحرق الذاتي فوراً]: احذف التذكرة من الداتابيز حتى لا تُستخدم مجدداً نهائياً!
-                      homeDb.ref('active_tokens/' + userParam).remove();
+                      // 🔥 [حرق فوري للتذكرة]: مسحها تماماً حتى لا تعمل على متصفح أو جهاز آخر مطلقاً!
+                      homeDb.ref('active_tickets/' + userParam).remove();
                       
-                      // حفظ توثيق الجلسة الحالية فقط في الذاكرة المؤقتة للتاب
                       sessionStorage.setItem('exam_session_verified', 'true');
-                      
                       startExam(examApp);
                   } else {
                       failAuth();
@@ -202,7 +199,6 @@
   function startExam(examApp) {
       document.getElementById("main-content").style.display = "block";
       
-      // مراقبة قفل وفتح الامتحان
       examApp.database().ref('research_settings/exam_status').on('value', (snap) => {
         if (snap.val() === 'closed') {
           document.getElementById("overlay").style.display = "flex";
