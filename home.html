@@ -17,7 +17,9 @@
         :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
-        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* 🟢 تم تغيير الـ opacity الافتراضي هنا لـ 0 عشان نمنع الفلاش المزعج */
+        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; opacity: 0; transition: opacity 0.3s ease; }
         
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
@@ -60,12 +62,37 @@
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
         
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes appFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
+
+        /* 🟢 ستايل شاشة التحميل الذكية الافتتاحية */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg0);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(110,231,255,0.1);
+            border-left-color: var(--glow1);
+            border-radius: 50%;
+            animation: spinLoader 1s linear infinite;
+        }
+        @keyframes spinLoader { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div id="page-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="app-container" id="appContainer">
         <div class="header fade-in">
             <div class="premium-logo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -126,12 +153,31 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 تم تغيير localStorage إلى sessionStorage عشان الدخول يكون إجباري للينك الجديد
+        // 🟢 التحقق الذكي الفوري وقت الـ DOMContentLoaded لمنع الفلاش المزعج
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem('student_auth') === 'verified') {
+                // لو مسجل دخول، بنجهز شكل الصفحة للاختبارات فورا في الخلفية قبل ما تظهر للشاشة
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('headerSubtitle').style.display = 'none';
+                document.getElementById('examsSection').style.display = 'block';
+                document.getElementById('developerFooter').style.display = 'flex';
+                
+                // جلب الاختبارات من السيرفر
                 fetchExamsFromServer();
+            } else {
+                // لو مش مسجل دخول، بنخفي شاشة التحميل ونظهر صفحة تسجيل الدخول فوراً
+                removePageLoader();
             }
         });
+
+        // 🟢 دالة مخصصة لإخفاء شاشة التحميل وإظهار محتوى التطبيق بنعومة
+        function removePageLoader() {
+            document.getElementById('page-loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('page-loader').style.visibility = 'hidden';
+                document.getElementById('appContainer').style.opacity = '1';
+            }, 300);
+        }
 
         function logDeviceData(username) {
             let deviceStr = "جهاز غير معروف";
@@ -190,13 +236,18 @@
                     
                     logDeviceData(usernameInput);
 
-                    // 🟢 الحفظ المؤقت للجلسة فقط
                     sessionStorage.setItem('student_auth', 'verified');
                     sessionStorage.setItem('student_name', usernameInput);
                     
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
-                    setTimeout(fetchExamsFromServer, 500);
+                    setTimeout(() => {
+                        document.getElementById('loginSection').style.display = 'none';
+                        document.getElementById('headerSubtitle').style.display = 'none';
+                        document.getElementById('examsSection').style.display = 'block';
+                        document.getElementById('developerFooter').style.display = 'flex';
+                        fetchExamsFromServer();
+                    }, 500);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
@@ -231,10 +282,8 @@
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
 
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('headerSubtitle').style.display = 'none';
-                document.getElementById('examsSection').style.display = 'block';
-                document.getElementById('developerFooter').style.display = 'flex';
+                // 🟢 أول ما البيانات توصل وتترص في الصفحة، بنشيل شاشة التحميل فوراً بنعومة
+                removePageLoader();
             });
         }
 
