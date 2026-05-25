@@ -8,39 +8,41 @@
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
-    body{ margin:0; font-family: 'Tajawal', system-ui, -apple-system, sans-serif; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select: none; -webkit-user-select: none; }
+    body{ margin:0; font-family: 'Tajawal', system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select: none; -webkit-user-select: none; }
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: linear-gradient(180deg, rgba(7,9,18,.9), rgba(7,9,18,.4)); border-bottom:1px solid rgba(26,43,85,.6); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
-    .headin{ max-width:1100px;margin:0 auto; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-    .brand{display:flex; align-items:center; gap:14px;}
+    .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{display:flex; align-items:center; gap:12px;}
     
-    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; flex-shrink: 0; }
+    /* زرار الرجوع */
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
     .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
 
-    .logo { position: relative; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); flex-shrink: 0;}
-    .logo::before, .logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
-    .logo::after { filter: blur(6px); opacity: 0.8; }
+    .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
+    .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
+    .premium-logo::after { filter: blur(8px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .logo svg { width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
-    
-    .title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px;}
-    .premium-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; margin: 0; background: linear-gradient(90deg, #ffffff, #a8b3d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1; }
-    .secure-badge { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.3); padding: 3px 8px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; box-shadow: 0 0 10px rgba(34,197,94,.1); }
-    .brand-sub { margin: 0; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: var(--glow1); letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
+    .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
 
+    h1{margin:0;font-size:22px; font-family: 'Outfit', sans-serif; font-weight: 900; letter-spacing:.5px; text-transform: uppercase;}
+    .sub{margin:0;color:var(--muted);font-size:12px}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; font-weight: 800;}
     .pill b{color:var(--text);font-weight:900}
     .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
     .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
-    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 84px; display: none; opacity: 0; transition: opacity 0.5s ease;}
+    
+    /* 🟢 إخفاء المحتوى في البداية لتجنب الشاشة السوداء */
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px; display: none; opacity: 0; transition: opacity 0.5s ease;}
+    
     .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
     @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
     .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1;}
+    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
     
+    /* أيقونة القراءة الصوتية */
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
 
@@ -52,10 +54,7 @@
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
-    footer{ position:fixed; left:0; right:0; bottom:0; padding:12px 14px; background: linear-gradient(180deg, rgba(7,9,18,.0), rgba(7,9,18,.85)); border-top:1px solid rgba(26,43,85,.55); backdrop-filter: blur(10px); z-index: 50; }
-    .footin{ max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; font-weight:1000; letter-spacing:.6px; font-size:14px; }
-    .neon{ background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-family: 'Outfit', sans-serif;}
-    @keyframes flow{ 0%{background-position: 0% 50%} 100%{background-position: 220% 50%} }
+    
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); font-weight: 900; opacity:0; transition: .25s ease; z-index:99; pointer-events:none; backdrop-filter: blur(8px); }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
@@ -71,6 +70,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
  </head>
  <body>
+  
   <div id="overlay">
     <div class="spinner" id="loadingSpinner"></div>
     <div class="modal" id="modalContent" style="display: none;">
@@ -85,8 +85,9 @@
      <div class="back-btn" onclick="window.location.replace('index.html')">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
      </div>
-     <div class="logo">
-         <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        
+     <div class="premium-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#6ee7ff" />
@@ -98,14 +99,10 @@
         </svg>
      </div>
      <div>
-      <div class="title-row">
-          <h1 class="premium-title">Online Exam</h1>
-          <span class="secure-badge">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              SECURE
-          </span>
-      </div>
-      <p class="brand-sub">Advanced Evaluation System</p>
+      <h1 style="margin-bottom: 4px;">Online Exam</h1>
+      <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+          اللهم صلِّ وسلم على نبينا محمد ﷺ ❤️
+      </p>
      </div>
     </div>
     <div class="pillbar">
@@ -128,14 +125,8 @@
 
   <div class="toast" id="toast"></div>
 
-  <footer>
-   <div class="footin">
-    <a href="https://wa.me/201016781843" target="_blank" class="neon" style="text-decoration: none;">Created BY Ahmed Hamed</a>
-   </div>
-  </footer>
-
   <script>
-  // 🟢 زر الرجوع الافتراضي يرجع لصفحة الدخول الرئيسية
+  // 🟢 حماية الرجوع (لإرجاع الطالب لصفحة index.html)
   document.addEventListener('DOMContentLoaded', function() {
       window.history.pushState('exam', null, '');
       window.onpopstate = function() {
@@ -154,7 +145,7 @@
     if(e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) return false;
   }
 
-  // 🟢 توحيد الفايربيس ليطابق المنصة الرئيسية (ahmedexams)
+  // 🟢 الفايربيس (تم استخدام ahmedexams لضمان التوافق مع صفحة الدخول)
   const firebaseConfig = {
       apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
       authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -222,14 +213,13 @@
       document.getElementById("modalText").innerText = text;
   }
 
-  // 🟢 التحقق من التذكرة يتم فوراً قبل أي عملية أخرى (لمنع الشاشة السوداء)
+  // 🟢 الكود بيبدأ هنا: التأكد من التذكرة قبل أي تحميل
   verifyTicket();
 
   function verifyTicket() {
-      // إذا كان اللينك لا يحتوي على بيانات الدخول أصلاً
       if (!userParam || !tokenParam) {
           showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
-          setTimeout(() => { window.location.href = "index.html"; }, 2000); 
+          setTimeout(() => { window.location.replace("index.html"); }, 2000); 
           return;
       }
 
@@ -250,7 +240,7 @@
               const ticketTime = ticketData.timestamp;
               if (currentTime - ticketTime > 120000) { 
                   showModalError("Please login first 🔒", "انتهت صلاحية الرابط، سيتم تحويلك...");
-                  setTimeout(() => { window.location.href = "index.html"; }, 2000);
+                  setTimeout(() => { window.location.replace("index.html"); }, 2000);
                   ticketRef.remove(); 
                   return;
               }
@@ -263,14 +253,14 @@
 
           } else {
               showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
-              setTimeout(() => { window.location.href = "index.html"; }, 2000);
+              setTimeout(() => { window.location.replace("index.html"); }, 2000);
           }
       }).catch(() => {
           showModalError("خطأ في الاتصال", "تعذر التحقق من الخادم.");
       });
   }
 
-  // 🟢 لا يتم استدعاء بناء الامتحان إلا بعد التأكد من التذكرة
+  // 🟢 استكمال عملية الامتحان وإظهار الأسئلة بعد التأكد بنجاح
   function startExamProcess() {
       db.ref('research_settings/exam_status').on('value', (snap) => {
         if (snap.val() === 'closed') {
@@ -305,7 +295,6 @@
               throw new Error("No cached data");
           }
       } catch(e) {
-          // مسح الكاش لو كان تالف عشان ميوقفش الصفحة
           localStorage.removeItem('myExamSessionData');
           examQuestions = ALL_QUESTIONS;
           state.locked = Array(examQuestions.length).fill(false);
@@ -318,7 +307,6 @@
       try {
           render();
       } catch (err) {
-          console.error("Rendering Error, resetting exam:", err);
           localStorage.removeItem('myExamSessionData');
       }
   }
@@ -477,4 +465,3 @@
   </script>
  </body>
 </html>
-
