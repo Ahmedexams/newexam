@@ -149,7 +149,6 @@
         function saveToFirebase(username, device, loc) {
             const timeNow = new Date().toLocaleString('ar-EG');
             
-            // الحفظ في قاعدة البيانات
             database.ref('login_logs').push({
                 username: username,
                 device: device,
@@ -157,7 +156,7 @@
                 time: timeNow
             });
 
-            // إرسال الإشعار لتليجرام
+            // 🟢 إشعار التليجرام الفوري
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
             const token = "8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g";
             const chatId = "8446500978";
@@ -209,7 +208,10 @@
                         if(exam && exam.name) {
                             const isClosed = exam.status === 'closed';
                             const linkTag = isClosed ? '#' : exam.url;
-                            const onClickAttr = isClosed ? `onclick="alert('عذراً، هذا الاختبار مغلق حالياً 🔒')"` : '';
+                            
+                            // 🟢 إصدار التذكرة قبل التوجه للامتحان
+                            const onClickAttr = isClosed ? `onclick="alert('عذراً، هذا الاختبار مغلق حالياً 🔒')"` : `onclick="sessionStorage.setItem('exam_ticket', 'valid');"`;
+                            
                             const actionClass = isClosed ? 'locked' : '';
                             const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
 
