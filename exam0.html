@@ -21,11 +21,13 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
 
-    h1{margin:0;font-size:18px;letter-spacing:.2px}
-    .sub{margin:0;color:var(--muted);font-size:12px}
+    /* ضبط الخطوط لتكون تقيلة جداً */
+    h1{margin:0;font-size:20px; font-weight: 900; letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:13px; font-weight: 800;}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .pill{ padding:10px 14px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:center; font-weight: 800; }
     .pill b{color:var(--text);font-weight:900}
+    
     .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
     .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
@@ -34,8 +36,8 @@
     .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
-    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:900; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
     
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
@@ -43,13 +45,13 @@
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
-    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
-    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:900; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:14px; font-weight: 800; line-height:1.55; direction:ltr; text-align:left;}
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
     
-    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); font-weight: 900; opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
     #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
@@ -57,23 +59,22 @@
   </style>
   
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
  </head>
  <body>
 
   <div id="overlay">
    <div class="modal">
-    <h2 style="color:var(--bad); margin-top:0;">الامتحان مغلق 🔒</h2>
-    <p style="color:var(--muted)">عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.</p>
+    <h2 style="color:var(--bad); margin-top:0; font-weight:900;">الامتحان مغلق 🔒</h2>
+    <p style="color:var(--muted); font-weight:800;">عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.</p>
    </div>
   </div>
 
-  <div id="main-content">
+  <div id="main-content" style="display:none;">
       <header>
        <div class="headin">
         <div class="brand">
-         <div class="back-btn" onclick="window.location.replace('home.html')">
+         <div class="back-btn" onclick="window.location.replace('about:blank')">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
          </div>
          <div class="premium-logo">
@@ -88,7 +89,7 @@
          </div>
          <div>
           <h1 style="margin-bottom: 4px;">Online Exam</h1>
-          <p class="sub" style="color: var(--glow1); font-weight: 900; font-size: 14px;"></p>
+          <p class="sub" style="color: var(--glow1); font-weight: 900; font-size: 14px;">قناة الطالب الآمنة</p>
          </div>
         </div>
         <div class="pillbar">
@@ -107,9 +108,8 @@
   <div class="toast" id="toast"></div>
 
   <script>
-  // منع زر الرجوع
   window.history.pushState('exam', null, '');
-  window.onpopstate = function() { window.location.replace('home.html'); };
+  window.onpopstate = function() { alert("غير مسموح بالرجوع للخلف أثناء تأدية الامتحان!"); };
 
   const ALL_QUESTIONS = [
     { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 0 },
@@ -127,21 +127,13 @@
   const toastEl = document.getElementById("toast");
 
   window.onload = function() {
-      initApp();
-      initFirebase();
+      verifyOneTimeTicket();
   };
 
-  function initApp() {
-      state.answered = 0;
-      state.score = 0;
-      state.locked = Array(ALL_QUESTIONS.length).fill(false);
-      document.getElementById("total").textContent = ALL_QUESTIONS.length;
-      render();
-  }
-
-  function initFirebase() {
+  function verifyOneTimeTicket() {
       try {
-          const firebaseConfig = {
+          // 1. تهيئة تطبيق الامتحان الأصلي ومراقبة حالته
+          const examApp = firebase.initializeApp({
             apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
             authDomain: "pharma-exam-2026.firebaseapp.com",
             databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
@@ -149,32 +141,85 @@
             storageBucket: "pharma-exam-2026.firebasestorage.app",
             messagingSenderId: "687076956495",
             appId: "1:687076956495:web:285781fa362d0d83314d3a"
-          };
+          }, "examApp");
           
-          if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-          
-          // فحص حالة الدخول بدون حجب الشاشة
-          firebase.auth().onAuthStateChanged((user) => {
-              if (!user) {
-                  // لو مش مسجل دخول، اطرده برة فوراً (تأكد أن اسم الملف login.html صحيح)
-                  alert("خطأ أمني: يجب تسجيل الدخول أولاً!");
-                  window.location.replace("login.html");
-              } else {
-                  // لو مسجل دخول، راقب حالة الامتحان من الداتابيز بصمت
-                  const db = firebase.database();
-                  db.ref('research_settings/exam_status').on('value', (snap) => {
-                    if (snap.val() === 'closed') {
-                      document.getElementById("overlay").style.display = "flex";
-                    } else {
-                      document.getElementById("overlay").style.display = "none";
-                    }
-                  }, (err) => { console.log("الـ Rules مغلقة بالفايربيز ولكن الامتحان يعمل."); });
-              }
-          });
+          // 2. تهيئة تطبيق الـ Home لقراءة التذكرة وحرقها
+          const homeApp = firebase.initializeApp({
+            apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+            authDomain: "ahmedexams-3e267.firebaseapp.com",
+            databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
+            projectId: "ahmedexams-3e267",
+            storageBucket: "ahmedexams-3e267.firebasestorage.app",
+            messagingSenderId: "151411096023",
+            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+          }, "homeApp");
 
-      } catch(error) {
-          console.error("Firebase Init Error: ", error);
+          const urlParams = new URLSearchParams(window.location.search);
+          const userParam = urlParams.get('u');
+          const tokenParam = urlParams.get('t');
+
+          // إذا كان الطالب قد تم التحقق منه مسبقاً في نفس التاب (للسماح بالـ Refresh البسيط)
+          if (sessionStorage.getItem('exam_session_verified') === 'true') {
+              startExam(examApp);
+              return;
+          }
+
+          if (userParam && tokenParam) {
+              const homeDb = homeApp.database();
+              
+              // جلب التذكرة النشطة من الفايربيز
+              homeDb.ref('active_tokens/' + userParam).once('value').then((snapshot) => {
+                  const data = snapshot.val();
+                  
+                  // مطابقة التذكرة وأنها لم تتعدى دقيقتين منذ إنشائها
+                  if (data && data.token === tokenParam && (Date.now() - data.timestamp < 120000)) {
+                      
+                      // 🔥 [الحرق الذاتي فوراً]: احذف التذكرة من الداتابيز حتى لا تُستخدم مجدداً نهائياً!
+                      homeDb.ref('active_tokens/' + userParam).remove();
+                      
+                      // حفظ توثيق الجلسة الحالية فقط في الذاكرة المؤقتة للتاب
+                      sessionStorage.setItem('exam_session_verified', 'true');
+                      
+                      startExam(examApp);
+                  } else {
+                      failAuth();
+                  }
+              }).catch(() => failAuth());
+          } else {
+              failAuth();
+          }
+      } catch(e) {
+          console.error(e);
+          failAuth();
       }
+  }
+
+  function failAuth() {
+      alert("⚠️ خطأ أمني جسيم: هذا الرابط منتهي الصلاحية، أو تم نسخه ومشاركته بشكل غير قانوني! سيتم إغلاق الصفحة.");
+      window.location.replace("about:blank");
+  }
+
+  function startExam(examApp) {
+      document.getElementById("main-content").style.display = "block";
+      
+      // مراقبة قفل وفتح الامتحان
+      examApp.database().ref('research_settings/exam_status').on('value', (snap) => {
+        if (snap.val() === 'closed') {
+          document.getElementById("overlay").style.display = "flex";
+        } else {
+          document.getElementById("overlay").style.display = "none";
+        }
+      });
+
+      initApp();
+  }
+
+  function initApp() {
+      state.answered = 0;
+      state.score = 0;
+      state.locked = Array(ALL_QUESTIONS.length).fill(false);
+      document.getElementById("total").textContent = ALL_QUESTIONS.length;
+      render();
   }
 
   function speakText(text) {
@@ -234,7 +279,7 @@
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
         };
-        optsDiv.appendChild(opt);
+        objs = optsDiv.appendChild(opt);
       });
       grid.appendChild(card);
     });
