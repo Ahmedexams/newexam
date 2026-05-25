@@ -12,13 +12,18 @@
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: linear-gradient(180deg, rgba(7,9,18,.9), rgba(7,9,18,.4)); border-bottom:1px solid rgba(26,43,85,.6); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
     .headin{ max-width:1100px;margin:0 auto; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:14px;}
+    
+    /* Back Button Style */
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; flex-shrink: 0; }
+    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
+
     .logo { position: relative; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); flex-shrink: 0;}
     .logo::before, .logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .logo::after { filter: blur(6px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .logo svg { width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
     
-    /* 🟢 تصميم بريميوم للنص والفراغ */
+    /* Premium Title Styling */
     .title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px;}
     .premium-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; margin: 0; background: linear-gradient(90deg, #ffffff, #a8b3d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1; }
     .secure-badge { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.3); padding: 3px 8px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; box-shadow: 0 0 10px rgba(34,197,94,.1); }
@@ -36,7 +41,12 @@
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; }
+    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1;}
+    
+    /* TTS Icon */
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
@@ -75,6 +85,9 @@
   <header>
    <div class="headin">
     <div class="brand">
+     <div class="back-btn" onclick="window.location.replace('home.html')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
      <div class="logo">
          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <defs>
@@ -125,10 +138,18 @@
   </footer>
 
   <script>
-  // تعطيل كليك يمين
+  // Force browser back navigation to home.html
+  document.addEventListener('DOMContentLoaded', function() {
+      window.history.pushState('exam', null, '');
+      window.onpopstate = function() {
+          window.location.replace('home.html');
+      };
+  });
+
+  // Disable Right Click
   document.addEventListener('contextmenu', event => event.preventDefault());
 
-  // تعطيل اختصارات النسخ واللصق وF12
+  // Disable DevTools shortcuts
   document.onkeydown = function(e) {
     if(e.keyCode == 123) return false;
     if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
@@ -138,15 +159,15 @@
     if(e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) return false;
   }
 
-  // إعدادات الفايربيز 
+  // Firebase Config (Keep your actual keys!)
   const firebaseConfig = {
-      apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
-      authDomain: "ahmedexams-3e267.firebaseapp.com",
-      databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
-      projectId: "ahmedexams-3e267",
-      storageBucket: "ahmedexams-3e267.firebasestorage.app",
-      messagingSenderId: "151411096023",
-      appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+      apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
+      authDomain: "pharma-exam-2026.firebaseapp.com",
+      databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
+      projectId: "pharma-exam-2026",
+      storageBucket: "pharma-exam-2026.firebasestorage.app",
+      messagingSenderId: "687076956495",
+      appId: "1:687076956495:web:285781fa362d0d83314d3a"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
@@ -154,6 +175,98 @@
   let studentRef = null;
   let sName = "طالب مجهول";
   let sessionInitialized = false;
+  let examQuestions = [];
+  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
+
+  const ALL_QUESTIONS = [
+    { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
+    { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
+    { q: "Writing a brief critical summary of each article is called", options: ["Data analysis", "Annotated bibliography", "Thematic organization", "Integration"], correct: 1 },
+    { q: "According to Problem-Solving method after nursing intervention, the nurse checks if the patient's pain decreased. This action refers to", options: ["Goal setting", "Identification", "Planning", "Evaluation"], correct: 3 },
+    { q: "What is an independent variable in a research study", options: ["A randomly selected number", "A non-randomly selected number", "The variable that is manipulated", "The variable that is measured"], correct: 2 },
+    { q: "The main feature of true experimental design includes which of the following", options: ["Observational only", "No control over variables", "No randomization", "Random assignment of subjects"], correct: 3 },
+    { q: "The first step in problem-solving is", options: ["Implementation", "Evaluation", "Goal setting", "Identification of the problem"], correct: 3 },
+    { q: "Which of the following is considered a primary source", options: ["Textbook", "Research report written by the original researcher", "Systematic review", "Encyclopedia article"], correct: 1 },
+    { q: "The major characteristic of quantitative research is", options: ["Use of artistic expression", "Collection of stories", "Use of numerical data and statistical analysis", "Avoiding any statistical tools"], correct: 2 },
+    { q: "A study conducted to test a theory and determine whether it is supported by facts is", options: ["Descriptive research", "Confirmatory research", "Qualitative research", "Exploratory research"], correct: 1 },
+    { q: "Which of the following is a characteristic of experimental research", options: ["Use of stories", "Direct manipulation of variables", "No hypothesis is needed", "Variables are not controlled"], correct: 1 },
+    { q: "Which type of research uses numerical data and statistical analysis", options: ["Qualitative research", "Quantitative research", "Exploratory research", "Basic research"], correct: 1 },
+    { q: "What determines the type of research design to be used", options: ["The statistical method", "The funding sources", "The researcher's preference", "The research problem"], correct: 3 },
+    { q: "A researcher classifies studies into categories like causes, symptoms, and treatment. Which step is this", options: ["Annotation", "Integration", "Thematic organization", "Writing individual sections"], correct: 2 },
+    { q: "Types of non-experimental designs", options: ["All answers are true", "Survey studies", "Correlational studies", "Comparative studies"], correct: 0 },
+    { q: "Characteristics of qualitative research include all of the following except which of the following", options: ["Includes a single, central phenomena", "Closed ended", "Evolving, that is, problems change as data is collected and reflected upon", "General in nature"], correct: 1 },
+    { q: "A good research design should be", options: ["Long", "Confusing", "Clear and organized", "Expensive"], correct: 2 },
+    { q: "Which is NOT a type of non-experimental design", options: ["Retrospective", "Correlational", "True experimental", "Survey"], correct: 2 },
+    { q: "Which of the following is a tertiary source", options: ["Handbook or textbook", "Clinical trial report", "Experimental study", "Original research article"], correct: 0 },
+    { q: "Which of the following is considered an electronic database", options: ["Textbook", "Magazine", "PubMed", "Newspaper"], correct: 2 },
+    { q: "A study finds that patients who receive more nurse interactions feel less pain and request fewer painkillers. Which hypothesis type does this best represent", options: ["Null Hypothesis", "Simple Hypothesis", "Complex Hypothesis", "Descriptive Hypothesis"], correct: 2 },
+    { q: "Reliability ensures that a research technique will produce consistent results when repeated under the same conditions", options: ["True", "False"], correct: 0 },
+    { q: "In research, the variable that the researcher measures and depends on the independent variable is called the", options: ["Independent Variable", "Dependent Variable", "Extraneous Variable", "Constant Variable"], correct: 1 },
+    { q: "What does \"nursing research\" primarily focus on", options: ["Political Science", "Business Marketing", "Engineering Concepts", "Nursing Practice, Education, and Administration"], correct: 3 },
+    { q: "Which of the following is a barrier to nursing research related to nurses", options: ["Low cost of research", "Accurate statistical methods", "Ethical concerns", "Lack of awareness about research"], correct: 3 },
+    { q: "A variable (usually denoted by letters or symbols) is a characteristic number, or quantity that takes different values in different situations", options: ["True", "False"], correct: 0 },
+    { q: "What is the FINER criterion used for in research", options: ["Analyzing data", "Evaluating test results", "Developing strong research questions", "Writing research conclusions"], correct: 2 },
+    { q: "A researcher is studying the effect of a new medication on patient recovery times. The medication given is an example of", options: ["Dependent Variable", "Extraneous Variable", "Independent Variable", "Controlled Variable"], correct: 2 },
+    { q: "Which type of hypothesis specifies the expected direction of the relationship between variables", options: ["Nondirectional Hypothesis", "Null Hypothesis", "Directional Hypothesis", "Complex Hypothesis"], correct: 2 },
+    { q: "Descriptive questions: generally look at descriptions of a particular issue or situation", options: ["True", "False"], correct: 0 },
+    { q: "Which of the following best defines validity in data collection tools", options: ["The tool uses a standard Likert scale", "The tool measures what it is supposed to measure", "The tool yields the same results over time", "The tool is accepted by all healthcare institutions"], correct: 1 },
+    { q: "A researcher uses a table of random numbers to select 100 patients from a hospital registry. This is an example of", options: ["Simple random sampling", "Convenience sampling", "Quota sampling", "Stratified sampling"], correct: 0 },
+    { q: "Which data collection method is most suitable for capturing non-verbal behaviors in a pediatric pain study", options: ["Focus groups", "Self-reported surveys", "Structured observation", "Telephone interviews"], correct: 2 },
+    { q: "A nurse researcher distributes a paper questionnaire to assess patient satisfaction with discharge instructions. What type of data collection is this", options: ["Interview", "Self-report", "Observation", "Experimental"], correct: 1 },
+    { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
+  ];
+
+  function initApp() {
+      try {
+          const savedData = localStorage.getItem('myExamSessionData');
+          if (savedData) {
+              const parsed = JSON.parse(savedData);
+              if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
+                  examQuestions = parsed.questions;
+                  state = parsed.state;
+              } else {
+                  examQuestions = ALL_QUESTIONS;
+                  state.locked = Array(examQuestions.length).fill(false);
+                  state.selectedOptions = Array(examQuestions.length).fill(null);
+                  saveProgress();
+              }
+          } else {
+              examQuestions = ALL_QUESTIONS;
+              state.locked = Array(examQuestions.length).fill(false);
+              state.selectedOptions = Array(examQuestions.length).fill(null);
+              saveProgress();
+          }
+      } catch(e) {
+          examQuestions = ALL_QUESTIONS;
+          state.locked = Array(examQuestions.length).fill(false);
+          state.selectedOptions = Array(examQuestions.length).fill(null);
+      }
+      
+      document.getElementById("total").textContent = examQuestions.length;
+      render();
+  }
+
+  function saveProgress() {
+      try {
+          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
+      } catch(e) {}
+  }
+
+  function speakText(text) {
+      try {
+          if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel(); 
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = 'en-US';
+              utterance.rate = 0.9;
+              window.speechSynthesis.speak(utterance);
+          } else {
+              showToast("المساعد الصوتي غير مدعوم", false);
+          }
+      } catch(e) {
+          showToast("تعذر تشغيل الصوت", false);
+      }
+  }
 
   const urlParams = new URLSearchParams(window.location.search);
   const userParam = urlParams.get('u');
@@ -166,7 +279,7 @@
       document.getElementById("modalText").innerText = text;
   }
 
-  // 🟢 التعديل الجديد: الرسالة والتحويل التلقائي
+  // UPDATED: Redirect logic
   function verifyTicket() {
       if (!userParam || !tokenParam) {
           showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
@@ -269,78 +382,46 @@
       location: loc,
       device: getAccurateDeviceName(),
       time: new Date().toLocaleTimeString('ar-EG'),
-      score: 0
+      score: state.score
     });
   }
 
-  const QUESTIONS = [
-    { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
-    { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
-    { q: "Writing a brief critical summary of each article is called", options: ["Data analysis", "Annotated bibliography", "Thematic organization", "Integration"], correct: 1 },
-    { q: "According to Problem-Solving method after nursing intervention, the nurse checks if the patient's pain decreased. This action refers to", options: ["Goal setting", "Identification", "Planning", "Evaluation"], correct: 3 },
-    { q: "What is an independent variable in a research study", options: ["A randomly selected number", "A non-randomly selected number", "The variable that is manipulated", "The variable that is measured"], correct: 2 },
-    { q: "The main feature of true experimental design includes which of the following", options: ["Observational only", "No control over variables", "No randomization", "Random assignment of subjects"], correct: 3 },
-    { q: "The first step in problem-solving is", options: ["Implementation", "Evaluation", "Goal setting", "Identification of the problem"], correct: 3 },
-    { q: "Which of the following is considered a primary source", options: ["Textbook", "Research report written by the original researcher", "Systematic review", "Encyclopedia article"], correct: 1 },
-    { q: "The major characteristic of quantitative research is", options: ["Use of artistic expression", "Collection of stories", "Use of numerical data and statistical analysis", "Avoiding any statistical tools"], correct: 2 },
-    { q: "A study conducted to test a theory and determine whether it is supported by facts is", options: ["Descriptive research", "Confirmatory research", "Qualitative research", "Exploratory research"], correct: 1 },
-    { q: "Which of the following is a characteristic of experimental research", options: ["Use of stories", "Direct manipulation of variables", "No hypothesis is needed", "Variables are not controlled"], correct: 1 },
-    { q: "Which type of research uses numerical data and statistical analysis", options: ["Qualitative research", "Quantitative research", "Exploratory research", "Basic research"], correct: 1 },
-    { q: "What determines the type of research design to be used", options: ["The statistical method", "The funding sources", "The researcher's preference", "The research problem"], correct: 3 },
-    { q: "A researcher classifies studies into categories like causes, symptoms, and treatment. Which step is this", options: ["Annotation", "Integration", "Thematic organization", "Writing individual sections"], correct: 2 },
-    { q: "Types of non-experimental designs", options: ["All answers are true", "Survey studies", "Correlational studies", "Comparative studies"], correct: 0 },
-    { q: "Characteristics of qualitative research include all of the following except which of the following", options: ["Includes a single, central phenomena", "Closed ended", "Evolving, that is, problems change as data is collected and reflected upon", "General in nature"], correct: 1 },
-    { q: "A good research design should be", options: ["Long", "Confusing", "Clear and organized", "Expensive"], correct: 2 },
-    { q: "Which is NOT a type of non-experimental design", options: ["Retrospective", "Correlational", "True experimental", "Survey"], correct: 2 },
-    { q: "Which of the following is a tertiary source", options: ["Handbook or textbook", "Clinical trial report", "Experimental study", "Original research article"], correct: 0 },
-    { q: "Which of the following is considered an electronic database", options: ["Textbook", "Magazine", "PubMed", "Newspaper"], correct: 2 },
-    { q: "A study finds that patients who receive more nurse interactions feel less pain and request fewer painkillers. Which hypothesis type does this best represent", options: ["Null Hypothesis", "Simple Hypothesis", "Complex Hypothesis", "Descriptive Hypothesis"], correct: 2 },
-    { q: "Reliability ensures that a research technique will produce consistent results when repeated under the same conditions", options: ["True", "False"], correct: 0 },
-    { q: "In research, the variable that the researcher measures and depends on the independent variable is called the", options: ["Independent Variable", "Dependent Variable", "Extraneous Variable", "Constant Variable"], correct: 1 },
-    { q: "What does \"nursing research\" primarily focus on", options: ["Political Science", "Business Marketing", "Engineering Concepts", "Nursing Practice, Education, and Administration"], correct: 3 },
-    { q: "Which of the following is a barrier to nursing research related to nurses", options: ["Low cost of research", "Accurate statistical methods", "Ethical concerns", "Lack of awareness about research"], correct: 3 },
-    { q: "A variable (usually denoted by letters or symbols) is a characteristic number, or quantity that takes different values in different situations", options: ["True", "False"], correct: 0 },
-    { q: "What is the FINER criterion used for in research", options: ["Analyzing data", "Evaluating test results", "Developing strong research questions", "Writing research conclusions"], correct: 2 },
-    { q: "A researcher is studying the effect of a new medication on patient recovery times. The medication given is an example of", options: ["Dependent Variable", "Extraneous Variable", "Independent Variable", "Controlled Variable"], correct: 2 },
-    { q: "Which type of hypothesis specifies the expected direction of the relationship between variables", options: ["Nondirectional Hypothesis", "Null Hypothesis", "Directional Hypothesis", "Complex Hypothesis"], correct: 2 },
-    { q: "Descriptive questions: generally look at descriptions of a particular issue or situation", options: ["True", "False"], correct: 0 },
-    { q: "Which of the following best defines validity in data collection tools", options: ["The tool uses a standard Likert scale", "The tool measures what it is supposed to measure", "The tool yields the same results over time", "The tool is accepted by all healthcare institutions"], correct: 1 },
-    { q: "A researcher uses a table of random numbers to select 100 patients from a hospital registry. This is an example of", options: ["Simple random sampling", "Convenience sampling", "Quota sampling", "Stratified sampling"], correct: 0 },
-    { q: "Which data collection method is most suitable for capturing non-verbal behaviors in a pediatric pain study", options: ["Focus groups", "Self-reported surveys", "Structured observation", "Telephone interviews"], correct: 2 },
-    { q: "A nurse researcher distributes a paper questionnaire to assess patient satisfaction with discharge instructions. What type of data collection is this", options: ["Interview", "Self-report", "Observation", "Experimental"], correct: 1 },
-    { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
-  ];
-
-  const state = { answered: 0, score: 0, locked: Array(QUESTIONS.length).fill(false) };
   const grid = document.getElementById("grid");
   const answeredEl = document.getElementById("answered");
-  const totalEl = document.getElementById("total");
   const scoreEl = document.getElementById("score");
   const barEl = document.getElementById("bar");
   const toastEl = document.getElementById("toast");
 
-  totalEl.textContent = QUESTIONS.length;
-
-  function showToast(msg){
+  function showToast(msg, isCorrect){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 1200);
+    setTimeout(()=>toastEl.classList.remove("show"), 1500);
   }
 
   function updateHUD(){
     answeredEl.textContent = state.answered;
     scoreEl.textContent = state.score;
-    barEl.style.width = (state.answered / QUESTIONS.length * 100) + "%";
+    barEl.style.width = (state.answered / examQuestions.length * 100) + "%";
   }
 
   function render(){
-    QUESTIONS.forEach((item, idx) => {
+    grid.innerHTML = '';
+    examQuestions.forEach((item, idx) => {
       const card = document.createElement("section");
       card.className = "card";
       
       const qtop = document.createElement("div");
       qtop.className = "qtop";
-      qtop.innerHTML = `<p class="qtext">${item.q}</p><div class="qno">${idx + 1}</div>`;
+      
+      const safeText = item.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      
+      qtop.innerHTML = `
+        <p class="qtext">${item.q}</p>
+        <div class="tts-btn" onclick="speakText('${safeText}')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </div>
+        <div class="qno">${idx + 1}</div>
+      `;
 
       const optsDiv = document.createElement("div");
       optsDiv.className = "opts";
@@ -349,23 +430,36 @@
         const opt = document.createElement("div");
         opt.className = "opt";
         opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
+        
+        if (state.locked[idx]) {
+            opt.classList.add("locked");
+            if (oIdx === item.correct) opt.classList.add("correct");
+            if (oIdx === state.selectedOptions[idx] && oIdx !== item.correct) opt.classList.add("wrong");
+        }
+
         opt.onclick = () => {
           if (state.locked[idx]) return;
           state.locked[idx] = true;
+          state.selectedOptions[idx] = oIdx;
           state.answered++;
+          
           if (oIdx === item.correct) {
             opt.classList.add("correct");
             state.score++;
-            showToast("✅ إجابة صحيحة");
-            if(studentRef) studentRef.update({ score: state.score });
+            showToast("✅ إجابة صحيحة", true);
           } else {
             opt.classList.add("wrong");
             optsDiv.children[item.correct].classList.add("correct");
-            showToast("❌ إجابة خاطئة");
+            showToast("❌ إجابة خاطئة", false);
+          }
+          
+          if(studentRef) {
+              try { studentRef.update({ score: state.score }); } catch(err) {}
           }
             
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
+          saveProgress(); 
         };
         optsDiv.appendChild(opt);
       });
@@ -377,8 +471,9 @@
     updateHUD();
   }
 
+  initApp();
   verifyTicket();
-  render();
+  
   </script>
  </body>
 </html>
