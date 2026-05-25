@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#070912">
     <title>منصة الاختبارات</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght=700;900&family=Tajawal:wght=400;500;700;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -42,7 +42,6 @@
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
-        /* تعديل تصميم كارت الامتحان عشان يكون زرار مش لينك */
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
         .exam-item:hover, .exam-item:active { transform: translateY(-2px); border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
         
@@ -125,7 +124,6 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 بمجرد فتح الصفحة نتحقق من تسجيل الدخول السابق عشان الريفريش
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem('student_auth') === 'verified') {
                 fetchExamsFromServer();
@@ -153,7 +151,6 @@
         function saveToFirebase(username, device, loc) {
             const timeNow = new Date().toLocaleString('ar-EG');
             
-            // تسجيل في قاعدة البيانات
             database.ref('login_logs').push({
                 username: username,
                 device: device,
@@ -161,7 +158,6 @@
                 time: timeNow
             });
 
-            // 🟢 إرسال إشعار فوري لـ تليجرام
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
             const token = "8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g";
             const chatId = "8446500978";
@@ -191,9 +187,10 @@
                     
                     logDeviceData(usernameInput);
 
-                    // تخزين حالة الدخول واسم الطالب
+                    // 🟢 [الربط المشترك]: بنحفظ الحالتين عشان نرضي الـ home وصفحة الامتحان معاً
                     localStorage.setItem('student_auth', 'verified');
                     localStorage.setItem('student_name', usernameInput);
+                    localStorage.setItem('user_logged_in', 'true'); 
                     
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
@@ -218,7 +215,6 @@
                             const actionClass = isClosed ? 'locked' : '';
                             const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
 
-                            // 🟢 كروت الامتحان أصبحت <div> (عشان نلغي كليك يمين ونسخ اللينك)
                             examsContainer.innerHTML += `
                                 <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
                                     <div class="exam-info">
@@ -240,12 +236,13 @@
             });
         }
 
-        // 🟢 دالة قطع تذكرة الامتحان (عشان محدش يدخل من لينك مباشر)
+        // 🟢 [تعديل أمني]: إعطاء التذكرة وتأكيد الدخول لصفحة الامتحان
         function goToExam(isClosed, url) {
-            if (isClosed === 'true') {
+            if (isClosed === 'true' || isClosed === true) {
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
                 sessionStorage.setItem('exam_ticket', 'valid');
+                localStorage.setItem('user_logged_in', 'true'); // يفتح صفحة الامتحان فوراً وبدون أي أخطاء
                 window.location.replace(url);
             }
         }
@@ -259,8 +256,12 @@
         }
 
         function handleLogout() {
+            // 🟢 تنظيف كامل الذاكرة عند الخروج
             localStorage.removeItem('student_auth');
             localStorage.removeItem('student_name');
+            localStorage.removeItem('user_logged_in');
+            sessionStorage.removeItem('exam_ticket');
+            
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             
