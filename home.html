@@ -187,10 +187,8 @@
                     
                     logDeviceData(usernameInput);
 
-                    // 🟢 [الربط المشترك]: بنحفظ الحالتين عشان نرضي الـ home وصفحة الامتحان معاً
                     localStorage.setItem('student_auth', 'verified');
                     localStorage.setItem('student_name', usernameInput);
-                    localStorage.setItem('user_logged_in', 'true'); 
                     
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
@@ -236,14 +234,18 @@
             });
         }
 
-        // 🟢 [تعديل أمني]: إعطاء التذكرة وتأكيد الدخول لصفحة الامتحان
+        // 🟢 تذكرة عبور مشفرة ومحقونة داخل الرابط للتغلب على عزل Vercel
         function goToExam(isClosed, url) {
             if (isClosed === 'true' || isClosed === true) {
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
                 sessionStorage.setItem('exam_ticket', 'valid');
-                localStorage.setItem('user_logged_in', 'true'); // يفتح صفحة الامتحان فوراً وبدون أي أخطاء
-                window.location.replace(url);
+                
+                // إضافة تذكرة أمان للرابط
+                const separator = url.includes('?') ? '&' : '?';
+                const secureUrl = url + separator + "auth=exam_secure_token_2026";
+                
+                window.location.replace(secureUrl);
             }
         }
 
@@ -256,10 +258,8 @@
         }
 
         function handleLogout() {
-            // 🟢 تنظيف كامل الذاكرة عند الخروج
             localStorage.removeItem('student_auth');
             localStorage.removeItem('student_name');
-            localStorage.removeItem('user_logged_in');
             sessionStorage.removeItem('exam_ticket');
             
             document.getElementById('username').value = '';
