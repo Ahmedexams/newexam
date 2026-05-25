@@ -161,6 +161,14 @@
       }
 
       sName = decodeURIComponent(userParam);
+
+      // 🟢 التعديل هنا: التحقق إذا كان الطالب قد استخدم التذكرة مسبقاً على هذا المتصفح (عشان يسمح بالرفريش)
+      if (sessionStorage.getItem('exam_session_' + sName) === tokenParam) {
+          startExamProcess();
+          return; // أوقف الكود هنا وكمل الامتحان فوراً
+      }
+
+      // لو أول مرة يفتح اللينك، شيك من الفايربيس
       const ticketRef = db.ref('active_tickets/' + sName);
 
       ticketRef.once('value').then((snapshot) => {
@@ -175,6 +183,22 @@
                   ticketRef.remove(); 
                   return;
               }
+
+              // 🟢 تذكرة صحيحة -> احفظ الجلسة في المتصفح للسماح بالرفريش مستقبلاً، ثم امسحها من السيرفر لمنع المشاركة
+              sessionStorage.setItem('exam_session_' + sName, tokenParam);
+              
+              ticketRef.remove().then(() => {
+                  startExamProcess();
+              });
+
+          } else {
+              showModalError("رابط غير صالح 🔗", "هذا الرابط تم استخدامه أو غير صحيح.");
+          }
+      }).catch(() => {
+          showModalError("خطأ في الاتصال", "تعذر التحقق من الخادم.");
+      });
+  }
+
 
               // تذكرة صحيحة -> امسحها وابدأ الامتحان
               ticketRef.remove().then(() => {
