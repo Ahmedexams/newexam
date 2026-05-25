@@ -123,7 +123,7 @@
     if(e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) return false;
   }
 
-  // إعدادات الفايربيز (استخدم بياناتك الصحيحة هنا)
+  // إعدادات الفايربيز 
   const firebaseConfig = {
       apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
       authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -162,7 +162,7 @@
 
       sName = decodeURIComponent(userParam);
 
-      // 🟢 التعديل هنا: التحقق إذا كان الطالب قد استخدم التذكرة مسبقاً على هذا المتصفح (عشان يسمح بالرفريش)
+      // 🟢 التحقق مما إذا كان الطالب قد استخدم التذكرة مسبقاً على هذا المتصفح (يسمح بالرفريش)
       if (sessionStorage.getItem('exam_session_' + sName) === tokenParam) {
           startExamProcess();
           return; // أوقف الكود هنا وكمل الامتحان فوراً
@@ -199,20 +199,6 @@
       });
   }
 
-
-              // تذكرة صحيحة -> امسحها وابدأ الامتحان
-              ticketRef.remove().then(() => {
-                  startExamProcess();
-              });
-
-          } else {
-              showModalError("رابط غير صالح 🔗", "هذا الرابط تم استخدامه أو غير صحيح.");
-          }
-      }).catch(() => {
-          showModalError("خطأ في الاتصال", "تعذر التحقق من الخادم.");
-      });
-  }
-
   function startExamProcess() {
       // فحص حالة الامتحان (مفتوح/مغلق)
       db.ref('research_settings/exam_status').on('value', (snap) => {
@@ -230,7 +216,6 @@
         }
       });
   }
-
 
   function getAccurateDeviceName() {
       try {
@@ -386,3 +371,4 @@
   </script>
  </body>
 </html>
+
