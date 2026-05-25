@@ -18,7 +18,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         
-        /* 🟢 تم تغيير الـ opacity الافتراضي هنا لـ 0 عشان نمنع الفلاش المزعج */
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; opacity: 0; transition: opacity 0.3s ease; }
         
         .header { text-align: center; margin-bottom: 10px; }
@@ -64,7 +63,6 @@
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
 
-        /* 🟢 ستايل شاشة التحميل الذكية الافتتاحية */
         #page-loader {
             position: fixed;
             inset: 0;
@@ -153,24 +151,19 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 التحقق الذكي الفوري وقت الـ DOMContentLoaded لمنع الفلاش المزعج
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem('student_auth') === 'verified') {
-                // لو مسجل دخول، بنجهز شكل الصفحة للاختبارات فورا في الخلفية قبل ما تظهر للشاشة
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('headerSubtitle').style.display = 'none';
                 document.getElementById('examsSection').style.display = 'block';
                 document.getElementById('developerFooter').style.display = 'flex';
                 
-                // جلب الاختبارات من السيرفر
                 fetchExamsFromServer();
             } else {
-                // لو مش مسجل دخول، بنخفي شاشة التحميل ونظهر صفحة تسجيل الدخول فوراً
                 removePageLoader();
             }
         });
 
-        // 🟢 دالة مخصصة لإخفاء شاشة التحميل وإظهار محتوى التطبيق بنعومة
         function removePageLoader() {
             document.getElementById('page-loader').style.opacity = '0';
             setTimeout(() => {
@@ -282,7 +275,6 @@
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
 
-                // 🟢 أول ما البيانات توصل وتترص في الصفحة، بنشيل شاشة التحميل فوراً بنعومة
                 removePageLoader();
             });
         }
@@ -300,7 +292,9 @@
                 }).then(() => {
                     const separator = url.includes('?') ? '&' : '?';
                     const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
-                    window.location.replace(secureUrl);
+                    
+                    // 🟢 التعديل 1: استخدام href بدلاً من replace للحفاظ على الهيستوري وتمكين زر الرجوع
+                    window.location.href = secureUrl; 
                 }).catch(() => {
                     alert('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.');
                 });
@@ -342,6 +336,18 @@
                 } else {
                     handleLogout();
                 }
+            }
+        });
+
+        // 🟢 التعديل 2: ضمان ظهور الصفحة فوراً إذا تم الرجوع إليها عبر زر الـ Back في المتصفح
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    loader.style.visibility = 'hidden';
+                }
+                document.getElementById('appContainer').style.opacity = '1';
             }
         });
     </script>
