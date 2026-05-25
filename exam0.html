@@ -64,7 +64,6 @@
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
  </head>
  <body>
   <div id="overlay">
@@ -122,11 +121,13 @@
   <div class="toast" id="toast"></div>
 
   <script>
-  // حماية زرار الرجوع للموبايل
-  history.pushState(null, null, location.href);
-  window.onpopstate = function () {
-      window.location.replace('home.html');
-  };
+  // إجبار المتصفح للعودة لصفحة الاختبارات (حماية الرجوع الأعنف)
+  document.addEventListener('DOMContentLoaded', function() {
+      window.history.pushState('exam', null, '');
+      window.onpopstate = function() {
+          window.location.replace('home.html');
+      };
+  });
 
   const firebaseConfig = {
     apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
