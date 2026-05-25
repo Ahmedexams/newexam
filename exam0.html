@@ -13,7 +13,6 @@
     .headin{ max-width:1100px;margin:0 auto; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:14px;}
     
-    /* Back Button Style */
     .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; flex-shrink: 0; }
     .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
 
@@ -23,7 +22,6 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .logo svg { width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
     
-    /* Premium Title Styling */
     .title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px;}
     .premium-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; margin: 0; background: linear-gradient(90deg, #ffffff, #a8b3d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1; }
     .secure-badge { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.3); padding: 3px 8px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; box-shadow: 0 0 10px rgba(34,197,94,.1); }
@@ -43,7 +41,6 @@
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
     .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1;}
     
-    /* TTS Icon */
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
 
@@ -85,7 +82,7 @@
   <header>
    <div class="headin">
     <div class="brand">
-     <div class="back-btn" onclick="window.location.replace('home.html')">
+     <div class="back-btn" onclick="window.location.replace('index.html')">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
      </div>
      <div class="logo">
@@ -138,18 +135,16 @@
   </footer>
 
   <script>
-  // Force browser back navigation to home.html
+  // 🟢 زر الرجوع الافتراضي يرجع لصفحة الدخول الرئيسية
   document.addEventListener('DOMContentLoaded', function() {
       window.history.pushState('exam', null, '');
       window.onpopstate = function() {
-          window.location.replace('home.html');
+          window.location.replace('index.html');
       };
   });
 
-  // Disable Right Click
   document.addEventListener('contextmenu', event => event.preventDefault());
 
-  // Disable DevTools shortcuts
   document.onkeydown = function(e) {
     if(e.keyCode == 123) return false;
     if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
@@ -159,15 +154,15 @@
     if(e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) return false;
   }
 
-  // Firebase Config (Keep your actual keys!)
+  // 🟢 توحيد الفايربيس ليطابق المنصة الرئيسية (ahmedexams)
   const firebaseConfig = {
-      apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
-      authDomain: "pharma-exam-2026.firebaseapp.com",
-      databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
-      projectId: "pharma-exam-2026",
-      storageBucket: "pharma-exam-2026.firebasestorage.app",
-      messagingSenderId: "687076956495",
-      appId: "1:687076956495:web:285781fa362d0d83314d3a"
+      apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+      authDomain: "ahmedexams-3e267.firebaseapp.com",
+      databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
+      projectId: "ahmedexams-3e267",
+      storageBucket: "ahmedexams-3e267.firebasestorage.app",
+      messagingSenderId: "151411096023",
+      appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
@@ -216,58 +211,6 @@
     { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
   ];
 
-  function initApp() {
-      try {
-          const savedData = localStorage.getItem('myExamSessionData');
-          if (savedData) {
-              const parsed = JSON.parse(savedData);
-              if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
-                  examQuestions = parsed.questions;
-                  state = parsed.state;
-              } else {
-                  examQuestions = ALL_QUESTIONS;
-                  state.locked = Array(examQuestions.length).fill(false);
-                  state.selectedOptions = Array(examQuestions.length).fill(null);
-                  saveProgress();
-              }
-          } else {
-              examQuestions = ALL_QUESTIONS;
-              state.locked = Array(examQuestions.length).fill(false);
-              state.selectedOptions = Array(examQuestions.length).fill(null);
-              saveProgress();
-          }
-      } catch(e) {
-          examQuestions = ALL_QUESTIONS;
-          state.locked = Array(examQuestions.length).fill(false);
-          state.selectedOptions = Array(examQuestions.length).fill(null);
-      }
-      
-      document.getElementById("total").textContent = examQuestions.length;
-      render();
-  }
-
-  function saveProgress() {
-      try {
-          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
-      } catch(e) {}
-  }
-
-  function speakText(text) {
-      try {
-          if ('speechSynthesis' in window) {
-              window.speechSynthesis.cancel(); 
-              const utterance = new SpeechSynthesisUtterance(text);
-              utterance.lang = 'en-US';
-              utterance.rate = 0.9;
-              window.speechSynthesis.speak(utterance);
-          } else {
-              showToast("المساعد الصوتي غير مدعوم", false);
-          }
-      } catch(e) {
-          showToast("تعذر تشغيل الصوت", false);
-      }
-  }
-
   const urlParams = new URLSearchParams(window.location.search);
   const userParam = urlParams.get('u');
   const tokenParam = urlParams.get('t');
@@ -279,8 +222,11 @@
       document.getElementById("modalText").innerText = text;
   }
 
-  // UPDATED: Redirect logic
+  // 🟢 التحقق من التذكرة يتم فوراً قبل أي عملية أخرى (لمنع الشاشة السوداء)
+  verifyTicket();
+
   function verifyTicket() {
+      // إذا كان اللينك لا يحتوي على بيانات الدخول أصلاً
       if (!userParam || !tokenParam) {
           showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
           setTimeout(() => { window.location.href = "index.html"; }, 2000); 
@@ -324,6 +270,7 @@
       });
   }
 
+  // 🟢 لا يتم استدعاء بناء الامتحان إلا بعد التأكد من التذكرة
   function startExamProcess() {
       db.ref('research_settings/exam_status').on('value', (snap) => {
         if (snap.val() === 'closed') {
@@ -332,6 +279,8 @@
           document.getElementById("overlay").style.display = "none";
           document.getElementById("examWrap").style.display = "block";
           setTimeout(() => { document.getElementById("examWrap").style.opacity = "1"; }, 50);
+          
+          initApp();
 
           if (!sessionInitialized) {
             sessionInitialized = true;
@@ -339,6 +288,61 @@
           }
         }
       });
+  }
+
+  function initApp() {
+      try {
+          const savedData = localStorage.getItem('myExamSessionData');
+          if (savedData) {
+              const parsed = JSON.parse(savedData);
+              if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
+                  examQuestions = parsed.questions;
+                  state = parsed.state;
+              } else {
+                  throw new Error("Invalid cached data");
+              }
+          } else {
+              throw new Error("No cached data");
+          }
+      } catch(e) {
+          // مسح الكاش لو كان تالف عشان ميوقفش الصفحة
+          localStorage.removeItem('myExamSessionData');
+          examQuestions = ALL_QUESTIONS;
+          state.locked = Array(examQuestions.length).fill(false);
+          state.selectedOptions = Array(examQuestions.length).fill(null);
+          saveProgress();
+      }
+      
+      document.getElementById("total").textContent = examQuestions.length;
+      
+      try {
+          render();
+      } catch (err) {
+          console.error("Rendering Error, resetting exam:", err);
+          localStorage.removeItem('myExamSessionData');
+      }
+  }
+
+  function saveProgress() {
+      try {
+          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
+      } catch(e) {}
+  }
+
+  function speakText(text) {
+      try {
+          if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel(); 
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = 'en-US';
+              utterance.rate = 0.9;
+              window.speechSynthesis.speak(utterance);
+          } else {
+              showToast("المساعد الصوتي غير مدعوم", false);
+          }
+      } catch(e) {
+          showToast("تعذر تشغيل الصوت", false);
+      }
   }
 
   function getAccurateDeviceName() {
@@ -470,10 +474,6 @@
     });
     updateHUD();
   }
-
-  initApp();
-  verifyTicket();
-  
   </script>
  </body>
 </html>
