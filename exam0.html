@@ -12,22 +12,17 @@
     .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:12px;}
     
-    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
-    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
-
     .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
     .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .premium-logo::after { filter: blur(8px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
 
-    /* الخطوط العريضة والتقيلة جداً للاختبار */
-    h1{margin:0;font-size:20px; font-weight: 900; letter-spacing:.2px}
-    .sub{margin:0;color:var(--muted);font-size:13px; font-weight: 800;}
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:12px}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .pill{ padding:10px 14px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:13px; color:var(--muted); display:flex; gap:8px; align-items:center; font-weight: 800; }
+    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
     .pill b{color:var(--text);font-weight:900}
-    
     .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
     .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
     .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
@@ -36,37 +31,42 @@
     .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
-    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:900; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
     
+    /* أيقونة القراءة الصوتية */
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
 
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
-    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:900; color:var(--muted); flex:0 0 auto; }
-    .opt .txt{color:var(--text); font-size:14px; font-weight: 800; line-height:1.55; direction:ltr; text-align:left;}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
     
-    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); font-weight: 900; opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    /* تصميم المعلم الذكي */
+    .tutor-box { margin-top: 15px; padding: 14px; border-radius: 14px; background: rgba(110, 231, 255, 0.05); border: 1px solid rgba(110, 231, 255, 0.2); color: var(--glow1); font-size: 13px; font-weight: 700; line-height: 1.6; animation: fadeIn 0.4s ease; text-align: right; direction: rtl;}
+    .tutor-box b { color: var(--text); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; direction: ltr; display: inline-block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
     #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
   </style>
-  
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
  </head>
  <body>
-
   <div id="overlay">
-   <div class="modal">
-    <h2 style="color:var(--bad); margin-top:0; font-weight:900;">الامتحان مغلق 🔒</h2>
-    <p style="color:var(--muted); font-weight:800;">عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.</p>
+   <div class="modal" id="modalContent">
+    <h2 style="color:var(--bad); margin-top:0;">الامتحان مغلق 🔒</h2>
+    <p style="color:var(--muted)">عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.</p>
    </div>
   </div>
 
@@ -74,28 +74,35 @@
       <header>
        <div class="headin">
         <div class="brand">
-         <div class="back-btn" onclick="window.location.replace('about:blank')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-         </div>
          <div class="premium-logo">
             <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <defs>
                     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" />
+                        <stop offset="0%" stop-color="#6ee7ff" />
+                        <stop offset="100%" stop-color="#a78bfa" />
                     </linearGradient>
                 </defs>
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
          </div>
          <div>
           <h1 style="margin-bottom: 4px;">Online Exam</h1>
-          <p class="sub" style="color: var(--glow1); font-weight: 900; font-size: 14px;">قناة الطالب الآمنة</p>
+          <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+              اللهم صلِّ وسلم على نبينا محمد ﷺ ❤️
+          </p>
          </div>
         </div>
         <div class="pillbar">
-         <div class="pill">تم الحل: <b id="answered">0</b> / <b id="total">0</b></div>
-         <div class="pill">النتيجة: <b id="score">0</b></div>
-         <div class="progress"><span id="bar"></span></div>
+         <div class="pill">
+          تم الحل: <b id="answered">0</b> / <b id="total">0</b>
+         </div>
+         <div class="pill">
+          النتيجة: <b id="score">0</b>
+         </div>
+         <div class="progress">
+          <span id="bar"></span>
+         </div>
         </div>
        </div>
       </header>
@@ -108,31 +115,63 @@
   <div class="toast" id="toast"></div>
 
   <script>
+  // حماية ضد زر الرجوع
   window.history.pushState('exam', null, '');
   window.onpopstate = function() { alert("غير مسموح بالرجوع للخلف أثناء تأدية الامتحان!"); };
 
   const ALL_QUESTIONS = [
-    { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 0 },
+    { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
     { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
     { q: "Writing a brief critical summary of each article is called", options: ["Data analysis", "Annotated bibliography", "Thematic organization", "Integration"], correct: 1 },
     { q: "According to Problem-Solving method after nursing intervention, the nurse checks if the patient's pain decreased. This action refers to", options: ["Goal setting", "Identification", "Planning", "Evaluation"], correct: 3 },
-    { q: "What is an independent variable in a research study", options: ["A randomly selected number", "A non-randomly selected number", "The variable that is manipulated", "The variable that is measured"], correct: 2 }
+    { q: "What is an independent variable in a research study", options: ["A randomly selected number", "A non-randomly selected number", "The variable that is manipulated", "The variable that is measured"], correct: 2 },
+    { q: "The main feature of true experimental design includes which of the following", options: ["Observational only", "No control over variables", "No randomization", "Random assignment of subjects"], correct: 3 },
+    { q: "The first step in problem-solving is", options: ["Implementation", "Evaluation", "Goal setting", "Identification of the problem"], correct: 3 },
+    { q: "Which of the following is considered a primary source", options: ["Textbook", "Research report written by the original researcher", "Systematic review", "Encyclopedia article"], correct: 1 },
+    { q: "The major characteristic of quantitative research is", options: ["Use of artistic expression", "Collection of stories", "Use of numerical data and statistical analysis", "Avoiding any statistical tools"], correct: 2 },
+    { q: "A study conducted to test a theory and determine whether it is supported by facts is", options: ["Descriptive research", "Confirmatory research", "Qualitative research", "Exploratory research"], correct: 1 },
+    { q: "Which of the following is a characteristic of experimental research", options: ["Use of stories", "Direct manipulation of variables", "No hypothesis is needed", "Variables are not controlled"], correct: 1 },
+    { q: "Which type of research uses numerical data and statistical analysis", options: ["Qualitative research", "Quantitative research", "Exploratory research", "Basic research"], correct: 1 },
+    { q: "What determines the type of research design to be used", options: ["The statistical method", "The funding sources", "The researcher's preference", "The research problem"], correct: 3 },
+    { q: "A researcher classifies studies into categories like causes, symptoms, and treatment. Which step is this", options: ["Annotation", "Integration", "Thematic organization", "Writing individual sections"], correct: 2 },
+    { q: "Types of non-experimental designs", options: ["All answers are true", "Survey studies", "Correlational studies", "Comparative studies"], correct: 0 },
+    { q: "Characteristics of qualitative research include all of the following except which of the following", options: ["Includes a single, central phenomena", "Closed ended", "Evolving, that is, problems change as data is collected and reflected upon", "General in nature"], correct: 1 },
+    { q: "A good research design should be", options: ["Long", "Confusing", "Clear and organized", "Expensive"], correct: 2 },
+    { q: "Which is NOT a type of non-experimental design", options: ["Retrospective", "Correlational", "True experimental", "Survey"], correct: 2 },
+    { q: "Which of the following is a tertiary source", options: ["Handbook or textbook", "Clinical trial report", "Experimental study", "Original research article"], correct: 0 },
+    { q: "Which of the following is considered an electronic database", options: ["Textbook", "Magazine", "PubMed", "Newspaper"], correct: 2 },
+    { q: "A study finds that patients who receive more nurse interactions feel less pain and request fewer painkillers. Which hypothesis type does this best represent", options: ["Null Hypothesis", "Simple Hypothesis", "Complex Hypothesis", "Descriptive Hypothesis"], correct: 2 },
+    { q: "Reliability ensures that a research technique will produce consistent results when repeated under the same conditions", options: ["True", "False"], correct: 0 },
+    { q: "In research, the variable that the researcher measures and depends on the independent variable is called the", options: ["Independent Variable", "Dependent Variable", "Extraneous Variable", "Constant Variable"], correct: 1 },
+    { q: "What does \"nursing research\" primarily focus on", options: ["Political Science", "Business Marketing", "Engineering Concepts", "Nursing Practice, Education, and Administration"], correct: 3 },
+    { q: "Which of the following is a barrier to nursing research related to nurses", options: ["Low cost of research", "Accurate statistical methods", "Ethical concerns", "Lack of awareness about research"], correct: 3 },
+    { q: "A variable (usually denoted by letters or symbols) is a characteristic number, or quantity that takes different values in different situations", options: ["True", "False"], correct: 0 },
+    { q: "What is the FINER criterion used for in research", options: ["Analyzing data", "Evaluating test results", "Developing strong research questions", "Writing research conclusions"], correct: 2 },
+    { q: "A researcher is studying the effect of a new medication on patient recovery times. The medication given is an example of", options: ["Dependent Variable", "Extraneous Variable", "Independent Variable", "Controlled Variable"], correct: 2 },
+    { q: "Which type of hypothesis specifies the expected direction of the relationship between variables", options: ["Nondirectional Hypothesis", "Null Hypothesis", "Directional Hypothesis", "Complex Hypothesis"], correct: 2 },
+    { q: "Descriptive questions: generally look at descriptions of a particular issue or situation", options: ["True", "False"], correct: 0 },
+    { q: "Which of the following best defines validity in data collection tools", options: ["The tool uses a standard Likert scale", "The tool measures what it is supposed to measure", "The tool yields the same results over time", "The tool is accepted by all healthcare institutions"], correct: 1 },
+    { q: "A researcher uses a table of random numbers to select 100 patients from a hospital registry. This is an example of", options: ["Simple random sampling", "Convenience sampling", "Quota sampling", "Stratified sampling"], correct: 0 },
+    { q: "Which data collection method is most suitable for capturing non-verbal behaviors in a pediatric pain study", options: ["Focus groups", "Self-reported surveys", "Structured observation", "Telephone interviews"], correct: 2 },
+    { q: "A nurse researcher distributes a paper questionnaire to assess patient satisfaction with discharge instructions. What type of data collection is this", options: ["Interview", "Self-report", "Observation", "Experimental"], correct: 1 },
+    { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
   ];
 
-  let state = { answered: 0, score: 0, locked: [] };
-  const grid = document.getElementById("grid");
-  const answeredEl = document.getElementById("answered");
-  const scoreEl = document.getElementById("score");
-  const barEl = document.getElementById("bar");
-  const toastEl = document.getElementById("toast");
+  let examQuestions = [];
+  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
+  let studentRef = null;
+  let sName = "طالب مجهول";
+  let sessionInitialized = false;
 
+  // 🔴 1. تشغيل الفحص أول ما الصفحة تفتح
   window.onload = function() {
-      verifyOneTimeTicket();
+      verifyOneTimeTicket(); 
   };
 
+  // 🔴 2. دالة الفحص والحماية (نظام التذكرة ذاتية الاحتراق)
   function verifyOneTimeTicket() {
       try {
-          // تهيئة تطبيق الامتحان
+          // تهيئة داتابيز الامتحان (لقراءة حالة الفتح والغلق)
           const examApp = firebase.initializeApp({
             apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
             authDomain: "pharma-exam-2026.firebaseapp.com",
@@ -143,7 +182,7 @@
             appId: "1:687076956495:web:285781fa362d0d83314d3a"
           }, "examApp");
           
-          // تهيئة تطبيق الـ Home لمطابقة التذكرة الصحيحة
+          // تهيئة داتابيز الـ Home (لقراءة التذكرة من هناك)
           const homeApp = firebase.initializeApp({
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -158,7 +197,6 @@
           const userParam = urlParams.get('u');
           const tokenParam = urlParams.get('t');
 
-          // السماح بعمل ريفريش في نفس التاب فقط
           if (sessionStorage.getItem('exam_session_verified') === 'true') {
               startExam(examApp);
               return;
@@ -166,68 +204,106 @@
 
           if (userParam && tokenParam) {
               const homeDb = homeApp.database();
-              
-              // 🟢 تم التصحيح والربط على مسار active_tickets الموحد
               homeDb.ref('active_tickets/' + userParam).once('value').then((snapshot) => {
                   const data = snapshot.val();
-                  
                   if (data && data.token === tokenParam && (Date.now() - data.timestamp < 120000)) {
-                      
-                      // 🔥 [حرق فوري للتذكرة]: مسحها تماماً حتى لا تعمل على متصفح أو جهاز آخر مطلقاً!
                       homeDb.ref('active_tickets/' + userParam).remove();
-                      
                       sessionStorage.setItem('exam_session_verified', 'true');
                       startExam(examApp);
                   } else {
-                      failAuth();
+                      failAuth("خطأ أمني جسيم: هذا الرابط منتهي الصلاحية، أو تم نسخه ومشاركته بشكل غير قانوني! سيتم إغلاق الصفحة.");
                   }
-              }).catch(() => failAuth());
+              }).catch(() => failAuth("حدث خطأ في الاتصال بالخادم، حاول مجدداً."));
           } else {
-              failAuth();
+              failAuth("خطأ أمني: يجب تسجيل الدخول أولاً من المنصة الرئيسية!");
           }
       } catch(e) {
           console.error(e);
-          failAuth();
+          failAuth("خطأ غير متوقع في النظام.");
       }
   }
 
-  function failAuth() {
-      alert("يرجي تسجيل الدخول اولا من الموقع الاساسي .");
+  function failAuth(msg) {
+      alert(msg);
       window.location.replace("about:blank");
   }
 
+  // 🔴 3. فتح الامتحان لو التذكرة صحيحة
   function startExam(examApp) {
       document.getElementById("main-content").style.display = "block";
       
+      // مراقبة قفل وفتح الامتحان
       examApp.database().ref('research_settings/exam_status').on('value', (snap) => {
-        if (snap.val() === 'closed') {
-          document.getElementById("overlay").style.display = "flex";
-        } else {
-          document.getElementById("overlay").style.display = "none";
-        }
+          if (snap.val() === 'closed') {
+              document.getElementById("overlay").style.display = "flex";
+          } else {
+              document.getElementById("overlay").style.display = "none";
+              if (!sessionInitialized) sessionInitialized = true;
+          }
       });
 
       initApp();
   }
 
+  // نظام الاوفلاين والتوليد العشوائي للأسئلة مع حماية الأخطاء
   function initApp() {
-      state.answered = 0;
-      state.score = 0;
-      state.locked = Array(ALL_QUESTIONS.length).fill(false);
-      document.getElementById("total").textContent = ALL_QUESTIONS.length;
+      try {
+          const savedData = localStorage.getItem('myExamSessionData');
+          if (savedData) {
+              // استرجاع البيانات لو النت فصل او عمل ريفريش
+              const parsed = JSON.parse(savedData);
+              examQuestions = parsed.questions;
+              state = parsed.state;
+          } else {
+              // توليد امتحان ديناميكي (سحب 15 سؤال عشوائي من بنك الأسئلة)
+              examQuestions = ALL_QUESTIONS.sort(() => 0.5 - Math.random()).slice(0, 15);
+              state.locked = Array(examQuestions.length).fill(false);
+              state.selectedOptions = Array(examQuestions.length).fill(null);
+              saveProgress();
+          }
+      } catch(e) {
+          // لو التطبيق حظر الحفظ المحلي (Local Storage)، هيولد الامتحان عادي بدون توقف
+          examQuestions = ALL_QUESTIONS.sort(() => 0.5 - Math.random()).slice(0, 15);
+          state.locked = Array(examQuestions.length).fill(false);
+          state.selectedOptions = Array(examQuestions.length).fill(null);
+      }
+      
+      document.getElementById("total").textContent = examQuestions.length;
       render();
   }
 
-  function speakText(text) {
-      if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel(); 
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = 'en-US';
-          window.speechSynthesis.speak(utterance);
+  function saveProgress() {
+      try {
+          localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
+      } catch(e) {
+          // تجاهل الخطأ في حالة حظر المتصفح
       }
   }
 
-  function showToast(msg){
+  // المساعد الصوتي
+  function speakText(text) {
+      try {
+          if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel(); 
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = 'en-US';
+              utterance.rate = 0.9;
+              window.speechSynthesis.speak(utterance);
+          } else {
+              showToast("المساعد الصوتي غير مدعوم في هذا التطبيق", false);
+          }
+      } catch(e) {
+          showToast("تعذر تشغيل الصوت", false);
+      }
+  }
+
+  const grid = document.getElementById("grid");
+  const answeredEl = document.getElementById("answered");
+  const scoreEl = document.getElementById("score");
+  const barEl = document.getElementById("bar");
+  const toastEl = document.getElementById("toast");
+
+  function showToast(msg, isCorrect){
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     setTimeout(()=>toastEl.classList.remove("show"), 1500);
@@ -236,47 +312,81 @@
   function updateHUD(){
     answeredEl.textContent = state.answered;
     scoreEl.textContent = state.score;
-    barEl.style.width = (state.answered / ALL_QUESTIONS.length * 100) + "%";
+    barEl.style.width = (state.answered / examQuestions.length * 100) + "%";
   }
 
   function render(){
     grid.innerHTML = '';
-    ALL_QUESTIONS.forEach((item, idx) => {
+    examQuestions.forEach((item, idx) => {
       const card = document.createElement("section");
       card.className = "card";
-      const safeText = item.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
       
-      card.innerHTML = `
-        <div class="qtop">
-            <p class="qtext">${item.q}</p>
-            <div class="tts-btn" onclick="speakText('${safeText}')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </div>
-            <div class="qno">${idx + 1}</div>
+      const qtop = document.createElement("div");
+      qtop.className = "qtop";
+      qtop.innerHTML = `
+        <p class="qtext">${item.q}</p>
+        <div class="tts-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         </div>
-        <div class="opts"></div>
+        <div class="qno">${idx + 1}</div>
       `;
 
-      const optsDiv = card.querySelector(".opts");
+      const optsDiv = document.createElement("div");
+      optsDiv.className = "opts";
+
       item.options.forEach((optText, oIdx) => {
         const opt = document.createElement("div");
         opt.className = "opt";
         opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
         
+        // استعادة الحالة لو كان مجاوب قبل كده
+        if (state.locked[idx]) {
+            opt.classList.add("locked");
+            if (oIdx === item.correct) opt.classList.add("correct");
+            if (oIdx === state.selectedOptions[idx] && oIdx !== item.correct) opt.classList.add("wrong");
+        }
+
         opt.onclick = () => {
           if (state.locked[idx]) return;
           state.locked[idx] = true;
+          state.selectedOptions[idx] = oIdx;
           state.answered++;
+          
           if (oIdx === item.correct) {
-            opt.classList.add("correct"); state.score++; showToast("✅ صح");
+            opt.classList.add("correct");
+            state.score++;
+            showToast("✅ إجابة صحيحة", true);
+            if(studentRef) studentRef.update({ score: state.score });
           } else {
-            opt.classList.add("wrong"); optsDiv.children[item.correct].classList.add("correct"); showToast("❌ خطأ");
+            opt.classList.add("wrong");
+            optsDiv.children[item.correct].classList.add("correct");
+            showToast("❌ إجابة خاطئة", false);
+            
+            // المعلم الافتراضي (الذكاء الاصطناعي)
+            const tutorBox = document.createElement("div");
+            tutorBox.className = "tutor-box";
+            tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
+            card.appendChild(tutorBox);
           }
+          
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
+          saveProgress(); // حفظ التقدم بعد كل إجابة
         };
-        objs = optsDiv.appendChild(opt);
+        optsDiv.appendChild(opt);
       });
+
+      card.appendChild(qtop);
+      card.appendChild(optsDiv);
+      
+      // استعادة المعلم الافتراضي لو كان مجاوب غلط وعمل ريفريش
+      if (state.locked[idx] && state.selectedOptions[idx] !== item.correct) {
+          const tutorBox = document.createElement("div");
+          tutorBox.className = "tutor-box";
+          tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
+          card.appendChild(tutorBox);
+      }
+
       grid.appendChild(card);
     });
     updateHUD();
