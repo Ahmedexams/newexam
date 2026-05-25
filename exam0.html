@@ -51,11 +51,6 @@
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
     
-    /* تصميم المعلم الذكي */
-    .tutor-box { margin-top: 15px; padding: 14px; border-radius: 14px; background: rgba(110, 231, 255, 0.05); border: 1px solid rgba(110, 231, 255, 0.2); color: var(--glow1); font-size: 13px; font-weight: 700; line-height: 1.6; animation: fadeIn 0.4s ease; text-align: right; direction: rtl;}
-    .tutor-box b { color: var(--text); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; direction: ltr; display: inline-block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
@@ -76,7 +71,6 @@
   <header>
    <div class="headin">
     <div class="brand">
-        
      <div class="back-btn" onclick="window.location.replace('home.html')">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
      </div>
@@ -91,12 +85,12 @@
             </defs>
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            
         </svg>
      </div>
      <div>
       <h1 style="margin-bottom: 4px;">Online Exam</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-          اللهم صلِّ وسلم على نبينا محمد ﷺ ❤️
       </p>
      </div>
     </div>
@@ -121,7 +115,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-  // إجبار المتصفح للعودة لصفحة الاختبارات (حماية الرجوع الأعنف)
+  // إجبار المتصفح للعودة لصفحة الاختبارات (حماية الرجوع)
   document.addEventListener('DOMContentLoaded', function() {
       window.history.pushState('exam', null, '');
       window.onpopstate = function() {
@@ -129,34 +123,11 @@
       };
   });
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
-    authDomain: "pharma-exam-2026.firebaseapp.com",
-    databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
-    projectId: "pharma-exam-2026",
-    storageBucket: "pharma-exam-2026.firebasestorage.app",
-    messagingSenderId: "687076956495",
-    appId: "1:687076956495:web:285781fa362d0d83314d3a"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
   let studentRef = null;
-  let sessionInitialized = false;
+  let examQuestions = [];
+  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
 
-  // التحقق من حالة الامتحان من الفايربيز (مفتوح/مغلق)
-  db.ref('research_settings/exam_status').on('value', (snap) => {
-    if (snap.val() === 'closed') {
-      document.getElementById("overlay").style.display = "flex";
-    } else {
-      document.getElementById("overlay").style.display = "none";
-      if (!sessionInitialized) {
-        sessionInitialized = true;
-      }
-    }
-  });
-
-  // مصفوفة الأسئلة - هتعرض كل الأسئلة اللي هتحطها هنا
+  // مصفوفة الأسئلة 
   const ALL_QUESTIONS = [
     { q: "Research that clarifies why relationships exist between variables is called", options: ["Explanation", "Prediction", "Exploration", "Identification"], correct: 2 },
     { q: "A variable that changes due to the action of another variable is known as the", options: ["Extraneous variable", "Complex variable", "Dependent variable", "Independent variable"], correct: 2 },
@@ -195,15 +166,12 @@
     { q: "In a study on stress levels among nursing students in different academic years, the researcher ensures each year group is proportionally represented. What sampling method is used", options: ["Stratified random sampling", "Cluster sampling", "Simple random sampling"], correct: 0 }
   ];
 
-  let examQuestions = [];
-  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
-  
+  // دالة التهيئة لعرض الأسئلة 
   function initApp() {
       try {
           const savedData = localStorage.getItem('myExamSessionData');
           if (savedData) {
               const parsed = JSON.parse(savedData);
-              // التأكد إن الطالب مغيرش في الأسئلة عشان نتجنب الأخطاء
               if (parsed.questions && parsed.questions.length === ALL_QUESTIONS.length) {
                   examQuestions = parsed.questions;
                   state = parsed.state;
@@ -214,7 +182,6 @@
                   saveProgress();
               }
           } else {
-              // هيعرض كل الأسئلة بالكامل
               examQuestions = ALL_QUESTIONS;
               state.locked = Array(examQuestions.length).fill(false);
               state.selectedOptions = Array(examQuestions.length).fill(null);
@@ -230,15 +197,37 @@
       render();
   }
 
+  // وضع الفايربيز جوه صندوق حماية عشان لو المتصفح منعه، الأسئلة تظهر عادي
+  try {
+      const firebaseConfig = {
+        apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
+        authDomain: "pharma-exam-2026.firebaseapp.com",
+        databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
+        projectId: "pharma-exam-2026",
+        storageBucket: "pharma-exam-2026.firebasestorage.app",
+        messagingSenderId: "687076956495",
+        appId: "1:687076956495:web:285781fa362d0d83314d3a"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+      
+      db.ref('research_settings/exam_status').on('value', (snap) => {
+        if (snap.val() === 'closed') {
+          document.getElementById("overlay").style.display = "flex";
+        } else {
+          document.getElementById("overlay").style.display = "none";
+        }
+      });
+  } catch(error) {
+      console.log("Offline Mode: Firebase blocked by browser.");
+  }
+
   function saveProgress() {
       try {
           localStorage.setItem('myExamSessionData', JSON.stringify({ questions: examQuestions, state: state }));
-      } catch(e) {
-          // تجاهل الخطأ في حالة حظر المتصفح
-      }
+      } catch(e) {}
   }
 
-  // المساعد الصوتي
   function speakText(text) {
       try {
           if ('speechSynthesis' in window) {
@@ -248,7 +237,7 @@
               utterance.rate = 0.9;
               window.speechSynthesis.speak(utterance);
           } else {
-              showToast("المساعد الصوتي غير مدعوم في هذا التطبيق", false);
+              showToast("المساعد الصوتي غير مدعوم", false);
           }
       } catch(e) {
           showToast("تعذر تشغيل الصوت", false);
@@ -281,9 +270,13 @@
       
       const qtop = document.createElement("div");
       qtop.className = "qtop";
+      
+      // إصلاح مشكلة التنصيص هنا عشان الزرار ميضربش الكود
+      const safeText = item.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      
       qtop.innerHTML = `
         <p class="qtext">${item.q}</p>
-        <div class="tts-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}')">
+        <div class="tts-btn" onclick="speakText('${safeText}')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         </div>
         <div class="qno">${idx + 1}</div>
@@ -297,7 +290,6 @@
         opt.className = "opt";
         opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
         
-        // استعادة الحالة لو كان مجاوب قبل كده
         if (state.locked[idx]) {
             opt.classList.add("locked");
             if (oIdx === item.correct) opt.classList.add("correct");
@@ -314,43 +306,30 @@
             opt.classList.add("correct");
             state.score++;
             showToast("✅ إجابة صحيحة", true);
-            if(studentRef) studentRef.update({ score: state.score });
+            if(studentRef) {
+                try { studentRef.update({ score: state.score }); } catch(err) {}
+            }
           } else {
             opt.classList.add("wrong");
             optsDiv.children[item.correct].classList.add("correct");
             showToast("❌ إجابة خاطئة", false);
-            
-            // المعلم الافتراضي (الذكاء الاصطناعي)
-            const tutorBox = document.createElement("div");
-            tutorBox.className = "tutor-box";
-            tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
-            card.appendChild(tutorBox);
           }
           
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
-          saveProgress(); // حفظ التقدم بعد كل إجابة
+          saveProgress(); 
         };
         optsDiv.appendChild(opt);
       });
 
       card.appendChild(qtop);
       card.appendChild(optsDiv);
-      
-      // استعادة المعلم الافتراضي لو كان مجاوب غلط وعمل ريفريش
-      if (state.locked[idx] && state.selectedOptions[idx] !== item.correct) {
-          const tutorBox = document.createElement("div");
-          tutorBox.className = "tutor-box";
-          tutorBox.innerHTML = `👨‍🏫 <b>المعلم الذكي:</b> الإجابة الصحيحة هي <b>${item.options[item.correct]}</b>. تأكد من مراجعة هذا المفهوم جيداً لضمان عدم تكرار الخطأ!`;
-          card.appendChild(tutorBox);
-      }
-
       grid.appendChild(card);
     });
     updateHUD();
   }
 
-  // تشغيل المنصة
+  // تشغيل المنصة بأمان
   initApp();
   
   </script>
