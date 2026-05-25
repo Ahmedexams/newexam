@@ -5,131 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
-    
     <title>منصة الاختبارات</title>
     
-    <!-- خط تجوال للعربي و Outfit للفوتر الإنجليزي -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- مكتبة قراءة نوع الجهاز -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
 
     <style>
-        :root { 
-            --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; 
-            --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; 
-            --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; 
-        }
-
+        :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), 
-                        radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), 
-                        radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), 
-                        linear-gradient(180deg, var(--bg0), var(--bg1));
-            color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
-            overflow-x: hidden;
-        }
-
+        body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
-
-        /* اللوجو المتحرك */
+        
         .header { text-align: center; margin-bottom: 10px; }
-        
-        .premium-logo {
-            position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto;
-            display: flex; justify-content: center; align-items: center;
-            border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05);
-        }
-        .premium-logo::before, .premium-logo::after {
-            content: ''; position: absolute; inset: -3px; border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1));
-            z-index: -1; animation: spin 4s linear infinite;
-        }
+        .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
+        .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
-        
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
-
         .header h1 { font-size: 26px; font-weight: 900; margin-bottom: 5px; }
         .header p { color: var(--muted); font-size: 14px; font-weight: 500; }
-
-        /* الكارت الأساسي */
-        .card { 
-            background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); 
-            border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); 
-            position: relative; overflow: hidden; width: 100%;
-        }
-
-        /* الحقول */
+        
+        .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
-        .input-group input { 
-            width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); 
-            background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); 
-            font-size: 15px; font-weight: 600; outline: none; transition: 0.3s;
-        }
-        .input-group input:focus { 
-            border-color: rgba(110,231,255,.40); 
-            box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); 
-        }
+        .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 15px; font-weight: 600; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
         .input-group input::placeholder { color: #5a6b9c; font-weight: 400; }
-
-        /* الزرار الأساسي */
-        .btn-primary { 
-            width: 100%; padding: 16px; border: none; border-radius: 16px; 
-            background: linear-gradient(90deg, var(--glow1), var(--glow2)); 
-            color: var(--bg0); font-size: 17px; font-weight: 900; cursor: pointer; 
-            transition: 0.3s; margin-top: 10px; position: relative; z-index: 2;
-            box-shadow: 0 0 20px rgba(110,231,255,.2);
-        }
+        .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 17px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
-
-        /* قسم الامتحانات */
+        
         .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2;}
         .section-title { font-size: 18px; font-weight: 800; color: var(--text); margin: 0; }
-        
-        .logout-btn {
-            background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); 
-            padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 800; 
-            cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
-        }
+        .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
-
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
-        
-        .exam-item { 
-            border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); 
-            padding: 16px; display: flex; justify-content: space-between; align-items: center; 
-            text-decoration: none; transition: transform .1s ease, border-color .2s ease, background .2s ease;
-        }
+        .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 16px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; transition: transform .1s ease, border-color .2s ease, background .2s ease; }
         .exam-item:hover, .exam-item:active { transform: translateY(-2px); border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
-        
         .exam-info { display: flex; flex-direction: column; gap: 4px; }
         .exam-name { font-weight: 800; color: var(--text); font-size: 15px; }
         .exam-meta { color: var(--muted); font-size: 12px; font-weight: 600; }
-        
-        .exam-status { 
-            background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4);
-            padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; 
-        }
+        .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
-
-        /* الفوتر الإنجليزي الفخم */
-        .footer { text-align: center; margin-top: 30px; }
-        .neon { 
-            font-family: 'Outfit', sans-serif; 
-            background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); 
-            background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; 
-            animation: flow 4s linear infinite; font-weight: 900; font-size: 14px; letter-spacing: 1.5px;
-            text-transform: uppercase; text-decoration: none;
-        }
+        
+        /* المربع الزجاجي للفوتر الجديد */
+        .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
+        .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 10px 24px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
+        .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
+        .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 14px; letter-spacing: 0.6px; text-transform: uppercase; }
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
-
+        
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -137,7 +64,6 @@
 <body>
 
     <div class="app-container">
-        
         <div class="header fade-in">
             <div class="premium-logo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -156,7 +82,6 @@
         </div>
 
         <div class="card fade-in" style="animation-delay: 0.1s;">
-            
             <div id="loginSection">
                 <div class="input-group">
                     <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" autocorrect="off" autocapitalize="none">
@@ -177,12 +102,13 @@
                 </div>
                 <div class="exams-list" id="dynamicExamsList"></div>
             </div>
-
         </div>
 
-        <!-- الفوتر (مخفي في البداية style="display: none;") -->
+        <!-- الفوتر المربع الزجاجي يظهر هنا بعد الدخول -->
         <div class="footer fade-in" id="developerFooter" style="display: none;">
-            <a href="https://wa.me/201016781843" target="_blank" class="neon">DEVELOPED BY AHMED HAMED</a>
+            <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
+                <span class="neon">Developed BY Ahmed Hamed</span>
+            </a>
         </div>
     </div>
 
@@ -198,6 +124,33 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        function logDeviceData(username) {
+            let deviceStr = "جهاز غير معروف";
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                if (result.device.vendor && result.device.model) {
+                    deviceStr = result.device.vendor + " " + result.device.model;
+                } else if (result.os.name) {
+                    deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
+                }
+            } catch(e) {}
+
+            fetch('https://api.db-ip.com/v2/free/self')
+              .then(res => res.json())
+              .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
+              .catch(() => saveToFirebase(username, deviceStr, "غير معروف"));
+        }
+
+        function saveToFirebase(username, device, loc) {
+            database.ref('login_logs').push({
+                username: username,
+                device: device,
+                location: loc,
+                time: new Date().toLocaleString('ar-EG')
+            });
+        }
 
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
@@ -215,6 +168,8 @@
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
                     btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
                     
+                    logDeviceData(usernameInput);
+
                     sessionStorage.setItem('student_auth', 'verified');
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
@@ -255,13 +210,10 @@
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
 
-                // إخفاء صفحة الدخول
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('headerSubtitle').style.display = 'none';
-                
-                // إظهار الامتحانات والفوتر
                 document.getElementById('examsSection').style.display = 'block';
-                document.getElementById('developerFooter').style.display = 'block';
+                document.getElementById('developerFooter').style.display = 'flex'; // إظهار المربع الزجاجي
             });
         }
 
@@ -283,11 +235,8 @@
             btn.style.color = 'var(--bg0)';
             btn.innerHTML = 'تسجيل الدخول';
 
-            // إخفاء الامتحانات والفوتر
             document.getElementById('examsSection').style.display = 'none';
             document.getElementById('developerFooter').style.display = 'none';
-            
-            // إظهار صفحة الدخول
             document.getElementById('headerSubtitle').style.display = 'block';
             document.getElementById('loginSection').style.display = 'block';
 
