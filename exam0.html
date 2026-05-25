@@ -4,21 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Online Exam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
-    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select: none; -webkit-user-select: none; }
-    header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
-    .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-    .brand{display:flex; align-items:center; gap:12px;}
-    .logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
+    body{ margin:0; font-family: 'Tajawal', system-ui, -apple-system, sans-serif; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select: none; -webkit-user-select: none; }
+    header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background: linear-gradient(180deg, rgba(7,9,18,.9), rgba(7,9,18,.4)); border-bottom:1px solid rgba(26,43,85,.6); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+    .headin{ max-width:1100px;margin:0 auto; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{display:flex; align-items:center; gap:14px;}
+    .logo { position: relative; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); flex-shrink: 0;}
     .logo::before, .logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .logo::after { filter: blur(6px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 4px rgba(110,231,255,0.8)); }
-    h1{margin:0;font-size:18px;letter-spacing:.2px; text-shadow: 0 2px 10px rgba(110,231,255,0.3);}
+    .logo svg { width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
+    
+    /* 🟢 تصميم بريميوم للنص والفراغ */
+    .title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px;}
+    .premium-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 900; margin: 0; background: linear-gradient(90deg, #ffffff, #a8b3d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1; }
+    .secure-badge { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.3); padding: 3px 8px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; box-shadow: 0 0 10px rgba(34,197,94,.1); }
+    .brand-sub { margin: 0; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: var(--glow1); letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
+
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; font-weight: 800;}
     .pill b{color:var(--text);font-weight:900}
     .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
     .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
@@ -29,24 +36,25 @@
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
-    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; }
+    .qtext{ margin:0; font-size:15px; font-weight: 800; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; }
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
     .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
-    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .opt .txt{color:var(--text); font-size:14px; font-weight: 800; line-height:1.55; direction:ltr; text-align:left;}
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
     footer{ position:fixed; left:0; right:0; bottom:0; padding:12px 14px; background: linear-gradient(180deg, rgba(7,9,18,.0), rgba(7,9,18,.85)); border-top:1px solid rgba(26,43,85,.55); backdrop-filter: blur(10px); z-index: 50; }
     .footin{ max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:center; font-weight:1000; letter-spacing:.6px; font-size:14px; }
-    .neon{ background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; }
+    .neon{ background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-family: 'Outfit', sans-serif;}
     @keyframes flow{ 0%{background-position: 0% 50%} 100%{background-position: 220% 50%} }
-    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); font-weight: 900; opacity:0; transition: .25s ease; z-index:99; pointer-events:none; backdrop-filter: blur(8px); }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
     #overlay { position: fixed; inset: 0; background: var(--bg0); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 20px;}
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
+    .modal h2 { font-family: 'Outfit', 'Tajawal', sans-serif; }
     
     .spinner { width: 45px; height: 45px; border: 4px solid rgba(110,231,255,0.1); border-left-color: var(--glow1); border-radius: 50%; animation: spinLoader 1s linear infinite; }
     @keyframes spinLoader { 100% { transform: rotate(360deg); } }
@@ -60,7 +68,7 @@
     <div class="spinner" id="loadingSpinner"></div>
     <div class="modal" id="modalContent" style="display: none;">
       <h2 style="color:var(--bad); margin-top:0;" id="modalTitle">جاري التحقق...</h2>
-      <p style="color:var(--muted)" id="modalText">يرجى الانتظار...</p>
+      <p style="color:var(--muted); font-weight: 800;" id="modalText">يرجى الانتظار...</p>
     </div>
   </div>
 
@@ -80,7 +88,14 @@
         </svg>
      </div>
      <div>
-      <h1>Online Exam</h1>
+      <div class="title-row">
+          <h1 class="premium-title">Online Exam</h1>
+          <span class="secure-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              SECURE
+          </span>
+      </div>
+      <p class="brand-sub">Advanced Evaluation System</p>
      </div>
     </div>
     <div class="pillbar">
@@ -140,7 +155,6 @@
   let sName = "طالب مجهول";
   let sessionInitialized = false;
 
-  // جلب البيانات من الـ URL
   const urlParams = new URLSearchParams(window.location.search);
   const userParam = urlParams.get('u');
   const tokenParam = urlParams.get('t');
@@ -152,39 +166,36 @@
       document.getElementById("modalText").innerText = text;
   }
 
-  // التحقق من التذكرة
+  // 🟢 التعديل الجديد: الرسالة والتحويل التلقائي
   function verifyTicket() {
       if (!userParam || !tokenParam) {
-          showModalError("دخول غير مصرح 🚫", "يرجى الدخول من المنصة الرئيسية.");
-          setTimeout(() => { window.location.href = "index.html"; }, 3000); // حوله للصفحة الرئيسية
+          showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
+          setTimeout(() => { window.location.href = "index.html"; }, 2000); 
           return;
       }
 
       sName = decodeURIComponent(userParam);
 
-      // 🟢 التحقق مما إذا كان الطالب قد استخدم التذكرة مسبقاً على هذا المتصفح (يسمح بالرفريش)
       if (sessionStorage.getItem('exam_session_' + sName) === tokenParam) {
           startExamProcess();
-          return; // أوقف الكود هنا وكمل الامتحان فوراً
+          return; 
       }
 
-      // لو أول مرة يفتح اللينك، شيك من الفايربيس
       const ticketRef = db.ref('active_tickets/' + sName);
 
       ticketRef.once('value').then((snapshot) => {
           const ticketData = snapshot.val();
 
           if (ticketData && ticketData.token === tokenParam) {
-              // التأكد من أن التذكرة لم يمر عليها أكثر من دقيقتين
               const currentTime = Date.now();
               const ticketTime = ticketData.timestamp;
               if (currentTime - ticketTime > 120000) { 
-                  showModalError("تذكرة منتهية ⏱️", "انتهت صلاحية رابط الدخول.");
+                  showModalError("Please login first 🔒", "انتهت صلاحية الرابط، سيتم تحويلك...");
+                  setTimeout(() => { window.location.href = "index.html"; }, 2000);
                   ticketRef.remove(); 
                   return;
               }
 
-              // 🟢 تذكرة صحيحة -> احفظ الجلسة في المتصفح للسماح بالرفريش مستقبلاً، ثم امسحها من السيرفر لمنع المشاركة
               sessionStorage.setItem('exam_session_' + sName, tokenParam);
               
               ticketRef.remove().then(() => {
@@ -192,7 +203,8 @@
               });
 
           } else {
-              showModalError("رابط غير صالح 🔗", "هذا الرابط تم استخدامه أو غير صحيح.");
+              showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
+              setTimeout(() => { window.location.href = "index.html"; }, 2000);
           }
       }).catch(() => {
           showModalError("خطأ في الاتصال", "تعذر التحقق من الخادم.");
@@ -200,7 +212,6 @@
   }
 
   function startExamProcess() {
-      // فحص حالة الامتحان (مفتوح/مغلق)
       db.ref('research_settings/exam_status').on('value', (snap) => {
         if (snap.val() === 'closed') {
            showModalError("الامتحان مغلق 🔒", "عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.");
@@ -352,6 +363,7 @@
             optsDiv.children[item.correct].classList.add("correct");
             showToast("❌ إجابة خاطئة");
           }
+            
           optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
           updateHUD();
         };
@@ -365,7 +377,6 @@
     updateHUD();
   }
 
-  // بدء التنفيذ
   verifyTicket();
   render();
   </script>
