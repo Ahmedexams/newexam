@@ -148,12 +148,54 @@
             messagingSenderId: "151411096023",
             appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
         };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
 
+        let database = null;
         let logoutTimer;
+        let loaderSafetyTimeout;
+
+        // 🟢 نظام حماية إجباري لمنع تعليق الموقع (حتى مع أسوأ VPN)
+        function forceRemoveLoader(errorMessage) {
+            const loader = document.getElementById('page-loader');
+            if (loader && loader.style.opacity !== '0') {
+                if (errorMessage) {
+                    loader.innerHTML = `
+                        <div style="text-align:center; padding:20px;">
+                            <h3 style="color:var(--bad); margin-bottom:5px;">⚠️ تعذر الاتصال</h3>
+                            <p style="color:var(--muted); font-size:14px;">يبدو أن الـ VPN أو الشبكة تمنع الاتصال بخوادمنا.<br>يرجى إغلاق الـ VPN والمحاولة مجدداً.</p>
+                            <button onclick="window.location.reload()" style="margin-top:15px; padding:10px 20px; background:var(--stroke); color:#fff; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">تحديث الصفحة</button>
+                        </div>`;
+                } else {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.visibility = 'hidden';
+                        document.getElementById('appContainer').style.opacity = '1';
+                    }, 300);
+                }
+            }
+        }
+
+        try {
+            // تهيئة الفايربيس داخل صندوق حماية
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+            }
+        } catch(e) {
+            console.error("Firebase init blocked:", e);
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
+            // لو الموقع معلق أكتر من 6 ثواني، هيطلعله رسالة يبلغوا يقفل الـ VPN
+            loaderSafetyTimeout = setTimeout(() => {
+                forceRemoveLoader(true);
+            }, 6000);
+
+            // لو سكريبت الفايربيس نفسه مقفول من المتصفح
+            if (!database) {
+                forceRemoveLoader(true);
+                return;
+            }
+
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
             const tenMinutes = 10 * 60 * 1000; 
@@ -166,32 +208,23 @@
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
                     document.getElementById('developerFooter').style.display = 'flex';
+                    
                     fetchExamsFromServer();
 
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
                         handleLogout();
                     }, tenMinutes - timePassed);
-
                 } else {
                     handleLogout();
-                    removePageLoader();
+                    clearTimeout(loaderSafetyTimeout);
+                    forceRemoveLoader(false);
                 }
             } else {
-                removePageLoader();
+                clearTimeout(loaderSafetyTimeout);
+                forceRemoveLoader(false);
             }
         });
-
-        function removePageLoader() {
-            const loader = document.getElementById('page-loader');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.visibility = 'hidden';
-                    document.getElementById('appContainer').style.opacity = '1';
-                }, 300);
-            }
-        }
 
         function logDeviceData(username) {
             let deviceStr = "جهاز غير معروف";
@@ -205,23 +238,33 @@
                 }
             } catch(e) {}
 
-            fetch('https://api.db-ip.com/v2/free/self')
-              .then(res => res.json())
-              .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
-              .catch(() => saveToFirebase(username, deviceStr, "غير معروف"));
+            try {
+                fetch('https://api.db-ip.com/v2/free/self')
+                  .then(res => res.json())
+                  .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
+                  .catch(() => saveToFirebase(username, deviceStr, "VPN / غير معروف"));
+            } catch(e) {
+                saveToFirebase(username, deviceStr, "مجهول");
+            }
         }
 
         function saveToFirebase(username, device, loc) {
+            if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
-            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow }).catch(e => console.log(e));
+            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow }).catch(e=>{});
             
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
-            }).catch(e => console.log(e));
+            }).catch(e=>{});
         }
 
         function handleLogin() {
+            if (!database) {
+                alert("تعذر الاتصال بقاعدة البيانات. يرجى إغلاق الـ VPN والمحاولة مجدداً.");
+                return;
+            }
+
             const btn = document.getElementById('loginBtn');
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
@@ -262,15 +305,16 @@
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
             }).catch((err) => { 
-                showError(btn, 'تأكد من جودة الاتصال بالإنترنت!'); 
-                console.error(err);
+                showError(btn, 'فشل الاتصال! أغلق الـ VPN وحاول مجدداً.'); 
             });
         }
 
         function fetchExamsFromServer() {
+            if (!database) return;
             const examsContainer = document.getElementById('dynamicExamsList');
 
             database.ref('exams').on('value', (snapshot) => {
+                clearTimeout(loaderSafetyTimeout); // إيقاف عداد الخطأ لو الداتا وصلت
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
                 
@@ -295,10 +339,11 @@
                 } else {
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
-                removePageLoader();
+                forceRemoveLoader(false);
             }, (error) => {
-                removePageLoader();
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت وحاول تحديث الصفحة.</p>';
+                clearTimeout(loaderSafetyTimeout);
+                forceRemoveLoader(false);
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الشبكة أو الـ VPN يمنع تحميل الاختبارات.</p>';
             });
         }
 
@@ -306,6 +351,7 @@
             if (isClosed === 'true' || isClosed === true) {
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
+                if (!database) return;
                 const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
                 const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
                 
@@ -318,7 +364,7 @@
                     
                     window.location.href = secureUrl; 
                 }).catch(() => {
-                    alert('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.');
+                    alert('خطأ في الاتصال، يرجى إغلاق الـ VPN وإعادة المحاولة.');
                 });
             }
         }
@@ -365,7 +411,7 @@
 
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                removePageLoader();
+                forceRemoveLoader(false);
 
                 const loginTime = sessionStorage.getItem('login_time');
                 if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
@@ -377,3 +423,4 @@
     </script>
 </body>
 </html>
+
