@@ -139,6 +139,7 @@
     </div>
 
     <script>
+        // إعدادات الفايربيس
         const firebaseConfig = {
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -148,36 +149,39 @@
             messagingSenderId: "151411096023",
             appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
         };
-        firebase.initializeApp(firebaseConfig);
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            firebase.database().goOnline(); // إجبار المتصفح على محاولة الاتصال حتى لو فيه حظر
+        } catch(e) {
+            console.error("Firebase init error:", e);
+        }
+        
         const database = firebase.database();
+        let logoutTimer; 
 
-        let logoutTimer; // متغير لحفظ العداد
-
-        // 🟢 التعديل هنا: فحص الوقت (10 دقائق) مع بداية تحميل الصفحة
+        // التحقق عند تحميل الصفحة
         document.addEventListener("DOMContentLoaded", () => {
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
-            const tenMinutes = 10 * 60 * 1000; // 10 دقائق بالمللي ثانية
+            const tenMinutes = 10 * 60 * 1000; 
 
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
                 
                 if (timePassed < tenMinutes) {
-                    // الجلسة لسه شغالة (معداش 10 دقايق)
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
                     document.getElementById('developerFooter').style.display = 'flex';
-                    fetchExamsFromServer();
+                    fetchExamsFromServer(); // هنا تم حماية هذه الدالة من التعليق
 
-                    // ظبط عداد يطرده لما الـ 10 دقايق يخلصوا وهو لسه فاتح الصفحة
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
                         handleLogout();
                     }, tenMinutes - timePassed);
 
                 } else {
-                    // عدى أكتر من 10 دقايق -> اطرده
                     handleLogout();
                     removePageLoader();
                 }
@@ -187,11 +191,14 @@
         });
 
         function removePageLoader() {
-            document.getElementById('page-loader').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('page-loader').style.visibility = 'hidden';
-                document.getElementById('appContainer').style.opacity = '1';
-            }, 300);
+            const loader = document.getElementById('page-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                    document.getElementById('appContainer').style.opacity = '1';
+                }, 300);
+            }
         }
 
         function logDeviceData(username) {
@@ -206,15 +213,17 @@
                 }
             } catch(e) {}
 
+            // إضافة حماية هنا عشان لو الـ VPN قفل سحب الـ IP، ما يعطلش الكود
             fetch('https://api.db-ip.com/v2/free/self')
               .then(res => res.json())
               .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
-              .catch(() => saveToFirebase(username, deviceStr, "غير معروف"));
+              .catch(() => saveToFirebase(username, deviceStr, "موقع غير معروف (VPN)"));
         }
 
         function saveToFirebase(username, device, loc) {
             const timeNow = new Date().toLocaleString('ar-EG');
-            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow });
+            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow }).catch(e => console.log(e));
+            
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
@@ -230,7 +239,18 @@
 
             btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
 
+            // 🟢 نظام حماية للدخول: لو الفايربيس مردش خلال 7 ثواني بسبب الـ VPN، هيطلع إيرور بدل ما يعلق
+            let isResolved = false;
+            let loginTimeout = setTimeout(() => {
+                if(!isResolved) {
+                    showError(btn, 'تعذر الاتصال.. أغلق الـ VPN وحاول مجدداً');
+                }
+            }, 7000);
+
             database.ref('credentials').once('value').then((snapshot) => {
+                isResolved = true;
+                clearTimeout(loginTimeout);
+                
                 const creds = snapshot.val();
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
@@ -239,14 +259,12 @@
                     
                     logDeviceData(usernameInput);
 
-                    // 🟢 التعديل هنا: تسجيل وقت الدخول بالظبط
                     sessionStorage.setItem('student_auth', 'verified');
                     sessionStorage.setItem('student_name', usernameInput);
                     sessionStorage.setItem('login_time', Date.now()); 
                     
                     history.pushState({page: 'exams'}, 'Exams', '#exams');
 
-                    // ظبط عداد يطرده بعد 10 دقايق
                     clearTimeout(logoutTimer);
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
@@ -263,12 +281,30 @@
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
-            }).catch(() => { showError(btn, 'لا يوجد اتصال بالإنترنت!'); });
+            }).catch((err) => { 
+                isResolved = true;
+                clearTimeout(loginTimeout);
+                showError(btn, 'لا يوجد اتصال بالإنترنت!'); 
+                console.error(err);
+            });
         }
 
+        // 🟢 نظام حماية لجلب الاختبارات (بيمنع تعليق شاشة التحميل)
         function fetchExamsFromServer() {
+            const examsContainer = document.getElementById('dynamicExamsList');
+            let dataLoaded = false;
+
+            // لو الفايربيس مردش في خلال 5 ثواني
+            let fetchTimeout = setTimeout(() => {
+                if (!dataLoaded) {
+                    removePageLoader();
+                    examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر تحميل الاختبارات. يرجى إغلاق الـ VPN أو التحقق من الاتصال بالإنترنت.</p>';
+                }
+            }, 5000);
+
             database.ref('exams').on('value', (snapshot) => {
-                const examsContainer = document.getElementById('dynamicExamsList');
+                dataLoaded = true;
+                clearTimeout(fetchTimeout);
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
                 
@@ -294,6 +330,11 @@
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
                 removePageLoader();
+            }, (error) => {
+                dataLoaded = true;
+                clearTimeout(fetchTimeout);
+                removePageLoader();
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تم رفض الاتصال بالخادم. تأكد من عدم تشغيل VPN.</p>';
             });
         }
 
@@ -310,9 +351,11 @@
                 }).then(() => {
                     const separator = url.includes('?') ? '&' : '?';
                     const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
+                    
+                    // تحويل مباشر وسليم
                     window.location.href = secureUrl; 
                 }).catch(() => {
-                    alert('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.');
+                    alert('خطأ في الاتصال بالخادم (قد يكون بسبب الـ VPN)، يرجى إعادة المحاولة.');
                 });
             }
         }
@@ -322,15 +365,14 @@
             setTimeout(() => { 
                 button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
                 button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
-            }, 2000);
+            }, 2500);
         }
 
         function handleLogout() {
-            // 🟢 تفريغ كل بيانات الجلسة بما فيها الوقت
             sessionStorage.removeItem('student_auth');
             sessionStorage.removeItem('student_name');
             sessionStorage.removeItem('login_time');
-            clearTimeout(logoutTimer); // وقف العداد
+            clearTimeout(logoutTimer); 
             
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
@@ -360,14 +402,8 @@
 
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                const loader = document.getElementById('page-loader');
-                if (loader) {
-                    loader.style.opacity = '0';
-                    loader.style.visibility = 'hidden';
-                }
-                document.getElementById('appContainer').style.opacity = '1';
+                removePageLoader();
 
-                // 🟢 تأكيد إضافي وقت الرجوع: هل عدى 10 دقايق؟
                 const loginTime = sessionStorage.getItem('login_time');
                 if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
                     alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
