@@ -139,7 +139,6 @@
     </div>
 
     <script>
-        // إعدادات الفايربيس
         const firebaseConfig = {
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -149,18 +148,11 @@
             messagingSenderId: "151411096023",
             appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
         };
-        
-        try {
-            firebase.initializeApp(firebaseConfig);
-            firebase.database().goOnline(); // إجبار المتصفح على محاولة الاتصال حتى لو فيه حظر
-        } catch(e) {
-            console.error("Firebase init error:", e);
-        }
-        
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        let logoutTimer; 
 
-        // التحقق عند تحميل الصفحة
+        let logoutTimer;
+
         document.addEventListener("DOMContentLoaded", () => {
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
@@ -174,7 +166,7 @@
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
                     document.getElementById('developerFooter').style.display = 'flex';
-                    fetchExamsFromServer(); // هنا تم حماية هذه الدالة من التعليق
+                    fetchExamsFromServer();
 
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
@@ -213,11 +205,10 @@
                 }
             } catch(e) {}
 
-            // إضافة حماية هنا عشان لو الـ VPN قفل سحب الـ IP، ما يعطلش الكود
             fetch('https://api.db-ip.com/v2/free/self')
               .then(res => res.json())
               .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
-              .catch(() => saveToFirebase(username, deviceStr, "موقع غير معروف (VPN)"));
+              .catch(() => saveToFirebase(username, deviceStr, "غير معروف"));
         }
 
         function saveToFirebase(username, device, loc) {
@@ -239,18 +230,7 @@
 
             btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
 
-            // 🟢 نظام حماية للدخول: لو الفايربيس مردش خلال 7 ثواني بسبب الـ VPN، هيطلع إيرور بدل ما يعلق
-            let isResolved = false;
-            let loginTimeout = setTimeout(() => {
-                if(!isResolved) {
-                    showError(btn, 'تعذر الاتصال.. أغلق الـ VPN وحاول مجدداً');
-                }
-            }, 7000);
-
             database.ref('credentials').once('value').then((snapshot) => {
-                isResolved = true;
-                clearTimeout(loginTimeout);
-                
                 const creds = snapshot.val();
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
@@ -282,29 +262,15 @@
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
             }).catch((err) => { 
-                isResolved = true;
-                clearTimeout(loginTimeout);
-                showError(btn, 'لا يوجد اتصال بالإنترنت!'); 
+                showError(btn, 'تأكد من جودة الاتصال بالإنترنت!'); 
                 console.error(err);
             });
         }
 
-        // 🟢 نظام حماية لجلب الاختبارات (بيمنع تعليق شاشة التحميل)
         function fetchExamsFromServer() {
             const examsContainer = document.getElementById('dynamicExamsList');
-            let dataLoaded = false;
-
-            // لو الفايربيس مردش في خلال 5 ثواني
-            let fetchTimeout = setTimeout(() => {
-                if (!dataLoaded) {
-                    removePageLoader();
-                    examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر تحميل الاختبارات. يرجى إغلاق الـ VPN أو التحقق من الاتصال بالإنترنت.</p>';
-                }
-            }, 5000);
 
             database.ref('exams').on('value', (snapshot) => {
-                dataLoaded = true;
-                clearTimeout(fetchTimeout);
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
                 
@@ -331,10 +297,8 @@
                 }
                 removePageLoader();
             }, (error) => {
-                dataLoaded = true;
-                clearTimeout(fetchTimeout);
                 removePageLoader();
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تم رفض الاتصال بالخادم. تأكد من عدم تشغيل VPN.</p>';
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت وحاول تحديث الصفحة.</p>';
             });
         }
 
@@ -352,10 +316,9 @@
                     const separator = url.includes('?') ? '&' : '?';
                     const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
                     
-                    // تحويل مباشر وسليم
                     window.location.href = secureUrl; 
                 }).catch(() => {
-                    alert('خطأ في الاتصال بالخادم (قد يكون بسبب الـ VPN)، يرجى إعادة المحاولة.');
+                    alert('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة.');
                 });
             }
         }
@@ -414,4 +377,3 @@
     </script>
 </body>
 </html>
-
