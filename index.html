@@ -18,7 +18,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         
-        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; opacity: 0; transition: opacity 0.3s ease; }
+        /* 🟢 إزالة opacity:0 لضمان ظهور الموقع فوراً حتى لو الـ VPN حظر الـ JS */
+        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
         
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
@@ -62,33 +63,9 @@
         
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
-
-        #page-loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg0);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .spinner {
-            width: 45px;
-            height: 45px;
-            border: 4px solid rgba(110,231,255,0.1);
-            border-left-color: var(--glow1);
-            border-radius: 50%;
-            animation: spinLoader 1s linear infinite;
-        }
-        @keyframes spinLoader { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
-    <div id="page-loader">
-        <div class="spinner"></div>
-    </div>
 
     <div class="app-container" id="appContainer">
         <div class="header fade-in">
@@ -127,7 +104,9 @@
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
-                <div class="exams-list" id="dynamicExamsList"></div>
+                <div class="exams-list" id="dynamicExamsList">
+                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
+                </div>
             </div>
         </div>
 
@@ -151,58 +130,25 @@
 
         let database = null;
         let logoutTimer;
-        let loaderSafetyTimeout;
 
-        // 🟢 نظام حماية إجباري لمنع تعليق الموقع (حتى مع أسوأ VPN)
-        function forceRemoveLoader(errorMessage) {
-            const loader = document.getElementById('page-loader');
-            if (loader && loader.style.opacity !== '0') {
-                if (errorMessage) {
-                    loader.innerHTML = `
-                        <div style="text-align:center; padding:20px;">
-                            <h3 style="color:var(--bad); margin-bottom:5px;">⚠️ تعذر الاتصال</h3>
-                            <p style="color:var(--muted); font-size:14px;">يبدو أن الـ VPN أو الشبكة تمنع الاتصال بخوادمنا.<br>يرجى إغلاق الـ VPN والمحاولة مجدداً.</p>
-                            <button onclick="window.location.reload()" style="margin-top:15px; padding:10px 20px; background:var(--stroke); color:#fff; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">تحديث الصفحة</button>
-                        </div>`;
-                } else {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.visibility = 'hidden';
-                        document.getElementById('appContainer').style.opacity = '1';
-                    }, 300);
-                }
-            }
-        }
-
+        // 🟢 تأمين الفايربيس (عشان لو الـ VPN قفله الكود ميضربش)
         try {
-            // تهيئة الفايربيس داخل صندوق حماية
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
             }
         } catch(e) {
-            console.error("Firebase init blocked:", e);
+            console.error("Firebase is blocked by VPN.");
         }
 
+        // 🟢 تحميل الصفحة فوراً
         document.addEventListener("DOMContentLoaded", () => {
-            // لو الموقع معلق أكتر من 6 ثواني، هيطلعله رسالة يبلغوا يقفل الـ VPN
-            loaderSafetyTimeout = setTimeout(() => {
-                forceRemoveLoader(true);
-            }, 6000);
-
-            // لو سكريبت الفايربيس نفسه مقفول من المتصفح
-            if (!database) {
-                forceRemoveLoader(true);
-                return;
-            }
-
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
             const tenMinutes = 10 * 60 * 1000; 
 
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
-                
                 if (timePassed < tenMinutes) {
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
@@ -217,12 +163,7 @@
                     }, tenMinutes - timePassed);
                 } else {
                     handleLogout();
-                    clearTimeout(loaderSafetyTimeout);
-                    forceRemoveLoader(false);
                 }
-            } else {
-                clearTimeout(loaderSafetyTimeout);
-                forceRemoveLoader(false);
             }
         });
 
@@ -242,7 +183,7 @@
                 fetch('https://api.db-ip.com/v2/free/self')
                   .then(res => res.json())
                   .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
-                  .catch(() => saveToFirebase(username, deviceStr, "VPN / غير معروف"));
+                  .catch(() => saveToFirebase(username, deviceStr, "مجهول / VPN"));
             } catch(e) {
                 saveToFirebase(username, deviceStr, "مجهول");
             }
@@ -260,12 +201,14 @@
         }
 
         function handleLogin() {
+            const btn = document.getElementById('loginBtn');
+            
+            // لو الـ VPN مانع الفايربيس من البداية
             if (!database) {
-                alert("تعذر الاتصال بقاعدة البيانات. يرجى إغلاق الـ VPN والمحاولة مجدداً.");
+                showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
                 return;
             }
 
-            const btn = document.getElementById('loginBtn');
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
 
@@ -305,16 +248,19 @@
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
             }).catch((err) => { 
-                showError(btn, 'فشل الاتصال! أغلق الـ VPN وحاول مجدداً.'); 
+                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
             });
         }
 
         function fetchExamsFromServer() {
-            if (!database) return;
             const examsContainer = document.getElementById('dynamicExamsList');
+            
+            if (!database) {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';
+                return;
+            }
 
             database.ref('exams').on('value', (snapshot) => {
-                clearTimeout(loaderSafetyTimeout); // إيقاف عداد الخطأ لو الداتا وصلت
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
                 
@@ -339,11 +285,8 @@
                 } else {
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
-                forceRemoveLoader(false);
             }, (error) => {
-                clearTimeout(loaderSafetyTimeout);
-                forceRemoveLoader(false);
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الشبكة أو الـ VPN يمنع تحميل الاختبارات.</p>';
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
             });
         }
 
@@ -364,7 +307,7 @@
                     
                     window.location.href = secureUrl; 
                 }).catch(() => {
-                    alert('خطأ في الاتصال، يرجى إغلاق الـ VPN وإعادة المحاولة.');
+                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
                 });
             }
         }
@@ -411,8 +354,6 @@
 
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                forceRemoveLoader(false);
-
                 const loginTime = sessionStorage.getItem('login_time');
                 if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
                     alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
