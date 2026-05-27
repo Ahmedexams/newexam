@@ -7,21 +7,17 @@
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
-    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; }
+    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; }
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
     .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:12px;}
-    
-    /* زرار الرجوع */
     .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
     .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
-
     .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
     .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .premium-logo::after { filter: blur(8px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
-
     h1{margin:0;font-size:18px;letter-spacing:.2px}
     .sub{margin:0;color:var(--muted);font-size:12px}
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
@@ -37,11 +33,8 @@
     .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
     .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
     .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
-    
-    /* أيقونة القراءة الصوتية */
     .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
     .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
-
     .opts{display:grid; gap:10px; margin-top:10px}
     .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
     .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
@@ -50,10 +43,8 @@
     .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
     .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
     .opt.locked{cursor:not-allowed; opacity:.95}
-    
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
-    
     #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
   </style>
@@ -115,297 +106,30 @@
   <div class="toast" id="toast"></div>
 
   <script>
-  // إجبار المتصفح للعودة للمسار الرئيسي لتجنب إيرور الشاشة البيضاء
-  document.addEventListener('DOMContentLoaded', function() {
-      window.history.pushState('exam', null, '');
-      window.onpopstate = function() {
-          window.location.replace('/');
-      };
-  });
-
-  // إعدادات الفايربيس الخاص بك
-  const firebaseConfig = {
-      apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
-      authDomain: "ahmedexams-3e267.firebaseapp.com",
-      databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
-      projectId: "ahmedexams-3e267",
-      storageBucket: "ahmedexams-3e267.firebasestorage.app",
-      messagingSenderId: "151411096023",
-      appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  let studentRef = null;
-  let sName = "طالب مجهول";
-  let sessionInitialized = false;
-  let examQuestions = [];
-  let state = { answered: 0, score: 0, locked: [], selectedOptions: [] };
-
-  const ALL_QUESTIONS = [
-    { q: "Methods thods of calculating staffing are the following except:", options: ["Patient classification system", "Nursing care delivery system", "Diagnostic related group care", "Acuity and complexity of performance"], correct: 1 },
-    { q: "What is the primary purpose of planning?", options: ["To organize resources", "To direct employees", "To establish goals and objectives performance", "To control performance"], correct: 2 },
-    { q: "What is the best sentence that can define stress?", options: ["A physical response to a threat", "A mental response to a challenge", "A physical and mental response to a perceived threat or challenge", "An emotional response to a situation"], correct: 2 },
-    { q: "Which of the following is a limitation of budgeting?", options: ["It can be time-consuming and expensive to prepare", "It can be inflexible and unable to adapt to changing circumstances", "It can be focused only short-term goals and neglect long-term goals", "All of the above"], correct: 3 },
-    { q: "Which of the following is a benefit of budgeting?", options: ["Increased financial risk", "Reduced financial flexibility", "Improved financial control", "Decreased financial transparency"], correct: 2 },
-    { q: "What is the primary purpose of staffing?", options: ["To plan goals and objectives", "To organize resources", "To direct employee", "To recruit and select employees"], correct: 3 },
-    { q: "The primary purpose of job analysis is?", options: ["To evaluate employee performance", "To determine the salary range for a job", "To identify the duties and responsibilities of a job", "To develop a training program for employees"], correct: 2 },
-    { q: "Is the organization's statement of expected revenues and expenses for the coming year?", options: ["Operating Budgets", "capital budget", "manpower budget", "sales budget"], correct: 0 },
-    { q: "Who is typically responsible for creating and maintaining job descriptions?", options: ["Human Resources department", "Manager or supervisor", "Employee", "All of the above"], correct: 3 },
-    { q: "Which of the following is the primary goal of strategic planning?", options: ["To achieve short-term objectives", "To allocate resources efficiently", "To define an organization's mission and vision", "To evaluate employee performance"], correct: 2 },
-    { q: "Which of the following is a common emotional symptom of stress?", options: ["Headache", "Fatigue", "Depression", "Irritability"], correct: 3 },
-    { q: "The type of stress that result in feelings of challenge or achievement", options: ["Anxiety", "Distress", "Eustress", "Depression"], correct: 2 },
-    { q: "Which of the following methods is used to collect data for job analysis?", options: ["Observation", "Interview", "Questionnaire", "All of the above"], correct: 3 },
-    { q: "What is the outcome of job analysis?", options: ["Job description", "Job responsibilities", "working condition", "Job evaluation"], correct: 0 },
-    { q: "Factors related to patient that affecting staffing pattern include the following Except:", options: ["Length of stay", "Age group", "Patient care objectives", "Patient numbers"], correct: 2 },
-    { q: "Effective planning is characterized by:", options: ["False assumption", "Based on clearly defined objectives", "Inadequate time", "Inadequate delegation of authority"], correct: 1 },
-    { q: "Are plans that have been reduced to a sequence of steps that required actions", options: ["policies", "procedures", "Rules", "Regulations"], correct: 1 },
-    { q: "Is a contract that outlining job responsibilities, duties, and requirements.", options: ["Job description", "Job specification", "Job analysis", "Performance appraisal"], correct: 0 },
-    { q: "A job description mainly focuses on:", options: ["Employee's personality traits", "Employee salary", "Job Duties, responsibilities, and tasks", "Promotion criteria"], correct: 2 },
-    { q: "Skill mix refers to:", options: ["Number of patients in a ward", "Nurse salary levels", "Combination of different categories of nursing staff", "Hospital equipment"], correct: 2 },
-    { q: "Strategic planning is the type of planning focuses on achieving specific, short-term objectives", options: ["True", "False"], correct: 1 },
-    { q: "The mission statement is the statement that defines a company's goals and objectives", options: ["True", "False"], correct: 1 },
-    { q: "The main benefit of job description is to reduced accountability", options: ["True", "False"], correct: 1 },
-    { q: "The primary goal of stress management is to eliminate stress completely", options: ["True", "False"], correct: 1 },
-    { q: "Budgeting is only necessary for businesses and organizations", options: ["True", "False"], correct: 1 },
-    { q: "A budget is a tool for predicting future financial outcomes with un certainty", options: ["True", "False"], correct: 0 },
-    { q: "job description is a static document that does not need to be updated.", options: ["True", "False"], correct: 1 },
-    { q: "Vision is a brief statement identifying the reason that an organization exists", options: ["True", "False"], correct: 1 },
-    { q: "Planning involves allocating resources such as personnel, equipment, budget", options: ["True", "False"], correct: 0 },
-    { q: "A job description is a static document that does not need to be updated.", options: ["True", "False"], correct: 1 },
-    { q: "A budget is a one-time process that does not require regular review and revision", options: ["True", "False"], correct: 1 },
-    { q: "A budget should prioritize short-term goals over long-term goals", options: ["True", "False"], correct: 1 },
-    { q: "Staffing pattern is the determination of the number of personnel that must be hired", options: ["True", "False"], correct: 1 },
-    { q: "Planning is the most important function of management", options: ["True", "False"], correct: 1 },
-    { q: "Each group of organizational activities that have the same objective should be directed by one manager Which of the following principles refer to this", options: ["Hierarchy", "Unity of direction", "Span of control", "Esprit d corps"], correct: 1 },
-    { q: "The primary purpose of SWOT analysis in planning is to assess organizational strengths and weaknesses", options: ["True", "False"], correct: 1 },
-    { q: "Which of the following statements refer to the vision of the hospital", options: ["The power of imagination to see something that is not actually visible", "Plans direct in their decision making", "Plan that has been reduced to a sequence of steps of required action", "delineates the set of values and beliefs that guide all actions of the organization"], correct: 0 },
-    { q: "What is the concept of SMART objectives", options: ["Simple Manageable Attainable Realistic Timely", "Strategic Measurable Actionable Responsible Track able", "Systematic Methodical Analytical Rational Technical", "Specific, Measurable, Achievable, Relevant, Time bound"], correct: 3 },
-    { q: "The primary differences between levels of managers are the degree of", options: ["Authority", "All the above", "Responsibility", "Organizational activity"], correct: 1 },
-    { q: "Which of the following is a limitation of budgeting", options: ["It can be focused only short term goals and neglect long term goals", "It can be inflexible and unable to adapt to changing circumstances", "It can be time consuming and expensive to prepare", "All of the above"], correct: 3 },
-    { q: "According to the material, which of the following correctly pairs a management level with its typical focus", options: ["Top level: day-to-day unit needs", "Middle level: short-range planning only", "Low/First line: strategic, long-term planning", "Top level: strategic planning and integration of organizational needs"], correct: 3 },
-    { q: "Which principle emphasizes that authority should be delegated only to subordinates willing to assume commensurate responsibility", options: ["Division of work", "Authority and responsibility", "Unity of direction", "Centralization and decentralization"], correct: 1 },
-    { q: "In the approach to management process, which element is primarily responsible for deciding how and when actions will be performed", options: ["Planning", "Controlling", "Directing", "Staffing"], correct: 0 },
-    { q: "Which statement about \"initiative\" is most consistent with the principles outlined", options: ["Subordinates should be strictly directed to minimize errors", "Managers should prevent subordinates from developing plans", "Subordinates should be given freedom to develop and carry out plans", "Initiative is solely the manager's responsibility"], correct: 2 },
-    { q: "Which of the following is a key characteristic of effective planning", options: ["Flexibility", "Rigidity", "Complexity", "Urgency"], correct: 0 },
-    { q: "Which of the following is an internal time waster", options: ["Telephone interruptions", "Daydreaming", "Lack of feedback"], correct: 1 },
-    { q: "The nurse manager breaks a large task into smaller ones, Is this an example of", options: ["Delegation", "Planning", "Organizing", "Prioritizing"], correct: 0 },
-    { q: "A critical component of time management that defines direction and timelines is", options: ["Goal setting", "Communication", "Planning"], correct: 0 },
-    { q: "A nurse manager notices that staff constantly interrupt her with minor issues. Which strategy would be MOST effective", options: ["Keeping the office door always open", "Training staff to respect set time boundaries", "Handling each issue immediately", "Avoiding delegation"], correct: 1 },
-    { q: "Which policies are not written but are developed over time", options: ["Expressed policies", "Implied policies", "Departmental rules", "Regulations"], correct: 1 },
-    { q: "An organizational chart refers to", options: ["A list of employee salaries", "A diagram that visually displays the ranks and relationships of job positions in the organization", "A calendar of company events", "A record of inventory items"], correct: 1 },
-    { q: "Which component is commonly shown on an organizational chart", options: ["The lines of command", "Strategic plan", "Informal relationship", "Organizational profitability"], correct: 0 },
-    { q: "Recruitment policy usually highlights the need for establishment", options: ["job specifications", "job description", "job analysis", "A&C"], correct: 2 },
-    { q: "Which of the following is the most serious problem that might arise during internal recruitment", options: ["High labor turnover", "Reduce job performance", "Lack of motivation", "Internal resistance"], correct: 3 },
-    { q: "The use of internal job postings as a recruitment source mainly supports", options: ["Workforce diversity and external innovation", "Transparency and employee career development", "Costly and time-consuming processes", "Outsourcing staff requirements"], correct: 0 },
-    { q: "Objectives are the general intentions and ambitions of the business but can be difficult to measure", options: ["True", "False"], correct: 0 },
-    { q: "Ineffective communication is an example of an external time waster", options: ["True", "False"], correct: 0 },
-    { q: "Which of the following is the first step of planning", options: ["Evaluation", "Setting objectives", "Budgeting", "Delegation"], correct: 1 },
-    { q: "Which type of budget is prepared for daytoday expenses", options: ["Operating budget", "Capital budget", "Flexible budget", "Strategic budget"], correct: 0 },
-    { q: "Stress always decreases performance", options: ["True", "False"], correct: 1 },
-    { q: "Which is a source of stress at work", options: ["Clear communication", "Role ambiguity", "Team support", "Proper staffing"], correct: 1 },
-    { q: "Controlling is the last function of management", options: ["True", "False"], correct: 0 },
-    { q: "Span of control refers to", options: ["Number of employees supervised by one manager", "Number of hospital departments", "Number of budgets prepared", "Number of shifts per day"], correct: 0 }
-  ];
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const userParam = urlParams.get('u');
-  const tokenParam = urlParams.get('t');
-
-  function showModalError(title, text) {
-      document.getElementById("modalTitle").innerText = title;
-      document.getElementById("modalText").innerText = text;
-      document.getElementById("overlay").style.display = "flex";
-  }
-
-  // التأكد من التذكرة للتحويل إذا لزم الأمر
-  verifyTicket();
-
-  function verifyTicket() {
-      if (!userParam || !tokenParam) {
-          showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
-          setTimeout(() => { window.location.replace("/"); }, 2000); 
-          return;
-      }
-
-      sName = decodeURIComponent(userParam);
-
-      if (sessionStorage.getItem('exam_session_' + sName) === tokenParam) {
-          startExamProcess();
-          return; 
-      }
-
-      const ticketRef = db.ref('active_tickets/' + sName);
-
-      ticketRef.once('value').then((snapshot) => {
-          const ticketData = snapshot.val();
-
-          if (ticketData && ticketData.token === tokenParam) {
-              const currentTime = Date.now();
-              const ticketTime = ticketData.timestamp;
-              if (currentTime - ticketTime > 120000) { 
-                  showModalError("Please login first 🔒", "انتهت صلاحية الرابط، سيتم تحويلك...");
-                  setTimeout(() => { window.location.replace("/"); }, 2000);
-                  ticketRef.remove(); 
-                  return;
-              }
-
-              sessionStorage.setItem('exam_session_' + sName, tokenParam);
-              
-              ticketRef.remove().then(() => {
-                  startExamProcess();
-              });
-
-          } else {
-              showModalError("Please login first 🔒", "سيتم تحويلك لصفحة تسجيل الدخول...");
-              setTimeout(() => { window.location.replace("/"); }, 2000);
-          }
-      }).catch(() => {
-          showModalError("خطأ في الاتصال", "تعذر التحقق من الخادم.");
-          setTimeout(() => { window.location.replace("/"); }, 2000);
-      });
-  }
-
-  function startExamProcess() {
-      db.ref('research_settings/exam_status').on('value', (snap) => {
-        if (snap.val() === 'closed') {
-           showModalError("الامتحان مغلق 🔒", "عذراً، تم إغلاق الامتحان من قبل مسؤول المنصة.");
-        } else {
-          document.getElementById("overlay").style.display = "none";
-          document.getElementById("examWrap").style.display = "block";
-          
-          initApp();
-
-          if (!sessionInitialized) {
-            sessionInitialized = true;
-            initStudentSession(); 
-          }
-        }
-      });
-  }
-
-  // 🟢 تصفير الامتحان تماماً في كل مرة يفتح فيها (بدون حفظ في localstorage)
-  function initApp() {
-      examQuestions = ALL_QUESTIONS;
-      state.locked = Array(examQuestions.length).fill(false);
-      state.selectedOptions = Array(examQuestions.length).fill(null);
-      state.answered = 0;
-      state.score = 0;
-      
-      document.getElementById("total").textContent = examQuestions.length;
-      render();
-  }
-
-  function speakText(text) {
-      try {
-          if ('speechSynthesis' in window) {
-              window.speechSynthesis.cancel(); 
-              const utterance = new SpeechSynthesisUtterance(text);
-              utterance.lang = 'en-US';
-              utterance.rate = 0.9;
-              window.speechSynthesis.speak(utterance);
-          } else {
-              showToast("المساعد الصوتي غير مدعوم", false);
-          }
-      } catch(e) {
-          showToast("تعذر تشغيل الصوت", false);
-      }
-  }
-
-  function initStudentSession() {
-    studentRef = db.ref('research_students').push();
-    // إرسال بيانات وهمية أو يمكن جلب البيانات الحقيقية من API
-    studentRef.set({
-      name: sName,
-      time: new Date().toLocaleTimeString('ar-EG'),
-      score: 0
-    });
-  }
-
-  const grid = document.getElementById("grid");
-  const answeredEl = document.getElementById("answered");
-  const scoreEl = document.getElementById("score");
-  const barEl = document.getElementById("bar");
-  const toastEl = document.getElementById("toast");
-
-  function showToast(msg){
-    toastEl.textContent = msg;
-    toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 1200);
-  }
-
-  function updateHUD(){
-    answeredEl.textContent = state.answered;
-    scoreEl.textContent = state.score;
-    barEl.style.width = (state.answered / examQuestions.length * 100) + "%";
-  }
-
-  // التصميم الأصلي حرفياً
-  function render(){
-    grid.innerHTML = '';
-    examQuestions.forEach((item, idx) => {
-      const card = document.createElement("section");
-      card.className = "card";
-      
-      const qtop = document.createElement("div");
-      qtop.className = "qtop";
-      
-      const safeText = item.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      
-      qtop.innerHTML = `
-        <p class="qtext">${item.q}</p>
-        <div class="tts-btn" onclick="speakText('${safeText}')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        </div>
-        <div class="qno">${idx + 1}</div>
-      `;
-
-      const optsDiv = document.createElement("div");
-      optsDiv.className = "opts";
-
-      item.options.forEach((optText, oIdx) => {
-        const opt = document.createElement("div");
-        opt.className = "opt";
-        opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
-        
-        if (state.locked[idx]) {
-            opt.classList.add("locked");
-            if (oIdx === item.correct) opt.classList.add("correct");
-            if (oIdx === state.selectedOptions[idx] && oIdx !== item.correct) opt.classList.add("wrong");
-        }
-
-        opt.onclick = () => {
-          if (state.locked[idx]) return;
-          state.locked[idx] = true;
-          state.selectedOptions[idx] = oIdx;
-          state.answered++;
-          
-          if (oIdx === item.correct) {
-            opt.classList.add("correct");
-            state.score++;
-            showToast("✅ إجابة صحيحة");
-          } else {
-            opt.classList.add("wrong");
-            optsDiv.children[item.correct].classList.add("correct");
-            showToast("❌ إجابة خاطئة");
-          }
-          
-          if(studentRef) {
-              try { studentRef.update({ score: state.score }); } catch(err) {}
-          }
-            
-          optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
-          updateHUD();
-        };
-        optsDiv.appendChild(opt);
-      });
-
-      card.appendChild(qtop);
-      card.appendChild(optsDiv);
-      grid.appendChild(card);
-    });
-    updateHUD();
-  }
+  (function(){
+      const _0xdc=document,_0xwn=window;
+      _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
+      _0xdc.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
+      _0xdc.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
+      setInterval(function(){debugger;},150);
+      _0xdc.addEventListener('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',function(){_0xwn.history.pushState('exam',null,'');_0xwn.onpopstate=function(){_0xwn.location.replace('/');};});
+      const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
+      firebase.initializeApp(_0xcfg);const _0xdb=firebase.database();
+      let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
+      const _0xAQ=[{q:"Methods thods of calculating staffing are the following except:",o:["Patient classification system","Nursing care delivery system","Diagnostic related group care","Acuity and complexity of performance"],c:1},{q:"What is the primary purpose of planning?",o:["To organize resources","To direct employees","To establish goals and objectives performance","To control performance"],c:2},{q:"What is the best sentence that can define stress?",o:["A physical response to a threat","A mental response to a challenge","A physical and mental response to a perceived threat or challenge","An emotional response to a situation"],c:2},{q:"Which of the following is a limitation of budgeting?",o:["It can be time-consuming and expensive to prepare","It can be inflexible and unable to adapt to changing circumstances","It can be focused only short-term goals and neglect long-term goals","All of the above"],c:3},{q:"Which of the following is a benefit of budgeting?",o:["Increased financial risk","Reduced financial flexibility","Improved financial control","Decreased financial transparency"],c:2},{q:"What is the primary purpose of staffing?",o:["To plan goals and objectives","To organize resources","To direct employee","To recruit and select employees"],c:3},{q:"The primary purpose of job analysis is?",o:["To evaluate employee performance","To determine the salary range for a job","To identify the duties and responsibilities of a job","To develop a training program for employees"],c:2},{q:"Is the organization's statement of expected revenues and expenses for the coming year?",o:["Operating Budgets","capital budget","manpower budget","sales budget"],c:0},{q:"Who is typically responsible for creating and maintaining job descriptions?",o:["Human Resources department","Manager or supervisor","Employee","All of the above"],c:3},{q:"Which of the following is the primary goal of strategic planning?",o:["To achieve short-term objectives","To allocate resources efficiently","To define an organization's mission and vision","To evaluate employee performance"],c:2},{q:"Which of the following is a common emotional symptom of stress?",o:["Headache","Fatigue","Depression","Irritability"],c:3},{q:"The type of stress that result in feelings of challenge or achievement",o:["Anxiety","Distress","Eustress","Depression"],c:2},{q:"Which of the following methods is used to collect data for job analysis?",o:["Observation","Interview","Questionnaire","All of the above"],c:3},{q:"What is the outcome of job analysis?",o:["Job description","Job responsibilities","working condition","Job evaluation"],c:0},{q:"Factors related to patient that affecting staffing pattern include the following Except:",o:["Length of stay","Age group","Patient care objectives","Patient numbers"],c:2},{q:"Effective planning is characterized by:",o:["False assumption","Based on clearly defined objectives","Inadequate time","Inadequate delegation of authority"],c:1},{q:"Are plans that have been reduced to a sequence of steps that required actions",o:["policies","procedures","Rules","Regulations"],c:1},{q:"Is a contract that outlining job responsibilities, duties, and requirements.",o:["Job description","Job specification","Job analysis","Performance appraisal"],c:0},{q:"A job description mainly focuses on:",o:["Employee's personality traits","Employee salary","Job Duties, responsibilities, and tasks","Promotion criteria"],c:2},{q:"Skill mix refers to:",o:["Number of patients in a ward","Nurse salary levels","Combination of different categories of nursing staff","Hospital equipment"],c:2},{q:"Strategic planning is the type of planning focuses on achieving specific, short-term objectives",o:["True","False"],c:1},{q:"The mission statement is the statement that defines a company's goals and objectives",o:["True","False"],c:1},{q:"The main benefit of job description is to reduced accountability",o:["True","False"],c:1},{q:"The primary goal of stress management is to eliminate stress completely",o:["True","False"],c:1},{q:"Budgeting is only necessary for businesses and organizations",o:["True","False"],c:1},{q:"A budget is a tool for predicting future financial outcomes with un certainty",o:["True","False"],c:0},{q:"job description is a static document that does not need to be updated.",o:["True","False"],c:1},{q:"Vision is a brief statement identifying the reason that an organization exists",o:["True","False"],c:1},{q:"Planning involves allocating resources such as personnel, equipment, budget",o:["True","False"],c:0},{q:"A job description is a static document that does not need to be updated.",o:["True","False"],c:1},{q:"A budget is a one-time process that does not require regular review and revision",o:["True","False"],c:1},{q:"A budget should prioritize short-term goals over long-term goals",o:["True","False"],c:1},{q:"Staffing pattern is the determination of the number of personnel that must be hired",o:["True","False"],c:1},{q:"Planning is the most important function of management",o:["True","False"],c:1},{q:"Each group of organizational activities that have the same objective should be directed by one manager Which of the following principles refer to this",o:["Hierarchy","Unity of direction","Span of control","Esprit d corps"],c:1},{q:"The primary purpose of SWOT analysis in planning is to assess organizational strengths and weaknesses",o:["True","False"],c:1},{q:"Which of the following statements refer to the vision of the hospital",o:["The power of imagination to see something that is not actually visible","Plans direct in their decision making","Plan that has been reduced to a sequence of steps of required action","delineates the set of values and beliefs that guide all actions of the organization"],c:0},{q:"What is the concept of SMART objectives",o:["Simple Manageable Attainable Realistic Timely","Strategic Measurable Actionable Responsible Track able","Systematic Methodical Analytical Rational Technical","Specific, Measurable, Achievable, Relevant, Time bound"],c:3},{q:"The primary differences between levels of managers are the degree of",o:["Authority","All the above","Responsibility","Organizational activity"],c:1},{q:"Which of the following is a limitation of budgeting",o:["It can be focused only short term goals and neglect long term goals","It can be inflexible and unable to adapt to changing circumstances","It can be time consuming and expensive to prepare","All of the above"],c:3},{q:"According to the material, which of the following correctly pairs a management level with its typical focus",o:["Top level: day-to-day unit needs","Middle level: short-range planning only","Low/First line: strategic, long-term planning","Top level: strategic planning and integration of organizational needs"],c:3},{q:"Which principle emphasizes that authority should be delegated only to subordinates willing to assume commensurate responsibility",o:["Division of work","Authority and responsibility","Unity of direction","Centralization and decentralization"],c:1},{q:"In the approach to management process, which element is primarily responsible for deciding how and when actions will be performed",o:["Planning","Controlling","Directing","Staffing"],c:0},{q:"Which statement about \"initiative\" is most consistent with the principles outlined",o:["Subordinates should be strictly directed to minimize errors","Managers should prevent subordinates from developing plans","Subordinates should be given freedom to develop and carry out plans","Initiative is solely the manager's responsibility"],c:2},{q:"Which of the following is a key characteristic of effective planning",o:["Flexibility","Rigidity","Complexity","Urgency"],c:0},{q:"Which of the following is an internal time waster",o:["Telephone interruptions","Daydreaming","Lack of feedback"],c:1},{q:"The nurse manager breaks a large task into smaller ones, Is this an example of",o:["Delegation","Planning","Organizing","Prioritizing"],c:0},{q:"A critical component of time management that defines direction and timelines is",o:["Goal setting","Communication","Planning"],c:0},{q:"A nurse manager notices that staff constantly interrupt her with minor issues. Which strategy would be MOST effective",o:["Keeping the office door always open","Training staff to respect set time boundaries","Handling each issue immediately","Avoiding delegation"],c:1},{q:"Which policies are not written but are developed over time",o:["Expressed policies","Implied policies","Departmental rules","Regulations"],c:1},{q:"An organizational chart refers to",o:["A list of employee salaries","A diagram that visually displays the ranks and relationships of job positions in the organization","A calendar of company events","A record of inventory items"],c:1},{q:"Which component is commonly shown on an organizational chart",o:["The lines of command","Strategic plan","Informal relationship","Organizational profitability"],c:0},{q:"Recruitment policy usually highlights the need for establishment",o:["job specifications","job description","job analysis","A&C"],c:2},{q:"Which of the following is the most serious problem that might arise during internal recruitment",o:["High labor turnover","Reduce job performance","Lack of motivation","Internal resistance"],c:3},{q:"The use of internal job postings as a recruitment source mainly supports",o:["Workforce diversity and external innovation","Transparency and employee career development","Costly and time-consuming processes","Outsourcing staff requirements"],c:0},{q:"Objectives are the general intentions and ambitions of the business but can be difficult to measure",o:["True","False"],c:0},{q:"Ineffective communication is an example of an external time waster",o:["True","False"],c:0},{q:"Which of the following is the first step of planning",o:["Evaluation","Setting objectives","Budgeting","Delegation"],c:1},{q:"Which type of budget is prepared for daytoday expenses",o:["Operating budget","Capital budget","Flexible budget","Strategic budget"],c:0},{q:"Stress always decreases performance",o:["True","False"],c:1},{q:"Which is a source of stress at work",o:["Clear communication","Role ambiguity","Team support","Proper staffing"],c:1},{q:"Controlling is the last function of management",o:["True","False"],c:0},{q:"Span of control refers to",o:["Number of employees supervised by one manager","Number of hospital departments","Number of budgets prepared","Number of shifts per day"],c:0}];
+      const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
+      function _0xerr(_0x1,_0x2){_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";}
+      function _0xvt(){if(!_0xu||!_0xt){_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);return;}_0xsn=decodeURIComponent(_0xu);if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){_0xsep();return;}const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);_0xtr.once('\x76\x61\x6c\x75\x65').then((s)=>{const _0xd=s.val();if(_0xd&&_0xd.token===_0xt){if(Date.now()-_0xd.timestamp>120000){_0xerr("Please login first \uD83D\uDD12","\u0627\u0646\u062a\u0647\u062a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629...");setTimeout(()=>{_0xwn.location.replace("/");},2000);_0xtr.remove();return;}sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn,_0xt);_0xtr.remove().then(()=>{_0xsep();});}else{_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);}}).catch(()=>{_0xerr("\u062e\u0637\u0623 \u0641\u064a \u0627\u0644\u0627\u062a\u0635\u0627\u0644","\u062a\u0639\u0630\u0631 \u0627\u0644\u062a\u062d\u0642\u0642.");setTimeout(()=>{_0xwn.location.replace("/");},2000);});}
+      function _0xsep(){_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){_0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");}else{_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";_0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";_0xia();if(!_0xini){_0xini=!0;_0xiss();}}});}
+      function _0xia(){_0xeq=_0xAQ;_0xst.l=Array(_0xeq.length).fill(!1);_0xst.so=Array(_0xeq.length).fill(null);_0xst.a=0;_0xst.s=0;_0xdc.getElementById("total").textContent=_0xeq.length;_0xrnd();}
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.9;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      function _0xiss(){_0xstR=_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x74\x75\x64\x65\x6e\x74\x73').push();_0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});}
+      const _0xG=_0xdc.getElementById("grid"),_0xA=_0xdc.getElementById("answered"),_0xS=_0xdc.getElementById("score"),_0xB=_0xdc.getElementById("bar"),_0xTst=_0xdc.getElementById("toast");
+      function _0xstst(_0xM){_0xTst.textContent=_0xM;_0xTst.classList.add("show");setTimeout(()=>_0xTst.classList.remove("show"),1200);}
+      function _0xuhd(){_0xA.textContent=_0xst.a;_0xS.textContent=_0xst.s;_0xB.style.width=(_0xst.a/_0xeq.length*100)+"%";}
+      function _0xrnd(){_0xG.innerHTML='';_0xeq.forEach((_0xi,_0xidx)=>{const _0xc=_0xdc.createElement("section");_0xc.className="\x63\x61\x72\x64";const _0xqt=_0xdc.createElement("div");_0xqt.className="\x71\x74\x6f\x70";const _0xsT=_0xi.q.replace(/'/g,"\\'").replace(/"/g,'&quot;');_0xqt.innerHTML=`<p class="qtext">${_0xi.q}</p><div class="tts-btn" onclick="speakText('${_0xsT}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div><div class="qno">${_0xidx+1}</div>`;const _0xod=_0xdc.createElement("div");_0xod.className="\x6f\x70\x74\x73";_0xi.o.forEach((_0xot,_0xoid)=>{const _0xo=_0xdc.createElement("div");_0xo.className="\x6f\x70\x74";_0xo.innerHTML=`<div class="badge">${String.fromCharCode(65+_0xoid)}</div><div class="txt">${_0xot}</div>`;if(_0xst.l[_0xidx]){_0xo.classList.add("\x6c\x6f\x63\x6b\x65\x64");if(_0xoid===_0xi.c)_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");if(_0xoid===_0xst.so[_0xidx]&&_0xoid!==_0xi.c)_0xo.classList.add("\x77\x72\x6f\x6e\x67");}_0xo.onclick=()=>{if(_0xst.l[_0xidx])return;_0xst.l[_0xidx]=!0;_0xst.so[_0xidx]=_0xoid;_0xst.a++;if(_0xoid===_0xi.c){_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xst.s++;_0xstst("\u2705 \u0625\u062c\u0627\u0628\u0629 \u0635\u062d\u064a\u062d\u0629");}else{_0xo.classList.add("\x77\x72\x6f\x6e\x67");_0xod.children[_0xi.c].classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xstst("\u274C \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629");}if(_0xstR)try{_0xstR.update({score:_0xst.s});}catch(e){}_0xod.querySelectorAll(".\x6f\x70\x74").forEach(o=>o.classList.add("\x6c\x6f\x63\x6b\x65\x64"));_0xuhd();};_0xod.appendChild(_0xo);});_0xc.appendChild(_0xqt);_0xc.appendChild(_0xod);_0xG.appendChild(_0xc);});_0xuhd();}
+      _0xvt();
+  })();
   </script>
  </body>
 </html>
