@@ -362,6 +362,42 @@
             }
         });
     </script>
+
+    <script>
+        // 1. منع الكليك يمين تماماً
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        // 2. منع اختصارات الكيبورد الخاصة بالمطورين
+        document.onkeydown = function (e) {
+            // منع زرار F12
+            if (e.keyCode == 123) {
+                return false;
+            }
+            // منع Ctrl+Shift+I (فتح الـ Inspect)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            // منع Ctrl+Shift+C (تحديد العناصر)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            // منع Ctrl+Shift+J (فتح الـ Console)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            // منع Ctrl+U (عرض سورس الصفحة)
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        };
+
+        // 3. منع النسخ (Copy) عشان محدش ينسخ الأسئلة
+        document.addEventListener('copy', function (e) {
+            e.preventDefault();
+        });
+    </script>
 </body>
 </html>
 
