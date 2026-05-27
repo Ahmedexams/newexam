@@ -18,7 +18,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         
-        /* 🟢 إزالة opacity:0 لضمان ظهور الموقع فوراً حتى لو الـ VPN حظر الـ JS */
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
         
         .header { text-align: center; margin-bottom: 10px; }
@@ -131,7 +130,6 @@
         let database = null;
         let logoutTimer;
 
-        // 🟢 تأمين الفايربيس (عشان لو الـ VPN قفله الكود ميضربش)
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
@@ -141,7 +139,6 @@
             console.error("Firebase is blocked by VPN.");
         }
 
-        // 🟢 تحميل الصفحة فوراً
         document.addEventListener("DOMContentLoaded", () => {
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
@@ -203,7 +200,6 @@
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
             
-            // لو الـ VPN مانع الفايربيس من البداية
             if (!database) {
                 showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
                 return;
@@ -361,42 +357,18 @@
                 }
             }
         });
-    </script>
 
-    <script>
-        // 1. منع الكليك يمين تماماً
-        document.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        });
-
-        // 2. منع اختصارات الكيبورد الخاصة بالمطورين
-        document.onkeydown = function (e) {
-            // منع زرار F12
-            if (e.keyCode == 123) {
-                return false;
-            }
-            // منع Ctrl+Shift+I (فتح الـ Inspect)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-                return false;
-            }
-            // منع Ctrl+Shift+C (تحديد العناصر)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-                return false;
-            }
-            // منع Ctrl+Shift+J (فتح الـ Console)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-                return false;
-            }
-            // منع Ctrl+U (عرض سورس الصفحة)
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+        // 🛡️ طبقة الحماية ضد الغش (تم إضافتها وتأمينها هنا)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if (e.keyCode === 123 || 
+               (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || 
+               (e.ctrlKey && e.keyCode === 85)) {
                 return false;
             }
         };
+        document.addEventListener('copy', e => e.preventDefault());
 
-        // 3. منع النسخ (Copy) عشان محدش ينسخ الأسئلة
-        document.addEventListener('copy', function (e) {
-            e.preventDefault();
-        });
     </script>
 </body>
 </html>
