@@ -109,8 +109,7 @@
             </div>
         </div>
 
-        <!-- تم إزالة style="display: none;" ليظهر في كل الصفحات -->
-        <div class="footer fade-in" id="developerFooter">
+        <div class="footer fade-in">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
                 <span class="neon">Developed BY Ahmed Hamed</span>
             </a>
@@ -356,16 +355,15 @@
             }
         });
 
-        // 🛡️ طبقة الحماية ضد الغش (تم إضافتها وتأمينها هنا)
+        // 🛡️ فخ المطورين (للشلل التام للمتصفح إذا حاول الغشاش فتحه)
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
-            if (e.keyCode === 123 || 
-               (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || 
-               (e.ctrlKey && e.keyCode === 85)) {
-                return false;
-            }
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
         };
         document.addEventListener('copy', e => e.preventDefault());
+        setInterval(() => {
+            (function() { return false; }['constructor']('debugger')());
+        }, 100);
 
     </script>
 </body>
