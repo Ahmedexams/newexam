@@ -18,7 +18,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         
-        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
+        /* 🎬 إصلاح حركة الـ 3D: إضافة perspective للأب */
+        .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; perspective: 1200px; -webkit-perspective: 1200px; }
         
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
@@ -30,41 +31,35 @@
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; transition: opacity 0.3s; }
         
-        /* 🎬 النقلة السينمائية 3D مع دعم كامل للموبايلات */
+        /* 🎬 الكارت الأساسي وتأثير الـ 3D المضمون */
         .card { 
             background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); 
             border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; 
             box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); 
-            position: relative; overflow: hidden; width: 100%; 
-            transform-origin: center; 
-            -webkit-backface-visibility: hidden; 
-            backface-visibility: hidden;
+            position: relative; width: 100%; 
             transform-style: preserve-3d;
             -webkit-transform-style: preserve-3d;
+            transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
         }
-        @keyframes flipCardOut {
-            0% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
-            100% { transform: perspective(1000px) rotateY(90deg) scale(0.95); opacity: 0; }
+        
+        .flip-hide {
+            transform: rotateY(90deg) scale(0.9);
+            -webkit-transform: rotateY(90deg) scale(0.9);
+            opacity: 0;
         }
-        @keyframes flipCardIn {
-            0% { transform: perspective(1000px) rotateY(-90deg) scale(0.95); opacity: 0; }
-            100% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+
+        .flip-show {
+            animation: flipIn 0.35s ease-out forwards;
+            -webkit-animation: flipIn 0.35s ease-out forwards;
         }
-        @-webkit-keyframes flipCardOut {
-            0% { -webkit-transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
-            100% { -webkit-transform: perspective(1000px) rotateY(90deg) scale(0.95); opacity: 0; }
+        
+        @keyframes flipIn {
+            0% { transform: rotateY(-90deg) scale(0.9); opacity: 0; }
+            100% { transform: rotateY(0deg) scale(1); opacity: 1; }
         }
-        @-webkit-keyframes flipCardIn {
-            0% { -webkit-transform: perspective(1000px) rotateY(-90deg) scale(0.95); opacity: 0; }
-            100% { -webkit-transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
-        }
-        .flip-out { 
-            animation: flipCardOut 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
-            -webkit-animation: flipCardOut 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
-        }
-        .flip-in { 
-            animation: flipCardIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
-            -webkit-animation: flipCardIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+        @-webkit-keyframes flipIn {
+            0% { -webkit-transform: rotateY(-90deg) scale(0.9); opacity: 0; }
+            100% { -webkit-transform: rotateY(0deg) scale(1); opacity: 1; }
         }
 
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
@@ -153,20 +148,9 @@
     </div>
 
     <script>
-        // 🎵 محرك الأصوات الذكي 
+        // 🎵 محرك الأصوات الذكي (تم تعديله لفك حظر الموبايلات)
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
-
-        // 🔓 التصحيح: فك حظر الصوت إجبارياً على متصفحات الموبايل مع أول لمسة للشاشة
-        function unlockAudio() {
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            document.removeEventListener('touchstart', unlockAudio);
-            document.removeEventListener('click', unlockAudio);
-        }
-        document.addEventListener('touchstart', unlockAudio, { once: true });
-        document.addEventListener('click', unlockAudio, { once: true });
 
         function playUIBeep(type) {
             if (!audioCtx) return;
@@ -178,7 +162,13 @@
             gainNode.connect(audioCtx.destination);
             const now = audioCtx.currentTime;
 
-            if (type === 'success') {
+            if (type === 'prime') {
+                // صوت صامت لفك حظر المتصفح
+                gainNode.gain.setValueAtTime(0, now);
+                oscillator.start(now);
+                oscillator.stop(now + 0.01);
+            }
+            else if (type === 'success') {
                 oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(523.25, now); 
                 oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.1); 
@@ -284,8 +274,8 @@
             const btn = document.getElementById('loginBtn');
             const card = document.getElementById('mainCard');
             
-            // تأكيد تشغيل محرك الصوت عند ضغطة الزر
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+            // 🔓 تشغيل صوت صامت فوراً لفك حظر الموبايل للصوت قبل ما الفايربيس يحمل
+            playUIBeep('prime');
 
             if (!database) {
                 showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
@@ -304,6 +294,7 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                    // 🎵 تشغيل صوت النجاح
                     playUIBeep('success'); 
                     btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
                     
@@ -321,10 +312,10 @@
                         handleLogout();
                     }, 10 * 60 * 1000);
 
-                    // 🎬 بدء حركة الدوران السينمائية
+                    // 🎬 حركة الـ 3D (معدلة لإجبار المتصفح على تشغيلها)
                     setTimeout(() => {
                         document.getElementById('headerSubtitle').style.opacity = '0';
-                        card.classList.add('flip-out');
+                        card.classList.add('flip-hide');
 
                         setTimeout(() => {
                             document.getElementById('loginSection').style.display = 'none';
@@ -336,11 +327,15 @@
 
                             fetchExamsFromServer();
 
-                            card.classList.remove('flip-out');
-                            card.classList.add('flip-in');
+                            card.classList.remove('flip-hide');
+                            
+                            // خدعة إجبار المتصفح على عمل (Reflow) عشان الحركة تشتغل
+                            void card.offsetWidth; 
+                            
+                            card.classList.add('flip-show');
 
                             setTimeout(() => {
-                                card.classList.remove('flip-in');
+                                card.classList.remove('flip-show');
                             }, 350);
 
                         }, 350); 
@@ -393,8 +388,7 @@
         }
 
         function goToExam(isClosed, url) {
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
-
+            playUIBeep('prime');
             if (isClosed === 'true' || isClosed === true) {
                 playUIBeep('error');
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
@@ -428,7 +422,7 @@
         }
 
         function handleLogout() {
-            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+            playUIBeep('prime');
 
             sessionStorage.removeItem('student_auth');
             sessionStorage.removeItem('student_name');
@@ -443,9 +437,9 @@
             btn.style.color = 'var(--bg0)';
             btn.innerHTML = 'تسجيل الدخول';
 
-            // 🎬 حركة الدوران العكسية عند الخروج
+            // 🎬 حركة الـ 3D العكسية
             const card = document.getElementById('mainCard');
-            card.classList.add('flip-out');
+            card.classList.add('flip-hide');
             
             document.getElementById('developerFooter').style.opacity = '0';
 
@@ -457,11 +451,12 @@
                 document.getElementById('headerSubtitle').style.display = 'block';
                 setTimeout(() => document.getElementById('headerSubtitle').style.opacity = '1', 50);
 
-                card.classList.remove('flip-out');
-                card.classList.add('flip-in');
+                card.classList.remove('flip-hide');
+                void card.offsetWidth; // الخدعة لضمان الحركة
+                card.classList.add('flip-show');
 
                 setTimeout(() => {
-                    card.classList.remove('flip-in');
+                    card.classList.remove('flip-show');
                 }, 350);
             }, 350);
 
