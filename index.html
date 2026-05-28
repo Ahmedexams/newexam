@@ -28,19 +28,14 @@
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
         
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
-        .header p { color: var(--muted); font-size: 15px; font-weight: 800; transition: opacity 0.3s; }
         
-        /* 🎬 الكارت الأساسي (بدون كلاسات أنيميشن، الجافاسكريبت هيتحكم فيها) */
-        .card { 
-            background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); 
-            border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); 
-            position: relative; overflow: hidden; width: 100%; 
-            transform-origin: center;
-            transform: perspective(1000px) rotateY(0deg) scale(1);
-            opacity: 1;
-        }
-
+        /* 💻 تأثير شاشة الدخول السيبرانية (Terminal) */
+        .terminal-text { color: var(--muted); font-size: 15px; font-weight: 800; min-height: 22px; direction: ltr; display: inline-block; }
+        .cursor { display: inline-block; width: 6px; height: 16px; background: var(--glow1); margin-right: 4px; vertical-align: middle; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; transition: all 0.4s ease; }
+        
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
@@ -48,10 +43,24 @@
         
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
+
+        /* 📊 لوحة معلومات الطالب (Dashboard) */
+        .dashboard-card { background: rgba(7,9,18,.5); border: 1px solid rgba(110,231,255,.15); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; animation: slideDown 0.4s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .dash-left { display: flex; align-items: center; gap: 12px; }
+        .dash-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--glow1), var(--glow2)); color: var(--bg0); display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; box-shadow: 0 4px 10px rgba(110,231,255,.3); }
+        .dash-info { display: flex; flex-direction: column; gap: 3px; }
+        .dash-welcome { color: var(--text); font-weight: 900; font-size: 15px; }
+        .dash-status { color: var(--good); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 8px; height: 8px; background: var(--good); border-radius: 50%; box-shadow: 0 0 8px var(--good); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .dash-stats { background: rgba(15,23,48,.6); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); text-align: center; min-width: 65px; }
+        .dash-stats span { display: block; font-size: 18px; font-weight: 900; color: var(--glow1); line-height: 1; margin-bottom: 2px;}
+        .dash-stats small { font-size: 10px; color: var(--muted); font-weight: 800; }
         
-        .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2;}
-        .section-title { font-size: 20px; font-weight: 900; color: var(--text); margin: 0; }
-        .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2;}
+        .section-title { font-size: 18px; font-weight: 900; color: var(--text); margin: 0; }
+        .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 6px 12px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
@@ -64,14 +73,14 @@
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
         
-        .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; transition: opacity 0.3s;}
+        .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
         .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
         .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; }
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
         
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
+        @keyframes appFadeIn { from { transform: translateY(15px); opacity:0;} to { transform: translateY(0); opacity:1;} }
     </style>
 </head>
 <body>
@@ -91,7 +100,10 @@
                 </svg>
             </div>
             <h1>منصة الاختبارات</h1>
-            <p id="headerSubtitle">أهلاً بك، يرجى تسجيل الدخول للبدء</p>
+            <!-- 💻 حاوية تأثير الـ Terminal -->
+            <div dir="rtl">
+                <span class="cursor" id="termCursor"></span><span id="headerSubtitle" class="terminal-text"></span>
+            </div>
         </div>
 
         <div class="card fade-in" id="mainCard" style="animation-delay: 0.1s;">
@@ -106,6 +118,22 @@
             </div>
 
             <div id="examsSection" style="display: none;">
+                
+                <!-- 📊 لوحة معلومات الطالب الجديدة -->
+                <div class="dashboard-card">
+                    <div class="dash-left">
+                        <div class="dash-avatar" id="dashAvatar">؟</div>
+                        <div class="dash-info">
+                            <span class="dash-welcome">مرحباً، <span id="studentNameDisplay">طالب</span></span>
+                            <span class="dash-status"><span class="status-dot"></span> اتصال مؤمن</span>
+                        </div>
+                    </div>
+                    <div class="dash-stats">
+                        <span id="examsCountDisplay">0</span>
+                        <small>اختبارات</small>
+                    </div>
+                </div>
+
                 <div class="exams-header-row">
                     <h2 class="section-title">الاختبارات المتاحة</h2>
                     <button class="logout-btn" onclick="handleLogout()">
@@ -119,7 +147,7 @@
             </div>
         </div>
 
-        <div class="footer fade-in" id="developerFooter" style="display: none; opacity: 0;">
+        <div class="footer fade-in" id="developerFooter" style="display: none;">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
                 <span class="neon">Developed BY Ahmed Hamed</span>
             </a>
@@ -127,59 +155,32 @@
     </div>
 
     <script>
-        // 🎵 محرك الأصوات المطور (بيتم تفعيله مع أول لمسة للشاشة عشان يكسر حظر المتصفح)
-        let audioCtx = null;
-        
-        function initAudio() {
-            if (audioCtx) return;
-            try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                // تشغيل تردد صامت لفتح القفل
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                gain.gain.value = 0;
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(0);
-                osc.stop(0.01);
-            } catch (e) { console.log("الصوت غير مدعوم"); }
-        }
-        
-        // ربط تفعيل الصوت بأي ضغطة في الموقع
-        document.addEventListener('click', initAudio, { once: true });
-        document.addEventListener('touchstart', initAudio, { once: true });
+        // 💻 محرك كتابة الـ Terminal السيبراني
+        const terminalTexts = [
+            "> تهيئة النظام...",
+            "> جاري تشفير الاتصال...",
+            "> تأمين الجلسة...",
+            "> أهلاً بك، يرجى تسجيل الدخول للبدء"
+        ];
+        let terminalRunning = false;
 
-        function playUIBeep(type) {
-            if (!audioCtx) initAudio();
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+        async function runTerminalEffect() {
+            if (terminalRunning) return;
+            terminalRunning = true;
+            const textEl = document.getElementById('headerSubtitle');
             
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
-
-            if (type === 'success') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(523.25, now); 
-                oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.1); 
-                gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05); 
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3); 
-                oscillator.start(now);
-                oscillator.stop(now + 0.3);
-            } else if (type === 'error') {
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(200, now);
-                oscillator.frequency.exponentialRampToValueAtTime(50, now + 0.2);
-                gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.2, now + 0.05);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-                oscillator.start(now);
-                oscillator.stop(now + 0.2);
+            for (let i = 0; i < terminalTexts.length; i++) {
+                textEl.innerText = '';
+                const txt = terminalTexts[i];
+                for (let j = 0; j < txt.length; j++) {
+                    textEl.innerText += txt.charAt(j);
+                    await new Promise(r => setTimeout(r, 35)); // سرعة الكتابة
+                }
+                if (i < terminalTexts.length - 1) {
+                    await new Promise(r => setTimeout(r, 400)); // فترة الانتظار بين كل رسالة
+                }
             }
+            terminalRunning = false;
         }
 
         const firebaseConfig = {
@@ -207,16 +208,21 @@
         document.addEventListener("DOMContentLoaded", () => {
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
+            const studentName = sessionStorage.getItem('student_name');
             const tenMinutes = 10 * 60 * 1000; 
 
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
                 if (timePassed < tenMinutes) {
+                    // تحديث لوحة التحكم
+                    document.getElementById('dashAvatar').innerText = studentName.charAt(0).toUpperCase();
+                    document.getElementById('studentNameDisplay').innerText = studentName;
+
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
+                    document.getElementById('termCursor').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
                     document.getElementById('developerFooter').style.display = 'flex';
-                    setTimeout(()=> document.getElementById('developerFooter').style.opacity = '1', 50);
                     
                     fetchExamsFromServer();
 
@@ -227,6 +233,9 @@
                 } else {
                     handleLogout();
                 }
+            } else {
+                // تشغيل الأنيميشن الترحيبي للزوار الجدد
+                runTerminalEffect();
             }
         });
 
@@ -265,8 +274,7 @@
 
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
-            const card = document.getElementById('mainCard');
-
+            
             if (!database) {
                 showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
                 return;
@@ -284,9 +292,6 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
-                    
-                    // 🎵 تشغيل صوت النجاح (الصوت أصبح حر الآن)
-                    playUIBeep('success'); 
                     btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
                     
                     logDeviceData(usernameInput);
@@ -303,40 +308,19 @@
                         handleLogout();
                     }, 10 * 60 * 1000);
 
-                    // 🎬 حركة الـ 3D (استخدام الستايل المباشر لمنع التخطي في المتصفحات)
+                    // تحديث بيانات لوحة الطالب
+                    document.getElementById('dashAvatar').innerText = usernameInput.charAt(0).toUpperCase();
+                    document.getElementById('studentNameDisplay').innerText = usernameInput;
+
+                    // انتقال سلس لشاشة الامتحانات
                     setTimeout(() => {
-                        document.getElementById('headerSubtitle').style.opacity = '0';
-                        
-                        // بدء الدوران والإخفاء
-                        card.style.transition = "transform 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.35s ease-in";
-                        card.style.transform = "perspective(1000px) rotateY(90deg) scale(0.95)";
-                        card.style.opacity = "0";
-
-                        setTimeout(() => {
-                            // التبديل في الخلفية
-                            document.getElementById('loginSection').style.display = 'none';
-                            document.getElementById('headerSubtitle').style.display = 'none';
-                            document.getElementById('examsSection').style.display = 'block';
-                            
-                            document.getElementById('developerFooter').style.display = 'flex';
-                            document.getElementById('developerFooter').style.opacity = '1';
-
-                            fetchExamsFromServer();
-
-                            // نقل الكارت للناحية التانية بدون أنيميشن
-                            card.style.transition = "none";
-                            card.style.transform = "perspective(1000px) rotateY(-90deg) scale(0.95)";
-
-                            // إجبار المتصفح على رسم التغيير
-                            void card.offsetWidth; 
-
-                            // الدوران للظهور
-                            card.style.transition = "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.35s ease-out";
-                            card.style.transform = "perspective(1000px) rotateY(0deg) scale(1)";
-                            card.style.opacity = "1";
-
-                        }, 350); 
-                    }, 400);
+                        document.getElementById('loginSection').style.display = 'none';
+                        document.getElementById('headerSubtitle').style.display = 'none';
+                        document.getElementById('termCursor').style.display = 'none';
+                        document.getElementById('examsSection').style.display = 'block';
+                        document.getElementById('developerFooter').style.display = 'flex';
+                        fetchExamsFromServer();
+                    }, 500);
 
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
@@ -348,6 +332,7 @@
 
         function fetchExamsFromServer() {
             const examsContainer = document.getElementById('dynamicExamsList');
+            const countDisplay = document.getElementById('examsCountDisplay');
             
             if (!database) {
                 examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';
@@ -357,11 +342,13 @@
             database.ref('exams').on('value', (snapshot) => {
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
+                let examCount = 0;
                 
                 if (examsData) {
                     Object.keys(examsData).forEach((key) => {
                         const exam = examsData[key];
                         if(exam && exam.name) {
+                            examCount++;
                             const isClosed = exam.status === 'closed';
                             const actionClass = isClosed ? 'locked' : '';
                             const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
@@ -376,7 +363,12 @@
                                 </div>`;
                         }
                     });
-                } else {
+                } 
+                
+                // تحديث العداد في لوحة التحكم
+                countDisplay.innerText = examCount;
+
+                if (examCount === 0) {
                     examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
                 }
             }, (error) => {
@@ -386,11 +378,9 @@
 
         function goToExam(isClosed, url) {
             if (isClosed === 'true' || isClosed === true) {
-                playUIBeep('error');
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
                 if (!database) return;
-                playUIBeep('success');
                 const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
                 const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
                 
@@ -409,7 +399,6 @@
         }
 
         function showError(button, message) {
-            playUIBeep('error'); // 🎵 تشغيل صوت الخطأ 
             button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
             setTimeout(() => { 
                 button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
@@ -431,31 +420,14 @@
             btn.style.color = 'var(--bg0)';
             btn.innerHTML = 'تسجيل الدخول';
 
-            // 🎬 حركة الـ 3D العكسية عند الخروج
-            const card = document.getElementById('mainCard');
-            document.getElementById('developerFooter').style.opacity = '0';
-
-            card.style.transition = "transform 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.35s ease-in";
-            card.style.transform = "perspective(1000px) rotateY(90deg) scale(0.95)";
-            card.style.opacity = "0";
-
-            setTimeout(() => {
-                document.getElementById('examsSection').style.display = 'none';
-                document.getElementById('developerFooter').style.display = 'none';
-                
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('headerSubtitle').style.display = 'block';
-                document.getElementById('headerSubtitle').style.opacity = '1';
-
-                card.style.transition = "none";
-                card.style.transform = "perspective(1000px) rotateY(-90deg) scale(0.95)";
-
-                void card.offsetWidth; 
-
-                card.style.transition = "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.35s ease-out";
-                card.style.transform = "perspective(1000px) rotateY(0deg) scale(1)";
-                card.style.opacity = "1";
-            }, 350);
+            document.getElementById('examsSection').style.display = 'none';
+            document.getElementById('developerFooter').style.display = 'none';
+            
+            // إعادة تفعيل الترحيب
+            document.getElementById('headerSubtitle').style.display = 'inline-block';
+            document.getElementById('termCursor').style.display = 'inline-block';
+            document.getElementById('loginSection').style.display = 'block';
+            runTerminalEffect();
 
             if (location.hash === '#exams') history.back();
         }
@@ -494,4 +466,3 @@
     </script>
 </body>
 </html>
-
