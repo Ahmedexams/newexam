@@ -117,6 +117,41 @@
     </div>
 
     <script>
+        // 🎵 محرك الأصوات الذكي (بدون ملفات خارجية)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        function playUIBeep(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'success') {
+                // صوت "Ding" ناعم ومريح (مثل أجهزة آبل)
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(523.25, now); // نغمة C5
+                oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.1); 
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05); // Attack
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3); // Decay
+                oscillator.start(now);
+                oscillator.stop(now + 0.3);
+            } else if (type === 'error') {
+                // صوت "Bop" عميق لتنبيه الخطأ
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(200, now);
+                oscillator.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.2, now + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                oscillator.start(now);
+                oscillator.stop(now + 0.2);
+            }
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -217,6 +252,7 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                    playUIBeep('success'); // 🎵 تشغيل صوت النجاح
                     btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
                     
                     logDeviceData(usernameInput);
@@ -309,6 +345,7 @@
         }
 
         function showError(button, message) {
+            playUIBeep('error'); // 🎵 تشغيل صوت الخطأ
             button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
             setTimeout(() => { 
                 button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
@@ -358,7 +395,7 @@
             }
         });
 
-        // 🛡️ طبقة الحماية ضد الغش (تم إضافتها وتأمينها هنا)
+        // 🛡️ طبقة الحماية ضد الغش 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if (e.keyCode === 123 || 
@@ -372,3 +409,4 @@
     </script>
 </body>
 </html>
+
