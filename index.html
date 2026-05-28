@@ -30,8 +30,18 @@
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; transition: opacity 0.3s; }
         
-        /* 🎬 النقلة السينمائية 3D */
-        .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; transform-origin: center; }
+        /* 🎬 النقلة السينمائية 3D مع دعم كامل للموبايلات */
+        .card { 
+            background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); 
+            border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; 
+            box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); 
+            position: relative; overflow: hidden; width: 100%; 
+            transform-origin: center; 
+            -webkit-backface-visibility: hidden; 
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+        }
         @keyframes flipCardOut {
             0% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
             100% { transform: perspective(1000px) rotateY(90deg) scale(0.95); opacity: 0; }
@@ -40,8 +50,22 @@
             0% { transform: perspective(1000px) rotateY(-90deg) scale(0.95); opacity: 0; }
             100% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
         }
-        .flip-out { animation: flipCardOut 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
-        .flip-in { animation: flipCardIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        @-webkit-keyframes flipCardOut {
+            0% { -webkit-transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+            100% { -webkit-transform: perspective(1000px) rotateY(90deg) scale(0.95); opacity: 0; }
+        }
+        @-webkit-keyframes flipCardIn {
+            0% { -webkit-transform: perspective(1000px) rotateY(-90deg) scale(0.95); opacity: 0; }
+            100% { -webkit-transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+        }
+        .flip-out { 
+            animation: flipCardOut 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
+            -webkit-animation: flipCardOut 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
+        }
+        .flip-in { 
+            animation: flipCardIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+            -webkit-animation: flipCardIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+        }
 
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
@@ -133,8 +157,21 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
 
+        // 🔓 التصحيح: فك حظر الصوت إجبارياً على متصفحات الموبايل مع أول لمسة للشاشة
+        function unlockAudio() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            document.removeEventListener('touchstart', unlockAudio);
+            document.removeEventListener('click', unlockAudio);
+        }
+        document.addEventListener('touchstart', unlockAudio, { once: true });
+        document.addEventListener('click', unlockAudio, { once: true });
+
         function playUIBeep(type) {
+            if (!audioCtx) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
+            
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             oscillator.connect(gainNode);
@@ -189,7 +226,6 @@
             const loginTime = sessionStorage.getItem('login_time');
             const tenMinutes = 10 * 60 * 1000; 
 
-            // لو الطالب مسجل دخول بالفعل (بدون أنيميشن عشان الـ Refresh)
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
                 if (timePassed < tenMinutes) {
@@ -248,6 +284,9 @@
             const btn = document.getElementById('loginBtn');
             const card = document.getElementById('mainCard');
             
+            // تأكيد تشغيل محرك الصوت عند ضغطة الزر
+            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+
             if (!database) {
                 showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
                 return;
@@ -288,7 +327,6 @@
                         card.classList.add('flip-out');
 
                         setTimeout(() => {
-                            // التبديل في منتصف الدوران والمكان مخفي
                             document.getElementById('loginSection').style.display = 'none';
                             document.getElementById('headerSubtitle').style.display = 'none';
                             document.getElementById('examsSection').style.display = 'block';
@@ -305,7 +343,7 @@
                                 card.classList.remove('flip-in');
                             }, 350);
 
-                        }, 350); // نص وقت الأنيميشن
+                        }, 350); 
                     }, 400);
 
                 } else { 
@@ -355,6 +393,8 @@
         }
 
         function goToExam(isClosed, url) {
+            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+
             if (isClosed === 'true' || isClosed === true) {
                 playUIBeep('error');
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
@@ -388,6 +428,8 @@
         }
 
         function handleLogout() {
+            if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+
             sessionStorage.removeItem('student_auth');
             sessionStorage.removeItem('student_name');
             sessionStorage.removeItem('login_time');
