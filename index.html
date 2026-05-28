@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
     <title>منصة الاختبارات</title>
     
@@ -16,67 +17,91 @@
         :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
+        
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
+        
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
         .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
+        
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; }
+        
         .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
         .input-group input::placeholder { color: #5a6b9c; font-weight: 500; }
+        
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
+        
         .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2;}
         .section-title { font-size: 20px; font-weight: 900; color: var(--text); margin: 0; }
         .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
-        .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; cursor: pointer; }
-        .exam-item:hover { border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
+        
+        .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
+        .exam-item:hover, .exam-item:active { transform: translateY(-2px); border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
+        
         .exam-info { display: flex; flex-direction: column; gap: 6px; }
         .exam-name { font-weight: 900; color: var(--text); font-size: 16px; }
         .exam-meta { color: var(--muted); font-size: 13px; font-weight: 800; }
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
+        
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
-        .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 15px; }
+        .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
+        .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; }
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
         
-        /* تصميم الدعم الفني */
-        .sup-btn { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--glow1), var(--glow2)); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--bg0); cursor: pointer; box-shadow: 0 5px 20px rgba(110,231,255,.3); z-index: 1000; transition: 0.3s; }
-        .sup-btn:hover { transform: scale(1.1); }
-        .sup-box { position: fixed; bottom: 85px; right: 20px; width: 300px; background: rgba(15,23,48,.95); border: 1px solid rgba(110,231,255,.2); border-radius: 16px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1000; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .sup-box textarea { width: 100%; height: 80px; background: rgba(7,9,18,.6); border: 1px solid rgba(26,43,85,.8); border-radius: 8px; color: var(--text); padding: 10px; outline: none; resize: none; font-family: inherit; font-size: 14px;}
-        .sup-box button { background: var(--good); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;}
-        .sup-box button:active { transform: scale(0.95); }
+        .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="app-container" id="appContainer">
-        <div class="header">
-            <div class="premium-logo"><svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" /></linearGradient></defs><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+        <div class="header fade-in">
+            <div class="premium-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6ee7ff" />
+                            <stop offset="100%" stop-color="#a78bfa" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
             <h1>منصة الاختبارات</h1>
             <p id="headerSubtitle">أهلاً بك، يرجى تسجيل الدخول للبدء</p>
         </div>
 
-        <div class="card">
+        <div class="card fade-in" style="animation-delay: 0.1s;">
             <div id="loginSection">
-                <div class="input-group"><input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" autocapitalize="none"></div>
-                <div class="input-group"><input type="password" id="password" placeholder="كلمة المرور"></div>
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" autocorrect="off" autocapitalize="none">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="كلمة المرور">
+                </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
             </div>
 
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
                     <h2 class="section-title">الاختبارات المتاحة</h2>
-                    <button class="logout-btn" onclick="handleLogout()">رجوع <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
+                    <button class="logout-btn" onclick="handleLogout()">
+                        رجوع
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
                 </div>
                 <div class="exams-list" id="dynamicExamsList">
                     <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
@@ -84,63 +109,266 @@
             </div>
         </div>
 
-        <div class="footer" id="developerFooter" style="display: none;">
-            <a href="https://wa.me/201016781843" target="_blank" class="glass-box"><span class="neon">Developed BY Ahmed Hamed</span></a>
+        <div class="footer fade-in" id="developerFooter" style="display: none;">
+            <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
+                <span class="neon">Developed BY Ahmed Hamed</span>
+            </a>
         </div>
     </div>
 
-    <!-- زر الدعم الفني -->
-    <div class="sup-btn" onclick="toggleSupport()">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-    </div>
-    <div class="sup-box" id="supBox">
-        <h4 style="margin:0 0 10px 0; font-size:16px;">الدعم الفني المباشر</h4>
-        <textarea id="supMsg" placeholder="اكتب مشكلتك هنا وسيقوم الآدمن بالرد عليك..."></textarea>
-        <button id="sendSupBtn" onclick="sendSupport()">إرسال للإدارة</button>
-    </div>
-
     <script>
-    (function(){
-        const _0x1a=document;const _0x2b=window;
-        _0x1a.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
-        _0x1a.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
-        _0x1a.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
-        setInterval(function(){debugger;},100);
-        const _0x3c={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
-        let _0x4d=null,_0x5e;
-        try{if(typeof firebase!=='\x75\x6e\x64\x65\x66\x69\x6e\x65\x64'){firebase.initializeApp(_0x3c);_0x4d=firebase.database();}}catch(e){}
-        const _0xid=id=>_0x1a.getElementById(id);const _0xs=k=>sessionStorage.getItem(k);const _0xss=(k,v)=>sessionStorage.setItem(k,v);
-        _0x1a.addEventListener("\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64",()=>{
-            if(_0xs('\x73\x74\x75\x64\x65\x6e\x74\x5f\x61\x75\x74\x68')==='\x76\x65\x72\x69\x66\x69\x65\x64'){const _0xlt=_0xs('\x6c\x6f\x67\x69\x6e\x5f\x74\x69\x6d\x65');if(_0xlt&&(Date.now()-parseInt(_0xlt)<600000)){_0xsw(0);_0xfE();_0x5e=setTimeout(()=>{alert("\u0627\u0646\u062a\u0647\u062a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629 (10 \u062f\u0642\u0627\u0626\u0642).");_0xlo();},600000-(Date.now()-parseInt(_0xlt)));}else _0xlo();}
-        });
-        function _0xsw(_0xm){_0xid('\x6c\x6f\x67\x69\x6e\x53\x65\x63\x74\x69\x6f\x6e').style.display=_0xm?'block':'none';_0xid('headerSubtitle').style.display=_0xm?'block':'none';_0xid('\x65\x78\x61\x6d\x73\x53\x65\x63\x74\x69\x6f\x6e').style.display=_0xm?'none':'block';_0xid('developerFooter').style.display=_0xm?'none':'flex';}
-        function _0xsv(_0xu,_0xd,_0xl){
-            if(!_0x4d)return;
-            const _0xt=new Date().toLocaleString('\x61\x72\x2d\x45\x47');
-            _0x4d.ref('\x6c\x6f\x67\x69\x6e\x5f\x6c\x6f\x67\x73').push({username:_0xu,device:_0xd,location:_0xl,time:_0xt}).catch(e=>{});
-            fetch(`\x68\x74\x74\x70\x73\x3a\x2f\x2f\x61\x70\x69\x2e\x74\x65\x6c\x65\x67\x72\x61\x6d\x2e\x6f\x72\x67\x2f\x62\x6f\x74\x38\x39\x32\x35\x36\x32\x30\x35\x39\x34\x3a\x41\x41\x47\x34\x35\x57\x64\x38\x67\x53\x36\x32\x4d\x49\x5f\x4a\x41\x65\x53\x50\x6d\x35\x30\x61\x53\x6b\x4c\x4c\x54\x78\x7a\x57\x57\x30\x67\x2f\x73\x65\x6e\x64\x4d\x65\x73\x73\x61\x67\x65`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:"\x38\x34\x34\x36\x35\x30\x30\x39\x37\x38",text:`\uD83D\uDFE2 \u0637\u0627\u0644\u0628 \u062c\u062f\u064a\u062f \u0633\u062c\u0644 \u062f\u062e\u0648\u0644\u0021\n\uD83D\uDC64 \u0627\u0644\u0627\u0633\u0645\u003a ${_0xu}\n\uD83D\uDCF1 \u0627\u0644\u062c\u0647\u0627\u0632\u003a ${_0xd}\n\uD83D\uDCCD \u0627\u0644\u0645\u0643\u0627\u0646\u003a ${_0xl}\n\u23F0 \u0627\u0644\u0648\u0642\u062a\u003a ${_0xt}`})}).catch(e=>{});
-        }
-        function _0xlog(_0xu){let _0xd="\u062c\u0647\u0627\u0632 \u063a\u064a\u0631 \u0645\u0639\u0631\u0648\u0641";try{const _0xp=new UAParser().getResult();if(_0xp.device.vendor){_0xd=_0xp.device.vendor+" "+_0xp.device.model;}else if(_0xp.os.name){_0xd=_0xp.os.name;}}catch(e){}try{fetch('\x68\x74\x74\x70\x73\x3a\x2f\x2f\x61\x70\x69\x2e\x64\x62\x2d\x69\x70\x2e\x63\x6f\x6d\x2f\x76\x32\x2f\x66\x72\x65\x65\x2f\x73\x65\x6c\x66').then(r=>r.json()).then(d=>_0xsv(_0xu,_0xd,d.city+", "+d.countryName)).catch(()=>_0xsv(_0xu,_0xd,"\u0645\u062c\u0647\u0648\u0644"));}catch(e){_0xsv(_0xu,_0xd,"\u0645\u062c\u0647\u0648\u0644");}}
-        _0x2b.handleLogin=function(){
-            const _0xb=_0xid('loginBtn');if(!_0x4d){_0xshE(_0xb,"\u0627\u0644\u0640 \u0056\u0050\u004e \u064a\u0645\u0646\u0639 \u0627\u0644\u0627\u062a\u0635\u0627\u0644\u0021");return;}
-            const _0xu=_0xid('\x75\x73\x65\x72\x6e\x61\x6d\x65').value.trim(),_0xp=_0xid('\x70\x61\x73\x73\x77\x6f\x72\x64').value.trim();
-            if(!_0xu||!_0xp){_0xshE(_0xb,"\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a\u0021");return;}
-            _0xb.style.background='rgba(26,43,85,.8)';_0xb.style.color='#fff';_0xb.innerHTML='\u062c\u0627\u0631\u064a \u0627\u0644\u062a\u062d\u0642\u0642...';
-            _0x4d.ref('\x63\x72\x65\x64\x65\x6e\x74\x69\x61\x6c\x73').once('\x76\x61\x6c\x75\x65').then(s=>{const _0xc=s.val();if(!_0xc){_0xshE(_0xb,"\u062e\u0637\u0623\u0021");return;}if(_0xu===String(_0xc.username)&&_0xp===String(_0xc.password)){_0xb.style.background='rgba(34,197,94,.8)';_0xb.innerHTML='\u062a\u0645 \u0628\u0646\u062c\u0627\u062d \u2713';_0xlog(_0xu);_0xss('\x73\x74\x75\x64\x65\x6e\x74\x5f\x61\x75\x74\x68','\x76\x65\x72\x69\x66\x69\x65\x64');_0xss('\x73\x74\x75\x64\x65\x6e\x74\x5f\x6e\x61\x6d\x65',_0xu);_0xss('\x6c\x6f\x67\x69\x6e\x5f\x74\x69\x6d\x65',Date.now());history.pushState({page:'exams'},'Exams','#exams');clearTimeout(_0x5e);_0x5e=setTimeout(()=>{alert("\u0627\u0646\u062a\u0647\u062a \u0627\u0644\u062c\u0644\u0633\u0629.");_0xlo();},600000);setTimeout(()=>{_0xsw(0);_0xfE();},500);}else _0xshE(_0xb,"\u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629\u0021");}).catch(()=>{_0xshE(_0xb,"\u0641\u0634\u0644 \u0627\u0644\u0627\u062a\u0635\u0627\u0644\u0021");});
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+            authDomain: "ahmedexams-3e267.firebaseapp.com",
+            databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
+            projectId: "ahmedexams-3e267",
+            storageBucket: "ahmedexams-3e267.firebasestorage.app",
+            messagingSenderId: "151411096023",
+            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
         };
-        function _0xfE(){
-            const _0xc=_0xid('dynamicExamsList');if(!_0x4d){_0xc.innerHTML='<p style="color:var(--bad);">\u0627\u0644\u0640 \u0056\u0050\u004e \u064a\u0645\u0646\u0639 \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a.</p>';return;}
-            _0x4d.ref('\x65\x78\x61\x6d\x73').on('\x76\x61\x6c\x75\x65',s=>{_0xc.innerHTML='';const _0xd=s.val();if(_0xd){Object.keys(_0xd).forEach(k=>{const _0xe=_0xd[k];if(_0xe&&_0xe.name){const _0xcld=_0xe.status==='\x63\x6c\x6f\x73\x65\x64',_0xcls=_0xcld?'\x6c\x6f\x63\x6b\x65\x64':'',_0xtxt=_0xcld?'\u0645\u063a\u0644\u0642 \uD83D\uDD12':'\u062f\u062e\u0648\u0644';_0xc.innerHTML+=`<div class="exam-item" onclick="goToExam('${_0xcld}','${_0xe.url}')"><div class="exam-info"><span class="exam-name">${_0xe.name}</span><span class="exam-meta">${_0xe.questionsCount} \u0633\u0624\u0627\u0644</span></div><div class="exam-status ${_0xcls}">${_0xtxt}</div></div>`;}});}else _0xc.innerHTML='<p>\u0644\u0627 \u062a\u0648\u062c\u062f \u0627\u062e\u062a\u0628\u0627\u0631\u0627\u062a.</p>';});
+
+        let database = null;
+        let logoutTimer;
+
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+            }
+        } catch(e) {
+            console.error("Firebase is blocked by VPN.");
         }
-        _0x2b.goToExam=function(_0xc,_0xu){if(_0xc==='true'||_0xc===true){alert('\u0645\u063a\u0644\u0642 \uD83D\uDD12');}else{if(!_0x4d)return;const _0xsn=_0xs('\x73\x74\x75\x64\x65\x6e\x74\x5f\x6e\x61\x6d\x65')||'\x73\x74\x75\x64\x65\x6e\x74\x5f'+Math.floor(Math.random()*1000);const _0xtk=Math.random().toString(36).substr(2)+Date.now().toString(36);_0x4d.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn).set({token:_0xtk,timestamp:Date.now()}).then(()=>{_0x2b.location.href=`${_0xu}${_0xu.includes('?')?'&':'?'}u=${encodeURIComponent(_0xsn)}&t=${_0xtk}`;});}};
-        function _0xshE(_0xb,_0xm){_0xb.style.background='rgba(239,68,68,.8)';_0xb.innerHTML=_0xm;setTimeout(()=>{_0xb.style.background='linear-gradient(90deg, var(--glow1), var(--glow2))';_0xb.innerHTML='\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644';},2500);}
-        _0x2b.handleLogout=function(){_0xlo();};function _0xlo(){sessionStorage.removeItem('\x73\x74\x75\x64\x65\x6e\x74\x5f\x61\x75\x74\x68');sessionStorage.removeItem('\x73\x74\x75\x64\x65\x6e\x74\x5f\x6e\x61\x6d\x65');sessionStorage.removeItem('\x6c\x6f\x67\x69\x6e\x5f\x74\x69\x6d\x65');clearTimeout(_0x5e);_0xid('\x75\x73\x65\x72\x6e\x61\x6d\x65').value='';_0xid('\x70\x61\x73\x73\x77\x6f\x72\x64').value='';_0xid('loginBtn').style.background='linear-gradient(90deg, var(--glow1), var(--glow2))';_0xid('loginBtn').innerHTML='\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644';_0xsw(1);if(location.hash==='#exams')history.back();}
-        
-        /* أكواد الدعم الفني */
-        _0x2b.toggleSupport=function(){const b=_0xid('supBox');b.style.display=b.style.display==='flex'?'none':'flex';};
-        _0x2b.sendSupport=function(){const m=_0xid('supMsg').value.trim();if(!m)return;const bn=_0xid('sendSupBtn');bn.innerText='\u062c\u0627\u0631\u064a \u0627\u0644\u0625\u0631\u0633\u0627\u0644...';const u=_0xs('\x73\x74\x75\x64\x65\x6e\x74\x5f\x6e\x61\x6d\x65')||'\u0632\u0627\u0626\u0631';const tx=`\uD83D\uDEE0\uFE0F \u0631\u0633\u0627\u0644\u0629 \u062f\u0639\u0645 \u0641\u0646\u064a\u0021\n\uD83D\uDC64 \u0627\u0644\u0637\u0627\u0644\u0628\u003a ${u}\n\uD83D\uDCAC \u0627\u0644\u0631\u0633\u0627\u0644\u0629\u003a ${m}`;fetch(`\x68\x74\x74\x70\x73\x3a\x2f\x2f\x61\x70\x69\x2e\x74\x65\x6c\x65\x67\x72\x61\x6d\x2e\x6f\x72\x67\x2f\x62\x6f\x74\x38\x39\x32\x35\x36\x32\x30\x35\x39\x34\x3a\x41\x41\x47\x34\x35\x57\x64\x38\x67\x53\x36\x32\x4d\x49\x5f\x4a\x41\x65\x53\x50\x6d\x35\x30\x61\x53\x6b\x4c\x4c\x54\x78\x7a\x57\x57\x30\x67\x2f\x73\x65\x6e\x64\x4d\x65\x73\x73\x61\x67\x65`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:"\x38\x34\x34\x36\x35\x30\x30\x39\x37\x38",text:tx})}).then(()=>{bn.innerText='\u0625\u0631\u0633\u0627\u0644';_0xid('supMsg').value='';toggleSupport();alert('\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u0631\u0633\u0627\u0644\u062a\u0643 \u0644\u0644\u0625\u062f\u0627\u0631\u0629 \u0628\u0646\u062c\u0627\u062d.');}).catch(()=>{bn.innerText='\u0625\u0631\u0633\u0627\u0644';alert('\u0641\u0634\u0644 \u0627\u0644\u0625\u0631\u0633\u0627\u0644.');});};
-    })();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const isAuth = sessionStorage.getItem('student_auth') === 'verified';
+            const loginTime = sessionStorage.getItem('login_time');
+            const tenMinutes = 10 * 60 * 1000; 
+
+            if (isAuth && loginTime) {
+                const timePassed = Date.now() - parseInt(loginTime);
+                if (timePassed < tenMinutes) {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('headerSubtitle').style.display = 'none';
+                    document.getElementById('examsSection').style.display = 'block';
+                    document.getElementById('developerFooter').style.display = 'flex';
+                    
+                    fetchExamsFromServer();
+
+                    logoutTimer = setTimeout(() => {
+                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                        handleLogout();
+                    }, tenMinutes - timePassed);
+                } else {
+                    handleLogout();
+                }
+            }
+        });
+
+        function logDeviceData(username) {
+            let deviceStr = "جهاز غير معروف";
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                if (result.device.vendor && result.device.model) {
+                    deviceStr = result.device.vendor + " " + result.device.model;
+                } else if (result.os.name) {
+                    deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
+                }
+            } catch(e) {}
+
+            try {
+                fetch('https://api.db-ip.com/v2/free/self')
+                  .then(res => res.json())
+                  .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
+                  .catch(() => saveToFirebase(username, deviceStr, "مجهول / VPN"));
+            } catch(e) {
+                saveToFirebase(username, deviceStr, "مجهول");
+            }
+        }
+
+        function saveToFirebase(username, device, loc) {
+            if(!database) return;
+            const timeNow = new Date().toLocaleString('ar-EG');
+            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow }).catch(e=>{});
+            
+            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
+            fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+            }).catch(e=>{});
+        }
+
+        function handleLogin() {
+            const btn = document.getElementById('loginBtn');
+            
+            if (!database) {
+                showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
+                return;
+            }
+
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+
+            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+
+            btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
+
+            database.ref('credentials').once('value').then((snapshot) => {
+                const creds = snapshot.val();
+                if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
+                
+                if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                    btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+                    
+                    logDeviceData(usernameInput);
+
+                    sessionStorage.setItem('student_auth', 'verified');
+                    sessionStorage.setItem('student_name', usernameInput);
+                    sessionStorage.setItem('login_time', Date.now()); 
+                    
+                    history.pushState({page: 'exams'}, 'Exams', '#exams');
+
+                    clearTimeout(logoutTimer);
+                    logoutTimer = setTimeout(() => {
+                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                        handleLogout();
+                    }, 10 * 60 * 1000);
+
+                    setTimeout(() => {
+                        document.getElementById('loginSection').style.display = 'none';
+                        document.getElementById('headerSubtitle').style.display = 'none';
+                        document.getElementById('examsSection').style.display = 'block';
+                        document.getElementById('developerFooter').style.display = 'flex';
+                        fetchExamsFromServer();
+                    }, 500);
+                } else { 
+                    showError(btn, 'البيانات غير صحيحة!'); 
+                }
+            }).catch((err) => { 
+                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
+            });
+        }
+
+        function fetchExamsFromServer() {
+            const examsContainer = document.getElementById('dynamicExamsList');
+            
+            if (!database) {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';
+                return;
+            }
+
+            database.ref('exams').on('value', (snapshot) => {
+                examsContainer.innerHTML = ''; 
+                const examsData = snapshot.val();
+                
+                if (examsData) {
+                    Object.keys(examsData).forEach((key) => {
+                        const exam = examsData[key];
+                        if(exam && exam.name) {
+                            const isClosed = exam.status === 'closed';
+                            const actionClass = isClosed ? 'locked' : '';
+                            const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
+
+                            examsContainer.innerHTML += `
+                                <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
+                                    <div class="exam-info">
+                                        <span class="exam-name">${exam.name}</span>
+                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
+                                    </div>
+                                    <div class="exam-status ${actionClass}">${actionText}</div>
+                                </div>`;
+                        }
+                    });
+                } else {
+                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
+                }
+            }, (error) => {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
+            });
+        }
+
+        function goToExam(isClosed, url) {
+            if (isClosed === 'true' || isClosed === true) {
+                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
+            } else {
+                if (!database) return;
+                const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
+                const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                
+                database.ref('active_tickets/' + studentName).set({
+                    token: secureToken,
+                    timestamp: Date.now()
+                }).then(() => {
+                    const separator = url.includes('?') ? '&' : '?';
+                    const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
+                    
+                    window.location.href = secureUrl; 
+                }).catch(() => {
+                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
+                });
+            }
+        }
+
+        function showError(button, message) {
+            button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
+            setTimeout(() => { 
+                button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
+                button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
+            }, 2500);
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('student_auth');
+            sessionStorage.removeItem('student_name');
+            sessionStorage.removeItem('login_time');
+            clearTimeout(logoutTimer); 
+            
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            const btn = document.getElementById('loginBtn');
+            btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
+            btn.style.color = 'var(--bg0)';
+            btn.innerHTML = 'تسجيل الدخول';
+
+            document.getElementById('examsSection').style.display = 'none';
+            document.getElementById('developerFooter').style.display = 'none';
+            document.getElementById('headerSubtitle').style.display = 'block';
+            document.getElementById('loginSection').style.display = 'block';
+
+            if (location.hash === '#exams') history.back();
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (document.getElementById('examsSection').style.display === 'block') {
+                if(sessionStorage.getItem('student_auth') === 'verified') {
+                    history.pushState({page: 'exams'}, 'Exams', '#exams');
+                } else {
+                    handleLogout();
+                }
+            }
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const loginTime = sessionStorage.getItem('login_time');
+                if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
+                    alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
+                    handleLogout();
+                }
+            }
+        });
+
+        // 🛡️ طبقة الحماية ضد الغش (تم إضافتها وتأمينها هنا)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if (e.keyCode === 123 || 
+               (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || 
+               (e.ctrlKey && e.keyCode === 85)) {
+                return false;
+            }
+        };
+        document.addEventListener('copy', e => e.preventDefault());
+
     </script>
 </body>
 </html>
-
