@@ -111,7 +111,7 @@
 
         <div class="footer fade-in">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
-                <span class="neon">Developed BY Ahmed Hamed</span>
+                <span class="neon">Created BY AHEMD HAMED</span>
             </a>
         </div>
     </div>
@@ -163,8 +163,13 @@
             }
         });
 
-        function logDeviceData(username) {
+        // 🚀 تحديث: الدالة الجديدة لجلب البيانات الدقيقة
+        async function logDeviceData(username) {
             let deviceStr = "جهاز غير معروف";
+            let platformStr = navigator.platform || "غير معروف";
+            let screenRes = window.screen.width + "x" + window.screen.height;
+
+            // محاولة جلب اسم الجهاز الدقيق
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
@@ -175,24 +180,52 @@
                 }
             } catch(e) {}
 
+            // محاولة جلب الآي بي والموقع بدقة
             try {
-                fetch('https://api.db-ip.com/v2/free/self')
-                  .then(res => res.json())
-                  .then(data => saveToFirebase(username, deviceStr, data.city + ", " + data.countryName))
-                  .catch(() => saveToFirebase(username, deviceStr, "مجهول / VPN"));
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                
+                const loc = (ipData.city || "") + ", " + (ipData.region || "") + ", " + (ipData.country_name || "");
+                const isp = ipData.org || "غير معروف";
+                const ip = ipData.ip || "غير معروف";
+                
+                saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
             } catch(e) {
-                saveToFirebase(username, deviceStr, "مجهول");
+                // في حالة فشل الـ API الأول، نستخدم الاحتياطي
+                try {
+                    const fallbackRes = await fetch('https://api.db-ip.com/v2/free/self');
+                    const fallbackData = await fallbackRes.json();
+                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, fallbackData.city + ", " + fallbackData.countryName, "غير معروف", fallbackData.ipAddress);
+                } catch(err) {
+                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, "مجهول / VPN", "مجهول", "مجهول");
+                }
             }
         }
 
-        function saveToFirebase(username, device, loc) {
+        // 🚀 تحديث: دالة الإرسال لفايربيز وتليجرام بالتنسيق الجديد
+        function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
-            database.ref('login_logs').push({ username: username, device: device, location: loc, time: timeNow }).catch(e=>{});
             
-            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n📍 المكان: ${loc}\n⏰ الوقت: ${timeNow}`;
+            // حفظ في الفايربيز
+            database.ref('login_logs').push({ 
+                username: username, 
+                device: device, 
+                platform: platform,
+                screen: screen,
+                location: loc, 
+                isp: isp,
+                ip: ip,
+                time: timeNow 
+            }).catch(e=>{});
+            
+            // إرسال للتليجرام
+            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ chat_id: "8446500978", text: msg })
             }).catch(e=>{});
         }
 
