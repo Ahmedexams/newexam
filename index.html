@@ -111,31 +111,293 @@
 
         <div class="footer fade-in">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
-                <span class="neon">DEVELOPED BY AHMED HAMED</span>
+                <span class="neon">DEVELOPED BY AHEMD HAMED</span>
             </a>
         </div>
     </div>
 
     <script>
-        const _0x4f2a=["\x41\x49\x7a\x61\x53\x79\x43\x65\x58\x62\x4a\x48\x68\x48\x5a\x72\x56\x56\x71\x2d\x42\x70\x72\x62\x65\x53\x41\x67\x78\x4c\x62\x42\x37\x6c\x33\x36\x45\x71\x67","ahmedexams-3e267.firebaseapp.com","https://ahmedexams-3e267-default-rtdb.firebaseio.com","ahmedexams-3e267","ahmedexams-3e267.firebasestorage.app","151411096023","1:151411096023:web:fcabb7c60c6e433b1bf392","https://ipapi.co/json/","https://api.db-ip.com/v2/free/self","https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage","8446500978","login_logs","credentials","active_tickets/","exams"];
-        const _0x1c8b={apiKey:_0x4f2a[0],authDomain:_0x4f2a[1],databaseURL:_0x4f2a[2],projectId:_0x4f2a[3],storageBucket:_0x4f2a[4],messagingSenderId:_0x4f2a[5],appId:_0x4f2a[6]};
-        let _0x9d3f=null,_0x2a1e;
-        try{if(typeof firebase!=='undefined'){firebase.initializeApp(_0x1c8b);_0x9d3f=firebase.database();}}catch(_0x5b2a){}
-        document.addEventListener("DOMContentLoaded",()=>{const _0x3b1c=sessionStorage.getItem('student_auth')==='verified',_0x4c2d=sessionStorage.getItem('login_time'),_0x5d3e=600000;if(_0x3b1c&&_0x4c2d){const _0x6e4f=Date.now()-parseInt(_0x4c2d);if(_0x6e4f<_0x5d3e){document.getElementById('loginSection').style.display='none';document.getElementById('headerSubtitle').style.display='none';document.getElementById('examsSection').style.display='block';_0x8f6a();_0x2a1e=setTimeout(()=>{alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");_0x7e5a();},_0x5d3e-_0x6e4f);}else{_0x7e5a();}}});
-        async function _0x1a9b(_0x2b8c){let _0x3c7d="Unk",_0x4d6e=navigator.platform||"Unk",_0x5e5f=window.screen.width+"x"+window.screen.height;try{const _0x6f4a=new UAParser(),_0x7a3b=_0x6f4a.getResult();if(_0x7a3b.device.vendor&&_0x7a3b.device.model){_0x3c7d=_0x7a3b.device.vendor+" "+_0x7a3b.device.model;}else if(_0x7a3b.os.name){_0x3c7d=_0x7a3b.os.name+" ("+(_0x7a3b.browser.name||"")+")";}}catch(_0x8b2c){}try{const _0x9c1d=await fetch(_0x4f2a[7]),_0xad0e=await _0x9c1d.json(),_0xbe9f=(_0xad0e.city||"")+", "+(_0xad0e.region||"")+", "+(_0xad0e.country_name||""),_0xcf8a=_0xad0e.org||"Unk",_0xda7b=_0xad0e.ip||"Unk";_0x2c1a(_0x2b8c,_0x3c7d,_0x4d6e,_0x5e5f,_0xbe9f,_0xcf8a,_0xda7b);}catch(_0xeb6c){try{const _0xfc5d=await fetch(_0x4f2a[8]),_0x1d4e=await _0xfc5d.json();_0x2c1a(_0x2b8c,_0x3c7d,_0x4d6e,_0x5e5f,_0x1d4e.city+", "+_0x1d4e.countryName,"Unk",_0x1d4e.ipAddress);}catch(_0x2e3f){_0x2c1a(_0x2b8c,_0x3c7d,_0x4d6e,_0x5e5f,"VPN","VPN","VPN");}}}
-        function _0x2c1a(_0x3f2a,_0x4a1b,_0x5b0c,_0x6c9d,_0x7d8e,_0x8e7f,_0x9f6a){if(!_0x9d3f)return;const _0xaf5b=new Date().toLocaleString('ar-EG');_0x9d3f.ref(_0x4f2a[11]).push({username:_0x3f2a,device:_0x4a1b,platform:_0x5b0c,screen:_0x6c9d,location:_0x7d8e,isp:_0x8e7f,ip:_0x9f6a,time:_0xaf5b}).catch(_0xba4c=>{});const _0xcb3d=`🟢 طالب جديد سجل دخول!\n👤 الاسم: ${_0x3f2a}\n📱 الجهاز: ${_0x4a1b}\n🖥 نظام التشغيل: ${_0x5b0c}\n📐 دقة الشاشة: ${_0x6c9d}\n📍 الموقع: ${_0x7d8e}\n📡 مزود الخدمة: ${_0x8e7f}\n🔗 الآي بي: ${_0x9f6a}\n⏰ الوقت: ${_0xaf5b}`;fetch(_0x4f2a[9],{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:_0x4f2a[10],text:_0xcb3d})}).catch(_0xdc2e=>{});}
-        window.handleLogin=function(){const _0xed1f=document.getElementById('loginBtn');if(!_0x9d3f){_0x5f2b(_0xed1f,"الـ VPN يمنع الاتصال! يرجى إغلاقه.");return;}const _0xfe0a=document.getElementById('username').value.trim(),_0x1f9b=document.getElementById('password').value.trim();if(_0xfe0a===''||_0x1f9b===''){_0x5f2b(_0xed1f,'يرجى إدخال البيانات!');return;}_0xed1f.style.background='rgba(26,43,85,.8)';_0xed1f.style.color='#fff';_0xed1f.innerHTML='جاري التحقق...';_0x9d3f.ref(_0x4f2a[12]).once('value').then((_0x2a8c)=>{const _0x3b7d=_0x2a8c.val();if(!_0x3b7d){_0x5f2b(_0xed1f,'خطأ في قاعدة البيانات!');return;}if(_0xfe0a===String(_0x3b7d.username)&&_0x1f9b===String(_0x3b7d.password)){_0xed1f.style.background='rgba(34,197,94,.8)';_0xed1f.style.color='#fff';_0xed1f.innerHTML='تم بنجاح ✓';_0x1a9b(_0xfe0a);sessionStorage.setItem('student_auth','verified');sessionStorage.setItem('student_name',_0xfe0a);sessionStorage.setItem('login_time',Date.now());history.pushState({page:'exams'},'Exams','#exams');clearTimeout(_0x2a1e);_0x2a1e=setTimeout(()=>{alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");_0x7e5a();},600000);setTimeout(()=>{document.getElementById('loginSection').style.display='none';document.getElementById('headerSubtitle').style.display='none';document.getElementById('examsSection').style.display='block';_0x8f6a();},500);}else{_0x5f2b(_0xed1f,'البيانات غير صحيحة!');}}).catch((_0x4c6e)=>{_0x5f2b(_0xed1f,'فشل الاتصال! تأكد من جودة الإنترنت.');});}
-        function _0x8f6a(){const _0x5d5f=document.getElementById('dynamicExamsList');if(!_0x9d3f){_0x5d5f.innerHTML='<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';return;}_0x9d3f.ref(_0x4f2a[14]).on('value',(_0x6e4a)=>{_0x5d5f.innerHTML='';const _0x7f3b=_0x6e4a.val();if(_0x7f3b){Object.keys(_0x7f3b).forEach((_0x8a2c)=>{const _0x9b1d=_0x7f3b[_0x8a2c];if(_0x9b1d&&_0x9b1d.name){const _0xac0e=_0x9b1d.status==='closed',_0xbd9f=_0xac0e?'locked':'',_0xce8a=_0xac0e?'مغلق 🔒':'دخول';_0x5d5f.innerHTML+=`<div class="exam-item" onclick="goToExam('${_0xac0e}', '${_0x9b1d.url}')"><div class="exam-info"><span class="exam-name">${_0x9b1d.name}</span><span class="exam-meta">${_0x9b1d.questionsCount} سؤال</span></div><div class="exam-status ${_0xbd9f}">${_0xce8a}</div></div>`;}});}else{_0x5d5f.innerHTML='<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';}},(_0xda7b)=>{_0x5d5f.innerHTML='<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';});}
-        window.goToExam=function(_0xeb6c,_0xfc5d){if(_0xeb6c==='true'||_0xeb6c===true){alert('عذراً، هذا الاختبار مغلق حالياً 🔒');}else{if(!_0x9d3f)return;const _0x1d4e=sessionStorage.getItem('student_name')||'student_'+Math.floor(Math.random()*1000),_0x2e3f=Math.random().toString(36).substring(2)+Date.now().toString(36);_0x9d3f.ref(_0x4f2a[13]+_0x1d4e).set({token:_0x2e3f,timestamp:Date.now()}).then(()=>{const _0x3f2a=_0xfc5d.includes('?')?'&':'?',_0x4a1b=`${_0xfc5d}${_0x3f2a}u=${encodeURIComponent(_0x1d4e)}&t=${_0x2e3f}`;window.location.href=_0x4a1b;}).catch(()=>{alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');});}}
-        function _0x5f2b(_0x5b0c,_0x6c9d){_0x5b0c.style.background='rgba(239,68,68,.8)';_0x5b0c.style.color='#fff';_0x5b0c.innerHTML=_0x6c9d;setTimeout(()=>{_0x5b0c.style.background='linear-gradient(90deg, var(--glow1), var(--glow2))';_0x5b0c.style.color='var(--bg0)';_0x5b0c.innerHTML='تسجيل الدخول';},2500);}
-        window.handleLogout=function(){_0x7e5a();}
-        function _0x7e5a(){sessionStorage.removeItem('student_auth');sessionStorage.removeItem('student_name');sessionStorage.removeItem('login_time');clearTimeout(_0x2a1e);document.getElementById('username').value='';document.getElementById('password').value='';const _0x7d8e=document.getElementById('loginBtn');_0x7d8e.style.background='linear-gradient(90deg, var(--glow1), var(--glow2))';_0x7d8e.style.color='var(--bg0)';_0x7d8e.innerHTML='تسجيل الدخول';document.getElementById('examsSection').style.display='none';document.getElementById('headerSubtitle').style.display='block';document.getElementById('loginSection').style.display='block';if(location.hash==='#exams')history.back();}
-        window.addEventListener('popstate',function(_0x8e7f){if(document.getElementById('examsSection').style.display==='block'){if(sessionStorage.getItem('student_auth')==='verified'){history.pushState({page:'exams'},'Exams','#exams');}else{_0x7e5a();}}});
-        window.addEventListener('pageshow',function(_0x9f6a){if(_0x9f6a.persisted){const _0xaf5b=sessionStorage.getItem('login_time');if(_0xaf5b&&(Date.now()-parseInt(_0xaf5b)>600000)){alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");_0x7e5a();}}});
-        document.addEventListener('contextmenu',_0xba4c=>_0xba4c.preventDefault());
-        document.onkeydown=_0xcb3d=>{if(_0xcb3d.keyCode===123||(_0xcb3d.ctrlKey&&_0xcb3d.shiftKey&&(_0xcb3d.keyCode===73||_0xcb3d.keyCode===67||_0xcb3d.keyCode===74))||(_0xcb3d.ctrlKey&&_0xcb3d.keyCode===85)){return false;}};
-        document.addEventListener('copy',_0xdc2e=>_0xdc2e.preventDefault());
-        setInterval(()=>{(()=>{return false;}['constructor']('debugger')());},100);
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+            authDomain: "ahmedexams-3e267.firebaseapp.com",
+            databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
+            projectId: "ahmedexams-3e267",
+            storageBucket: "ahmedexams-3e267.firebasestorage.app",
+            messagingSenderId: "151411096023",
+            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+        };
+
+        let database = null;
+        let logoutTimer;
+
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+            }
+        } catch(e) {
+            console.error("Firebase is blocked by VPN.");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const isAuth = sessionStorage.getItem('student_auth') === 'verified';
+            const loginTime = sessionStorage.getItem('login_time');
+            const tenMinutes = 10 * 60 * 1000; 
+
+            if (isAuth && loginTime) {
+                const timePassed = Date.now() - parseInt(loginTime);
+                if (timePassed < tenMinutes) {
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('headerSubtitle').style.display = 'none';
+                    document.getElementById('examsSection').style.display = 'block';
+                    
+                    fetchExamsFromServer();
+
+                    logoutTimer = setTimeout(() => {
+                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                        handleLogout();
+                    }, tenMinutes - timePassed);
+                } else {
+                    handleLogout();
+                }
+            }
+        });
+
+        // 🚀 تحديث: الدالة الجديدة لجلب البيانات الدقيقة
+        async function logDeviceData(username) {
+            let deviceStr = "جهاز غير معروف";
+            let platformStr = navigator.platform || "غير معروف";
+            let screenRes = window.screen.width + "x" + window.screen.height;
+
+            // محاولة جلب اسم الجهاز الدقيق
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                if (result.device.vendor && result.device.model) {
+                    deviceStr = result.device.vendor + " " + result.device.model;
+                } else if (result.os.name) {
+                    deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
+                }
+            } catch(e) {}
+
+            // محاولة جلب الآي بي والموقع بدقة
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+                
+                const loc = (ipData.city || "") + ", " + (ipData.region || "") + ", " + (ipData.country_name || "");
+                const isp = ipData.org || "غير معروف";
+                const ip = ipData.ip || "غير معروف";
+                
+                saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
+            } catch(e) {
+                // في حالة فشل الـ API الأول، نستخدم الاحتياطي
+                try {
+                    const fallbackRes = await fetch('https://api.db-ip.com/v2/free/self');
+                    const fallbackData = await fallbackRes.json();
+                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, fallbackData.city + ", " + fallbackData.countryName, "غير معروف", fallbackData.ipAddress);
+                } catch(err) {
+                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, "مجهول / VPN", "مجهول", "مجهول");
+                }
+            }
+        }
+
+        // 🚀 تحديث: دالة الإرسال لفايربيز وتليجرام بالتنسيق الجديد
+        function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
+            if(!database) return;
+            const timeNow = new Date().toLocaleString('ar-EG');
+            
+            // حفظ في الفايربيز
+            database.ref('login_logs').push({ 
+                username: username, 
+                device: device, 
+                platform: platform,
+                screen: screen,
+                location: loc, 
+                isp: isp,
+                ip: ip,
+                time: timeNow 
+            }).catch(e=>{});
+            
+            // إرسال للتليجرام
+            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            
+            fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ chat_id: "8446500978", text: msg })
+            }).catch(e=>{});
+        }
+
+        function handleLogin() {
+            const btn = document.getElementById('loginBtn');
+            
+            if (!database) {
+                showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
+                return;
+            }
+
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+
+            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+
+            btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
+
+            database.ref('credentials').once('value').then((snapshot) => {
+                const creds = snapshot.val();
+                if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
+                
+                if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
+                    btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+                    
+                    logDeviceData(usernameInput);
+
+                    sessionStorage.setItem('student_auth', 'verified');
+                    sessionStorage.setItem('student_name', usernameInput);
+                    sessionStorage.setItem('login_time', Date.now()); 
+                    
+                    history.pushState({page: 'exams'}, 'Exams', '#exams');
+
+                    clearTimeout(logoutTimer);
+                    logoutTimer = setTimeout(() => {
+                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                        handleLogout();
+                    }, 10 * 60 * 1000);
+
+                    setTimeout(() => {
+                        document.getElementById('loginSection').style.display = 'none';
+                        document.getElementById('headerSubtitle').style.display = 'none';
+                        document.getElementById('examsSection').style.display = 'block';
+                        fetchExamsFromServer();
+                    }, 500);
+                } else { 
+                    showError(btn, 'البيانات غير صحيحة!'); 
+                }
+            }).catch((err) => { 
+                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
+            });
+        }
+
+        function fetchExamsFromServer() {
+            const examsContainer = document.getElementById('dynamicExamsList');
+            
+            if (!database) {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';
+                return;
+            }
+
+            database.ref('exams').on('value', (snapshot) => {
+                examsContainer.innerHTML = ''; 
+                const examsData = snapshot.val();
+                
+                if (examsData) {
+                    Object.keys(examsData).forEach((key) => {
+                        const exam = examsData[key];
+                        if(exam && exam.name) {
+                            const isClosed = exam.status === 'closed';
+                            const actionClass = isClosed ? 'locked' : '';
+                            const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
+
+                            examsContainer.innerHTML += `
+                                <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
+                                    <div class="exam-info">
+                                        <span class="exam-name">${exam.name}</span>
+                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
+                                    </div>
+                                    <div class="exam-status ${actionClass}">${actionText}</div>
+                                </div>`;
+                        }
+                    });
+                } else {
+                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
+                }
+            }, (error) => {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
+            });
+        }
+
+        function goToExam(isClosed, url) {
+            if (isClosed === 'true' || isClosed === true) {
+                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
+            } else {
+                if (!database) return;
+                const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
+                const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                
+                database.ref('active_tickets/' + studentName).set({
+                    token: secureToken,
+                    timestamp: Date.now()
+                }).then(() => {
+                    const separator = url.includes('?') ? '&' : '?';
+                    const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
+                    
+                    window.location.href = secureUrl; 
+                }).catch(() => {
+                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
+                });
+            }
+        }
+
+        function showError(button, message) {
+            button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
+            setTimeout(() => { 
+                button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
+                button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
+            }, 2500);
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('student_auth');
+            sessionStorage.removeItem('student_name');
+            sessionStorage.removeItem('login_time');
+            clearTimeout(logoutTimer); 
+            
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            const btn = document.getElementById('loginBtn');
+            btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
+            btn.style.color = 'var(--bg0)';
+            btn.innerHTML = 'تسجيل الدخول';
+
+            document.getElementById('examsSection').style.display = 'none';
+            document.getElementById('headerSubtitle').style.display = 'block';
+            document.getElementById('loginSection').style.display = 'block';
+
+            if (location.hash === '#exams') history.back();
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (document.getElementById('examsSection').style.display === 'block') {
+                if(sessionStorage.getItem('student_auth') === 'verified') {
+                    history.pushState({page: 'exams'}, 'Exams', '#exams');
+                } else {
+                    handleLogout();
+                }
+            }
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const loginTime = sessionStorage.getItem('login_time');
+                if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
+                    alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
+                    handleLogout();
+                }
+            }
+        });
+
+        // 🛡️ فخ المطورين (للشلل التام للمتصفح إذا حاول الغشاش فتحه)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
+        };
+        document.addEventListener('copy', e => e.preventDefault());
+        setInterval(() => {
+            (function() { return false; }['constructor']('debugger')());
+        }, 100);
+
     </script>
 </body>
 </html>
