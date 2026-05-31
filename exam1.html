@@ -133,10 +133,18 @@
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       function _0xvt(){if(!_0xu||!_0xt){_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);return;}_0xsn=decodeURIComponent(_0xu);if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){_0xsep();return;}const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);_0xtr.once('\x76\x61\x6c\x75\x65').then((s)=>{const _0xd=s.val();if(_0xd&&_0xd.token===_0xt){if(Date.now()-_0xd.timestamp>120000){_0xerr("Please login first \uD83D\uDD12","\u0627\u0646\u062a\u0647\u062a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629...");setTimeout(()=>{_0xwn.location.replace("/");},2000);_0xtr.remove();return;}sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn,_0xt);_0xtr.remove().then(()=>{_0xsep();});}else{_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);}}).catch(()=>{_0xerr("\u062e\u0637\u0623 \u0641\u064a \u0627\u0644\u0627\u062a\u0635\u0627\u0644","\u062a\u0639\u0630\u0631 \u0627\u0644\u062a\u062d\u0642\u0642.");setTimeout(()=>{_0xwn.location.replace("/");},2000);});}
-      function _0xsep(){_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){_0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");}else{_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";_0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";_0xia();if(!_0xini){_0xini=!0;_0xiss();}}});}
+      
+      // 👇 التعديل الأول: المسار الجديد للإعدادات (فتح/قفل الامتحان)
+      function _0xsep(){_0xdb.ref('midterm_english_settings/exam_status').on('value',(s)=>{if(s.val()==='closed'){_0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");}else{_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";_0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";_0xia();if(!_0xini){_0xini=!0;_0xiss();}}});}
+      
       function _0xia(){_0xeq=_0xAQ;_0xst.l=Array(_0xeq.length).fill(!1);_0xst.so=Array(_0xeq.length).fill(null);_0xst.a=0;_0xst.s=0;_0xdc.getElementById("total").textContent=_0xeq.length;_0xrnd();}
-      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.9;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
-      function _0xiss(){_0xstR=_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x74\x75\x64\x65\x6e\x74\x73').push();_0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});}
+      
+      // 👇 التعديل الثاني: تقليل سرعة الصوت إلى 0.7
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      
+      // 👇 التعديل الثالث: المسار الجديد لحفظ أسامي ودرجات الطلبة
+      function _0xiss(){_0xstR=_0xdb.ref('midterm_english_students').push();_0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});}
+      
       const _0xG=_0xdc.getElementById("grid"),_0xA=_0xdc.getElementById("answered"),_0xS=_0xdc.getElementById("score"),_0xB=_0xdc.getElementById("bar"),_0xTst=_0xdc.getElementById("toast");
       function _0xstst(_0xM){_0xTst.textContent=_0xM;_0xTst.classList.add("show");setTimeout(()=>_0xTst.classList.remove("show"),1200);}
       function _0xuhd(){_0xA.textContent=_0xst.a;_0xS.textContent=_0xst.s;_0xB.style.width=(_0xst.a/_0xeq.length*100)+"%";}
@@ -146,3 +154,4 @@
   </script>
  </body>
 </html>
+
