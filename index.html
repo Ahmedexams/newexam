@@ -113,7 +113,6 @@
                     </button>
                 </div>
 
-                <!-- 💡 نظام التابات -->
                 <div class="tabs-row">
                     <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
                     <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
@@ -123,7 +122,6 @@
                     <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
                 </div>
 
-                <!-- 💡 قائمة الـ PDF -->
                 <div class="exams-list" id="dynamicPdfsList" style="display: none;">
                     <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p>
                 </div>
@@ -202,8 +200,11 @@
             }
         });
 
-        // 🚀 الدالة الجديدة لجلب البيانات الدقيقة
-        async function logDeviceData(username) {
+        // 🚀 دالة فحص الـ VPN المتقدمة
+        async function verifyConnectionAndLogin(username) {
+            const btn = document.getElementById('loginBtn');
+            btn.innerHTML = 'جاري فحص الحماية... 🛡️';
+
             let deviceStr = "جهاز غير معروف";
             let platformStr = navigator.platform || "غير معروف";
             let screenRes = window.screen.width + "x" + window.screen.height;
@@ -219,26 +220,36 @@
             } catch(e) {}
 
             try {
-                const ipResponse = await fetch('https://ipapi.co/json/');
-                const ipData = await ipResponse.json();
-                
-                const loc = (ipData.city || "") + ", " + (ipData.region || "") + ", " + (ipData.country_name || "");
-                const isp = ipData.org || "غير معروف";
-                const ip = ipData.ip || "غير معروف";
-                
-                saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
-            } catch(e) {
-                try {
-                    const fallbackRes = await fetch('https://api.db-ip.com/v2/free/self');
-                    const fallbackData = await fallbackRes.json();
-                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, fallbackData.city + ", " + fallbackData.countryName, "غير معروف", fallbackData.ipAddress);
-                } catch(err) {
-                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, "مجهول / VPN", "مجهول", "مجهول");
+                const res = await fetch('https://ipwho.is/');
+                const data = await res.json();
+
+                if(data.success) {
+                    const isVpnOrProxy = data.security.vpn || data.security.proxy || data.security.hosting || data.security.tor;
+                    const isOutsideEgypt = data.country !== "Egypt";
+
+                    if(isVpnOrProxy || isOutsideEgypt) {
+                        showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
+                        
+                        const timeNow = new Date().toLocaleString('ar-EG');
+                        const msg = `⚠️ محاولة دخول بـ VPN تم حظرها!\n👤 الاسم: ${username}\n📍 الموقع: ${data.city}, ${data.country}\n📡 مزود الخدمة: ${data.connection.isp}\n🔗 الآي بي: ${data.ip}\n⏰ الوقت: ${timeNow}`;
+                        fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                        }).catch(e=>{});
+                        
+                        return; 
+                    }
+
+                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, data.city + ", " + data.country, data.connection.isp, data.ip);
+                    finalizeLogin(username);
+                } else {
+                    finalizeLogin(username);
                 }
+            } catch(e) {
+                finalizeLogin(username);
             }
         }
 
-        // 🚀 دالة الإرسال لفايربيز وتليجرام بالتنسيق الجديد
+        // 🚀 دالة الإرسال لفايربيز وتليجرام
         function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
@@ -283,37 +294,42 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
-                    btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
-                    
-                    logDeviceData(usernameInput);
-
-                    sessionStorage.setItem('student_auth', 'verified');
-                    sessionStorage.setItem('student_name', usernameInput);
-                    sessionStorage.setItem('login_time', Date.now()); 
-                    
-                    history.pushState({page: 'exams'}, 'Exams', '#exams');
-
-                    clearTimeout(logoutTimer);
-                    logoutTimer = setTimeout(() => {
-                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
-                        handleLogout();
-                    }, 10 * 60 * 1000);
-
-                    setTimeout(() => {
-                        document.getElementById('loginSection').style.display = 'none';
-                        document.getElementById('headerSubtitle').style.display = 'none';
-                        document.getElementById('examsSection').style.display = 'block';
-                        
-                        fetchExamsFromServer();
-                        fetchPdfsFromServer(); // 💡 استدعاء ملفات الـ PDF
-                        
-                    }, 500);
+                    // الانتقال لدالة فحص الـ VPN قبل إتمام الدخول
+                    verifyConnectionAndLogin(usernameInput);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
             }).catch((err) => { 
                 showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
             });
+        }
+
+        // إتمام عملية الدخول بعد نجاح الفحص
+        function finalizeLogin(usernameInput) {
+            const btn = document.getElementById('loginBtn');
+            btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+
+            sessionStorage.setItem('student_auth', 'verified');
+            sessionStorage.setItem('student_name', usernameInput);
+            sessionStorage.setItem('login_time', Date.now()); 
+            
+            history.pushState({page: 'exams'}, 'Exams', '#exams');
+
+            clearTimeout(logoutTimer);
+            logoutTimer = setTimeout(() => {
+                alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                handleLogout();
+            }, 10 * 60 * 1000);
+
+            setTimeout(() => {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('headerSubtitle').style.display = 'none';
+                document.getElementById('examsSection').style.display = 'block';
+                
+                fetchExamsFromServer();
+                fetchPdfsFromServer();
+                
+            }, 500);
         }
 
         function fetchExamsFromServer() {
