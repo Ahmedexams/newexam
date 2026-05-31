@@ -39,10 +39,16 @@
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
         
-        .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2;}
+        .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2;}
         .section-title { font-size: 20px; font-weight: 900; color: var(--text); margin: 0; }
         .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
+        
+        /* 💡 ستايل التابات */
+        .tabs-row { display: flex; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
+        
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
@@ -54,6 +60,9 @@
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
         
+        /* 💡 زر فتح الـ PDF */
+        .pdf-status { background: rgba(110,231,255,.15); color: var(--glow1); border: 1px solid rgba(110,231,255,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
+
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
         .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
@@ -97,15 +106,28 @@
 
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
-                    <h2 class="section-title">الاختبارات المتاحة</h2>
+                    <h2 class="section-title">مستعد يا بطل؟ 🚀</h2>
                     <button class="logout-btn" onclick="handleLogout()">
                         رجوع
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
+
+                <!-- 💡 نظام التابات -->
+                <div class="tabs-row">
+                    <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
+                    <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
+                </div>
+
                 <div class="exams-list" id="dynamicExamsList">
                     <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
                 </div>
+
+                <!-- 💡 قائمة الـ PDF -->
+                <div class="exams-list" id="dynamicPdfsList" style="display: none;">
+                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p>
+                </div>
+
             </div>
         </div>
 
@@ -139,6 +161,22 @@
             console.error("Firebase is blocked by VPN.");
         }
 
+        // 💡 دالة التبديل بين التابات
+        function switchTab(tab) {
+            document.getElementById('tabExamsBtn').classList.remove('active');
+            document.getElementById('tabPdfsBtn').classList.remove('active');
+            document.getElementById('dynamicExamsList').style.display = 'none';
+            document.getElementById('dynamicPdfsList').style.display = 'none';
+
+            if (tab === 'exams') {
+                document.getElementById('tabExamsBtn').classList.add('active');
+                document.getElementById('dynamicExamsList').style.display = 'flex';
+            } else {
+                document.getElementById('tabPdfsBtn').classList.add('active');
+                document.getElementById('dynamicPdfsList').style.display = 'flex';
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
@@ -152,6 +190,7 @@
                     document.getElementById('examsSection').style.display = 'block';
                     
                     fetchExamsFromServer();
+                    fetchPdfsFromServer(); // 💡 استدعاء ملفات الـ PDF
 
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
@@ -163,13 +202,12 @@
             }
         });
 
-        // 🚀 تحديث: الدالة الجديدة لجلب البيانات الدقيقة
+        // 🚀 الدالة الجديدة لجلب البيانات الدقيقة
         async function logDeviceData(username) {
             let deviceStr = "جهاز غير معروف";
             let platformStr = navigator.platform || "غير معروف";
             let screenRes = window.screen.width + "x" + window.screen.height;
 
-            // محاولة جلب اسم الجهاز الدقيق
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
@@ -180,7 +218,6 @@
                 }
             } catch(e) {}
 
-            // محاولة جلب الآي بي والموقع بدقة
             try {
                 const ipResponse = await fetch('https://ipapi.co/json/');
                 const ipData = await ipResponse.json();
@@ -191,7 +228,6 @@
                 
                 saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
             } catch(e) {
-                // في حالة فشل الـ API الأول، نستخدم الاحتياطي
                 try {
                     const fallbackRes = await fetch('https://api.db-ip.com/v2/free/self');
                     const fallbackData = await fallbackRes.json();
@@ -202,12 +238,11 @@
             }
         }
 
-        // 🚀 تحديث: دالة الإرسال لفايربيز وتليجرام بالتنسيق الجديد
+        // 🚀 دالة الإرسال لفايربيز وتليجرام بالتنسيق الجديد
         function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
             
-            // حفظ في الفايربيز
             database.ref('login_logs').push({ 
                 username: username, 
                 device: device, 
@@ -219,7 +254,6 @@
                 time: timeNow 
             }).catch(e=>{});
             
-            // إرسال للتليجرام
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
             
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
@@ -269,7 +303,10 @@
                         document.getElementById('loginSection').style.display = 'none';
                         document.getElementById('headerSubtitle').style.display = 'none';
                         document.getElementById('examsSection').style.display = 'block';
+                        
                         fetchExamsFromServer();
+                        fetchPdfsFromServer(); // 💡 استدعاء ملفات الـ PDF
+                        
                     }, 500);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
@@ -315,6 +352,65 @@
             }, (error) => {
                 examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
             });
+        }
+
+        // 💡 دالة تحميل الـ PDF
+        function fetchPdfsFromServer() {
+            const pdfsContainer = document.getElementById('dynamicPdfsList');
+            if (!database) return;
+
+            database.ref('pdfs').on('value', (snapshot) => {
+                pdfsContainer.innerHTML = ''; 
+                const pdfsData = snapshot.val();
+                
+                if (pdfsData) {
+                    Object.keys(pdfsData).forEach((key) => {
+                        const pdf = pdfsData[key];
+                        if(pdf && pdf.name) {
+                            pdfsContainer.innerHTML += `
+                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
+                                    <div class="exam-info">
+                                        <span class="exam-name">${pdf.name}</span>
+                                        <span class="exam-meta">${pdf.size || 'ملف مقروء'}</span>
+                                    </div>
+                                    <div class="pdf-status">فتح 📖</div>
+                                </div>`;
+                        }
+                    });
+                } else {
+                    pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد ملفات PDF متاحة حالياً.</p>';
+                }
+            });
+        }
+
+        // 💡 كود النافذة المنبثقة الذكية
+        function openPdfModal(url) {
+            let finalUrl = url;
+            if(url.includes('drive.google.com') && url.includes('/view')) {
+                finalUrl = url.replace(/\/view.*/, '/preview');
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s ease;';
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = 'إغلاق الملف ❌';
+            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-family:Tajawal, sans-serif; font-size:15px; box-shadow: 0 4px 15px rgba(239,68,68,0.2);';
+            
+            closeBtn.onclick = () => {
+                modal.style.opacity = '0';
+                setTimeout(() => document.body.removeChild(modal), 300);
+            };
+            
+            const iframe = document.createElement('iframe');
+            iframe.src = finalUrl;
+            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff; box-shadow: 0 10px 40px rgba(0,0,0,0.6);';
+            
+            modal.appendChild(closeBtn);
+            modal.appendChild(iframe);
+            document.body.appendChild(modal);
+
+            setTimeout(() => modal.style.opacity = '1', 10);
         }
 
         function goToExam(isClosed, url) {
@@ -365,6 +461,8 @@
             document.getElementById('headerSubtitle').style.display = 'block';
             document.getElementById('loginSection').style.display = 'block';
 
+            switchTab('exams'); // 💡 بيرجع تابه الاختبارات لما يعمل خروج
+
             if (location.hash === '#exams') history.back();
         }
 
@@ -388,7 +486,7 @@
             }
         });
 
-        // 🛡️ فخ المطورين (للشلل التام للمتصفح إذا حاول الغشاش فتحه)
+        // 🛡️ فخ المطورين 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
