@@ -44,7 +44,6 @@
         .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
         
-        /* 💡 ستايل التابات */
         .tabs-row { display: flex; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
@@ -60,7 +59,6 @@
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
         
-        /* 💡 زر فتح الـ PDF */
         .pdf-status { background: rgba(110,231,255,.15); color: var(--glow1); border: 1px solid rgba(110,231,255,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
 
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
@@ -156,10 +154,9 @@
                 database = firebase.database();
             }
         } catch(e) {
-            console.error("Firebase is blocked by VPN.");
+            console.error("Firebase is blocked.");
         }
 
-        // 💡 دالة التبديل بين التابات
         function switchTab(tab) {
             document.getElementById('tabExamsBtn').classList.remove('active');
             document.getElementById('tabPdfsBtn').classList.remove('active');
@@ -188,7 +185,7 @@
                     document.getElementById('examsSection').style.display = 'block';
                     
                     fetchExamsFromServer();
-                    fetchPdfsFromServer(); // 💡 استدعاء ملفات الـ PDF
+                    fetchPdfsFromServer();
 
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
@@ -200,7 +197,7 @@
             }
         });
 
-        // 🚀 دالة فحص الـ VPN المتقدمة
+        // 🚀 الفلتر الجبار لكشف الـ VPN 
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn');
             btn.innerHTML = 'جاري فحص الحماية... 🛡️';
@@ -219,58 +216,71 @@
                 }
             } catch(e) {}
 
+            let loc = "مجهول / يرجح استخدام VPN";
+            let isp = "مجهول";
+            let ip = "مجهول";
+            let isVpnOrProxy = false;
+            let isOutsideEgypt = false;
+
             try {
+                // API 1: كشف قوي للـ VPN
                 const res = await fetch('https://ipwho.is/');
                 const data = await res.json();
 
                 if(data.success) {
-                    const isVpnOrProxy = data.security.vpn || data.security.proxy || data.security.hosting || data.security.tor;
-                    const isOutsideEgypt = data.country !== "Egypt";
-
-                    if(isVpnOrProxy || isOutsideEgypt) {
-                        showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
-                        
-                        const timeNow = new Date().toLocaleString('ar-EG');
-                        const msg = `⚠️ محاولة دخول بـ VPN تم حظرها!\n👤 الاسم: ${username}\n📍 الموقع: ${data.city}, ${data.country}\n📡 مزود الخدمة: ${data.connection.isp}\n🔗 الآي بي: ${data.ip}\n⏰ الوقت: ${timeNow}`;
-                        fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
-                        }).catch(e=>{});
-                        
-                        return; 
-                    }
-
-                    saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, data.city + ", " + data.country, data.connection.isp, data.ip);
-                    finalizeLogin(username);
-                } else {
-                    finalizeLogin(username);
+                    loc = data.city + ", " + data.country;
+                    isp = data.connection.isp;
+                    ip = data.ip;
+                    isVpnOrProxy = data.security.vpn || data.security.proxy || data.security.tor || data.security.hosting;
+                    isOutsideEgypt = data.country !== "Egypt" && data.country_code !== "EG";
                 }
             } catch(e) {
-                finalizeLogin(username);
+                // لو الأول فشل (مقفول بمانع إعلانات أو VPN قوي)، جرب API 2
+                try {
+                    const res2 = await fetch('https://ipapi.co/json/');
+                    const data2 = await res2.json();
+                    loc = (data2.city || "") + ", " + (data2.country_name || "");
+                    isp = data2.org || "مجهول";
+                    ip = data2.ip || "مجهول";
+                    isOutsideEgypt = data2.country_code !== "EG" && data2.country_name !== "Egypt";
+                } catch(err) {
+                    // لو الاتنين فشلوا (ده معناه حماية أو VPN قوي جداً بيمنع التتبع)
+                    isVpnOrProxy = true; 
+                }
             }
+
+            // تطبيق الحظر الصارم وإرسال رسالة تليجرام في كل الحالات
+            if(isVpnOrProxy || isOutsideEgypt) {
+                showError(btn, 'يرجى إغلاق الـ VPN للتسجيل! 🚫');
+                
+                // رسالة التليجرام (حالة الحظر)
+                const timeNow = new Date().toLocaleString('ar-EG');
+                const msg = `⚠️ محاولة دخول محظورة (VPN/أجنبي)!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                }).catch(e=>{});
+                
+                return; // وقف الدخول
+            }
+
+            // لو سليم 100%، ابعت التليجرام الطبيعي ودخله
+            saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
+            finalizeLogin(username);
         }
 
-        // 🚀 دالة الإرسال لفايربيز وتليجرام
+        // إرسال الإشعار الطبيعي لفايربيس وتليجرام
         function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
             
             database.ref('login_logs').push({ 
-                username: username, 
-                device: device, 
-                platform: platform,
-                screen: screen,
-                location: loc, 
-                isp: isp,
-                ip: ip,
-                time: timeNow 
+                username: username, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow 
             }).catch(e=>{});
             
             const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
             
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", 
-                headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
             }).catch(e=>{});
         }
 
@@ -278,7 +288,7 @@
             const btn = document.getElementById('loginBtn');
             
             if (!database) {
-                showError(btn, "الـ VPN يمنع الاتصال! يرجى إغلاقه.");
+                showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة.");
                 return;
             }
 
@@ -294,7 +304,7 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
-                    // الانتقال لدالة فحص الـ VPN قبل إتمام الدخول
+                    // بدل ما يدخل على طول، يروح للفحص الصارم الأول
                     verifyConnectionAndLogin(usernameInput);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
@@ -304,7 +314,6 @@
             });
         }
 
-        // إتمام عملية الدخول بعد نجاح الفحص
         function finalizeLogin(usernameInput) {
             const btn = document.getElementById('loginBtn');
             btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
@@ -336,7 +345,7 @@
             const examsContainer = document.getElementById('dynamicExamsList');
             
             if (!database) {
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">الـ VPN يمنع تحميل الاختبارات. يرجى إغلاقه وتحديث الصفحة.</p>';
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>';
                 return;
             }
 
@@ -370,7 +379,6 @@
             });
         }
 
-        // 💡 دالة تحميل الـ PDF
         function fetchPdfsFromServer() {
             const pdfsContainer = document.getElementById('dynamicPdfsList');
             if (!database) return;
@@ -399,7 +407,6 @@
             });
         }
 
-        // 💡 كود النافذة المنبثقة الذكية
         function openPdfModal(url) {
             let finalUrl = url;
             if(url.includes('drive.google.com') && url.includes('/view')) {
@@ -477,7 +484,7 @@
             document.getElementById('headerSubtitle').style.display = 'block';
             document.getElementById('loginSection').style.display = 'block';
 
-            switchTab('exams'); // 💡 بيرجع تابه الاختبارات لما يعمل خروج
+            switchTab('exams');
 
             if (location.hash === '#exams') history.back();
         }
@@ -515,3 +522,4 @@
     </script>
 </body>
 </html>
+
