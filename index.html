@@ -216,59 +216,80 @@
                 }
             } catch(e) {}
 
-            let loc = "مجهول / يرجح استخدام VPN";
-            let isp = "مجهول";
-            let ip = "مجهول";
-            let isVpnOrProxy = false;
-            let isOutsideEgypt = false;
+            let loc = "غير معروف";
+            let isp = "غير معروف";
+            let ip = "غير معروف";
+            
+            let isVpn = false;
+            let isOutside = false;
+            let isVerified = false;
 
+            // 1. فحص كلاود فلير السريع (لا يمكن حظره بمانع إعلانات)
             try {
-                // API 1: كشف قوي للـ VPN
-                const res = await fetch('https://ipwho.is/');
-                const data = await res.json();
+                let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace');
+                let cfText = await cfRes.text();
+                let cfIp = cfText.match(/ip=([^\n]+)/);
+                let cfLoc = cfText.match(/loc=([^\n]+)/);
+                if (cfIp && cfLoc) {
+                    ip = cfIp[1];
+                    if (cfLoc[1] !== "EG") isOutside = true;
+                    isVerified = true;
+                }
+            } catch(e) {}
 
-                if(data.success) {
-                    loc = data.city + ", " + data.country;
-                    isp = data.connection.isp;
-                    ip = data.ip;
-                    isVpnOrProxy = data.security.vpn || data.security.proxy || data.security.tor || data.security.hosting;
-                    isOutsideEgypt = data.country !== "Egypt" && data.country_code !== "EG";
+            // 2. فحص متقدم للـ VPN
+            try {
+                let ipwhoRes = await fetch('https://ipwho.is/');
+                let ipwhoData = await ipwhoRes.json();
+                if (ipwhoData.success) {
+                    loc = ipwhoData.city + ", " + ipwhoData.country;
+                    isp = ipwhoData.connection.isp;
+                    ip = ipwhoData.ip; 
+                    if (ipwhoData.security.vpn || ipwhoData.security.proxy || ipwhoData.security.tor || ipwhoData.security.hosting) {
+                        isVpn = true;
+                    }
+                    if (ipwhoData.country_code !== "EG") {
+                        isOutside = true;
+                    }
+                    isVerified = true;
                 }
-            } catch(e) {
-                // لو الأول فشل (مقفول بمانع إعلانات أو VPN قوي)، جرب API 2
+            } catch(e) {}
+
+            // 3. فحص احتياطي في حال حظر الـ API السابق
+            if (loc === "غير معروف") {
                 try {
-                    const res2 = await fetch('https://ipapi.co/json/');
-                    const data2 = await res2.json();
-                    loc = (data2.city || "") + ", " + (data2.country_name || "");
-                    isp = data2.org || "مجهول";
-                    ip = data2.ip || "مجهول";
-                    isOutsideEgypt = data2.country_code !== "EG" && data2.country_name !== "Egypt";
-                } catch(err) {
-                    // لو الاتنين فشلوا (ده معناه حماية أو VPN قوي جداً بيمنع التتبع)
-                    isVpnOrProxy = true; 
-                }
+                    let ipapiRes = await fetch('https://ipapi.co/json/');
+                    let ipapiData = await ipapiRes.json();
+                    if (!ipapiData.error) {
+                        loc = ipapiData.city + ", " + ipapiData.country_name;
+                        isp = ipapiData.org;
+                        if (ipapiData.country_code !== "EG") isOutside = true;
+                        isVerified = true;
+                    }
+                } catch(e) {}
             }
 
-            // تطبيق الحظر الصارم وإرسال رسالة تليجرام في كل الحالات
-            if(isVpnOrProxy || isOutsideEgypt) {
-                showError(btn, 'يرجى إغلاق الـ VPN للتسجيل! 🚫');
+            // ⛔ القرار الصارم: منع الدخول في حالة وجود أي شبهة
+            if (isVpn || isOutside || !isVerified) {
+                showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
                 
-                // رسالة التليجرام (حالة الحظر)
+                let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
                 const timeNow = new Date().toLocaleString('ar-EG');
-                const msg = `⚠️ محاولة دخول محظورة (VPN/أجنبي)!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                
+                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
                 
-                return; // وقف الدخول
+                return; // نوقف الدخول نهائياً ومفيش أي كود تحت هيتنفذ
             }
 
-            // لو سليم 100%، ابعت التليجرام الطبيعي ودخله
+            // ✅ السماح بالدخول لو كل الشروط سليمة
             saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
             finalizeLogin(username);
         }
 
-        // إرسال الإشعار الطبيعي لفايربيس وتليجرام
         function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
@@ -304,7 +325,6 @@
                 if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
-                    // بدل ما يدخل على طول، يروح للفحص الصارم الأول
                     verifyConnectionAndLogin(usernameInput);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
