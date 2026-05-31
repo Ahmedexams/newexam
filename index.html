@@ -21,7 +21,8 @@
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
         
         .header { text-align: center; margin-bottom: 10px; }
-        .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); }
+        /* 💡 خلينا اللوجو يبقى هو الزرار السري */
+        .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -69,13 +70,33 @@
         
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
+
+        /* 💡 استايل شاشة المراقبة السرية */
+        #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
+        .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
+        .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+        .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
 
+    <!-- 💡 شاشة المراقبة السرية للمدير -->
+    <div id="adminDashboard">
+        <div class="dash-card">
+            <div class="live-pulse"></div>
+            <h3 style="color: var(--muted); margin: 0;">متصل الآن بالمنصة</h3>
+            <div class="online-count" id="onlineCounter">0</div>
+            <p style="color: var(--muted); font-size: 13px;">أجهزة نشطة في هذه اللحظة</p>
+            <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+        </div>
+    </div>
+
     <div class="app-container" id="appContainer">
         <div class="header fade-in">
-            <div class="premium-logo">
+            <!-- 💡 خلينا اللوجو يشتغل بالضربة السرية -->
+            <div class="premium-logo" onclick="handleSecretTap()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -147,14 +168,67 @@
 
         let database = null;
         let logoutTimer;
+        let adminListener = null; // للاستماع لعدد الزوار
 
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
+                
+                // 💡 تسجيل الأجهزة المتصلة أوتوماتيك في الخلفية
+                const sessionRef = database.ref('active_visitors').push();
+                const connectedRef = database.ref('.info/connected');
+                connectedRef.on('value', (snap) => {
+                    if (snap.val() === true) {
+                        sessionRef.onDisconnect().remove(); // لما يقفل يمسحه
+                        sessionRef.set(true); // يسجله إنه أونلاين
+                    }
+                });
             }
         } catch(e) {
             console.error("Firebase is blocked.");
+        }
+
+        // 💡 كود الضربة السرية (5 خبطات في اللوجو)
+        let tapCount = 0;
+        let tapTimer;
+        function handleSecretTap() {
+            tapCount++;
+            clearTimeout(tapTimer);
+            // لو معداش ثانية ونص والضربة اللي بعدها مجتش، صفر العداد
+            tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+            
+            if (tapCount >= 5) {
+                openAdminDash();
+                tapCount = 0; // صفر عشان لما يفتح متفضلش متسجلة
+            }
+        }
+
+        function openAdminDash() {
+            if(!database) {
+                alert('لا يمكن الاتصال بقاعدة البيانات!');
+                return;
+            }
+            const dash = document.getElementById('adminDashboard');
+            dash.style.display = 'flex';
+            setTimeout(() => dash.style.opacity = '1', 10);
+
+            // تشغيل العداد المباشر
+            adminListener = database.ref('active_visitors').on('value', (snapshot) => {
+                const count = snapshot.numChildren() || 0;
+                document.getElementById('onlineCounter').innerText = count;
+            });
+        }
+
+        function closeAdminDash() {
+            const dash = document.getElementById('adminDashboard');
+            dash.style.opacity = '0';
+            setTimeout(() => dash.style.display = 'none', 300);
+            
+            // قفل العداد عشان ميسحبش نت في الخلفية
+            if(adminListener) {
+                database.ref('active_visitors').off('value', adminListener);
+            }
         }
 
         function switchTab(tab) {
@@ -197,7 +271,6 @@
             }
         });
 
-        // 🚀 الفلتر الجبار لكشف الـ VPN 
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn');
             btn.innerHTML = 'جاري فحص الحماية... 🛡️';
@@ -224,7 +297,6 @@
             let isOutside = false;
             let isVerified = false;
 
-            // 1. فحص كلاود فلير السريع (لا يمكن حظره بمانع إعلانات)
             try {
                 let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace');
                 let cfText = await cfRes.text();
@@ -237,7 +309,6 @@
                 }
             } catch(e) {}
 
-            // 2. فحص متقدم للـ VPN
             try {
                 let ipwhoRes = await fetch('https://ipwho.is/');
                 let ipwhoData = await ipwhoRes.json();
@@ -255,7 +326,6 @@
                 }
             } catch(e) {}
 
-            // 3. فحص احتياطي في حال حظر الـ API السابق
             if (loc === "غير معروف") {
                 try {
                     let ipapiRes = await fetch('https://ipapi.co/json/');
@@ -269,7 +339,6 @@
                 } catch(e) {}
             }
 
-            // ⛔ القرار الصارم: منع الدخول في حالة وجود أي شبهة
             if (isVpn || isOutside || !isVerified) {
                 showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
                 
@@ -282,10 +351,9 @@
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
                 
-                return; // نوقف الدخول نهائياً ومفيش أي كود تحت هيتنفذ
+                return; 
             }
 
-            // ✅ السماح بالدخول لو كل الشروط سليمة
             saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
             finalizeLogin(username);
         }
@@ -529,7 +597,6 @@
             }
         });
 
-        // 🛡️ فخ المطورين 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
