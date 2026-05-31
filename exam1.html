@@ -7,75 +7,81 @@
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
-    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; }
+    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; }
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
     .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
     .brand{display:flex; align-items:center; gap:12px;}
-    
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
+    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
     .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); }
     .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .premium-logo::after { filter: blur(8px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
-
     h1{margin:0;font-size:18px;letter-spacing:.2px}
     .sub{margin:0;color:var(--muted);font-size:12px}
-    
     .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
     .pill b{color:var(--text);font-weight:900}
-
-    .wrap{max-width:800px;margin:40px auto;padding:18px 14px 24px;}
-    
-    .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:24px; box-shadow: 0 15px 40px rgba(0,0,0,.4), inset 0 0 0 1px rgba(110,231,255,.05); position:relative; overflow:hidden; animation: slideIn 0.4s ease forwards;}
-    @keyframes slideIn { from{ opacity:0; transform:translateY(20px) scale(0.98); } to{ opacity:1; transform:translateY(0) scale(1); } }
+    .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
+    .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
+    .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
+    @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
     .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
-    
-    .timer-wrap { width: 100%; height: 8px; background: rgba(26,43,85,.55); border-radius: 10px; overflow: hidden; margin-bottom: 25px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);}
-    .timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--glow1), var(--glow3)); transition: width 1s linear, background 0.3s; }
-    .timer-bar.danger { background: linear-gradient(90deg, var(--glow4), var(--bad)); }
-
-    .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:15px; margin-bottom:15px;}
-    .qno{ min-width:50px;height:40px;border-radius:12px; background: linear-gradient(135deg, rgba(26,43,85,.8), rgba(15,23,48,.9)); border:1px solid rgba(110,231,255,.3); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 15px rgba(110,231,255,.15); flex:0 0 auto; font-size: 16px;}
-    .qtext{ margin:0; font-size:18px; line-height:1.7; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; font-weight: 500;}
-    
-    .medical-tooltip { position: relative; cursor: help; color: var(--glow1); border-bottom: 2px dashed var(--glow1); font-weight: 900; padding-bottom: 2px; }
-    .medical-tooltip::after { content: attr(data-meaning); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,.95); border: 1px solid var(--glow1); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 14px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-weight: 700;}
-    .medical-tooltip:hover::after { opacity: 1; bottom: 150%; }
-
-    .opts{display:grid; gap:12px; margin-top:20px}
-    .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:16px; cursor:pointer; display:flex; gap:12px; align-items:center; transition: all .15s ease; user-select:none; }
-    .opt:hover{transform: translateY(-2px); border-color: rgba(110,231,255,.40); background: rgba(26,43,85,.4);}
-    .badge{ width:32px;height:32px;border-radius:10px; background: rgba(26,43,85,.6); border:1px solid rgba(26,43,85,.9); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
-    .opt .txt{color:var(--text); font-size:15px; line-height:1.55; direction:ltr; text-align:left;}
-    .opt.correct{ border-color: rgba(34,197,94,.6); background: rgba(34,197,94,.15); box-shadow: 0 0 20px rgba(34,197,94,.2); }
-    .opt.wrong{ border-color: rgba(239,68,68,.6); background: rgba(239,68,68,.15); box-shadow: 0 0 20px rgba(239,68,68,.2); }
-    .opt.locked{cursor:not-allowed; opacity:.95; pointer-events: none;}
-    
-    .toast{ position:fixed; top:90px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.9); border:1px solid rgba(110,231,255,.4); border-radius:16px; padding:12px 20px; color:var(--text); opacity:0; transition: .3s ease; z-index:99; pointer-events:none; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.5);}
-    .toast.show{opacity:1; transform:translateX(-50%) translateY(10px);}
-    
-    /* شاشة التحميل */
-    .loader { text-align: center; color: var(--glow1); font-size: 20px; font-weight: bold; padding: 50px; }
+    .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+    .opts{display:grid; gap:10px; margin-top:10px}
+    .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
+    .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
+    .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
+    .opt.locked{cursor:not-allowed; opacity:.95}
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
  </head>
  <body>
+  <div id="overlay">
+   <div class="modal" id="modalContent">
+    <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">جاري التحقق...</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار...</p>
+   </div>
+  </div>
 
   <header>
    <div class="headin">
     <div class="brand">
+     <div class="back-btn" onclick="window.location.replace('/')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
+        
      <div class="premium-logo">
         <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" /></linearGradient></defs>
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ee7ff" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                </linearGradient>
+            </defs>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
      </div>
      <div>
-      <h1 style="margin-bottom: 4px; font-weight: 900;">Online Exam</h1>
+      <h1 style="margin-bottom: 4px;">Online Exam</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-          اللهم صلِّ وسلم على نبينا محمد ﷺ ❤️
+        
       </p>
      </div>
     </div>
@@ -86,162 +92,42 @@
      <div class="pill">
       النتيجة: <b id="score">0</b>
      </div>
+     <div class="progress">
+      <span id="bar"></span>
+     </div>
     </div>
    </div>
   </header>
 
-  <div class="wrap" id="kahootContainer">
-      <div class="loader">⏳ جاري سحب الأسئلة من الخادم...</div>
+  <div class="wrap" id="examWrap" style="display: none;">
+   <div class="grid" id="grid"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyD1h3hD3Z6C5hp62ZbFLEtDuA6LMe50ihc",
-    authDomain: "pharma-exam-2026.firebaseapp.com",
-    databaseURL: "https://pharma-exam-2026-default-rtdb.firebaseio.com",
-    projectId: "pharma-exam-2026",
-    storageBucket: "pharma-exam-2026.firebasestorage.app",
-    messagingSenderId: "687076956495",
-    appId: "1:687076956495:web:285781fa362d0d83314d3a"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  const medicalDict = {
-      "variables": "المتغيرات", "relationships": "العلاقات", "Extraneous variable": "المتغير الدخيل",
-      "Dependent variable": "المتغير التابع", "Independent variable": "المتغير المستقل", "Hypothesis": "الفرضية",
-      "Reliability": "الموثوقية", "validity": "الصدق", "Quantitative": "كمي", "Qualitative": "نوعي"
-  };
-
-  function applyTooltips(text) {
-      let result = text;
-      for (let key in medicalDict) {
-          const regex = new RegExp(`\\b${key}\\b`, 'gi');
-          result = result.replace(regex, `<span class="medical-tooltip" data-meaning="${medicalDict[key]}">$&</span>`);
-      }
-      return result;
-  }
-
-  // المصفوفة فاضية، وهتتملي أوتوماتيك من قاعدة البيانات
-  let examQuestions = []; 
-  let currentQ = 0;
-  let state = { answered: 0, score: 0 };
-  let timeLeft = 30;
-  let timerInterval;
-
-  const container = document.getElementById("kahootContainer");
-  const answeredEl = document.getElementById("answered");
-  const totalEl = document.getElementById("total");
-  const scoreEl = document.getElementById("score");
-  const toastEl = document.getElementById("toast");
-
-  function showToast(msg, isSuccess){
-    toastEl.innerHTML = msg;
-    toastEl.classList.add("show");
-    setTimeout(()=>toastEl.classList.remove("show"), 1500);
-  }
-
-  function updateHUD(){
-    answeredEl.textContent = state.answered;
-    scoreEl.textContent = state.score;
-    totalEl.textContent = examQuestions.length;
-  }
-
-  function renderLiveCard() {
-      if (currentQ >= examQuestions.length) {
-          container.innerHTML = `
-              <div class="card" style="text-align:center; padding: 40px;">
-                  <h1 style="font-size: 50px; margin:0 0 20px;">🏆</h1>
-                  <h2 style="color:var(--good); font-size: 28px;">انتهى الاختبار!</h2>
-                  <p style="font-size: 18px; color:var(--muted);">لقد حصلت على <b style="color:var(--text);">${state.score}</b> من ${examQuestions.length}</p>
-                  <button onclick="location.reload()" style="background: linear-gradient(90deg, var(--glow1), var(--glow2)); border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px;">إعادة الاختبار 🔄</button>
-              </div>
-          `;
-          return;
-      }
-
-      const item = examQuestions[currentQ];
-      const qTextWithTooltips = applyTooltips(item.q);
+  (function(){
+      const _0xdc=document,_0xwn=window;
+      _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
+      _0xdc.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
+      _0xdc.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
+      setInterval(function(){debugger;},150);
+      _0xdc.addEventListener('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',function(){_0xwn.history.pushState('exam',null,'');_0xwn.onpopstate=function(){_0xwn.location.replace('/');};});
+      const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
+      firebase.initializeApp(_0xcfg);const _0xdb=firebase.database();
+      let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
-      container.innerHTML = `
-        <div class="card" id="qCard">
-            <div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>
-            <div class="qtop">
-                <p class="qtext">${qTextWithTooltips}</p>
-                <div class="qno">${currentQ + 1}</div>
-            </div>
-            <div class="opts" id="optsContainer"></div>
-        </div>
-      `;
-
-      const optsDiv = document.getElementById("optsContainer");
+      const _0xAQ=[{q:"PROLIFERATIVE PHASE of wound healing lasts up to 6 months.",o:["True","False"],c:1},{q:"Patients with early appendicitis rarely present with anorexia.",o:["True","False"],c:1},{q:"The symptoms of non-obstructive acute appendicitis include the following except:",o:["Epigastric or Paraumbilical pain","Pain in the right iliac fossa","High fever","Anorexia and nausea"],c:2},{q:"Concerning acute appendicitis, the following statements are true except that it:",o:["May cause psoas spasm","Presents with pain in the right iliac fossa as the first symptom","Is always associated with loss of appetite","Is usually associated with constipation"],c:1},{q:"Likely differential diagnosis in a young woman with appendicitis include ruptured ectopic pregnancy.",o:["True","False"],c:0},{q:"Secondary hemorrhage is usually due to:",o:["Trauma","infection","All of the above"],c:1},{q:"As regard incidence of different types of hernia the most common hernia in females is femoral hernia.",o:["True","False"],c:1},{q:"A blood loss of 1700 ml blood can be classified into type III Hemorrhage.",o:["True","False"],c:0},{q:"Exomphalos refers to:",o:["None of the above","Congenital umbilical hernia","Congenital inguinal hernia","Femoral hernia"],c:1},{q:"Direct hernia:",o:["Passes through the internal ring","Passes through the external ring","passes medial to inferior epigastric vessels","passes lateral to inferior epigastric vessels"],c:2},{q:"\"Proud flesh\" refers to:",o:["New flesh coming from a wound","Arrogance","Muscle mass","Healthy skin"],c:0},{q:"\"My foot!\" is an expression used to mean:",o:["I am ready","Follow me","My leg hurts","Nonsense! Rubbish!"],c:3},{q:"To \"put one's foot in it\" means to:",o:["Be successful","Wear a shoe","Enter a room","Do or say something that causes anger/trouble"],c:3},{q:"A \"hair's breadth\" is a:",o:["Very small distance","Long time","Medical wig","Hair treatment"],c:0},{q:"An \"Achilles heel\" is a:",o:["Strong attribute","Sports injury","Foot deformity","Weak or vulnerable point"],c:3},{q:"To \"knuckle down\" to a job means to:",o:["Be lazy","Work as hard as one can","Punch something","Quit"],c:1},{q:"To \"pull someone's leg\" means to:",o:["Trip someone","Perform surgery","Assist them in walking","Tease someone"],c:3},{q:"To \"follow one's nose\" means to:",o:["Look down","Go straight on; act on instinct","Be nosy","Follow a scent"],c:1},{q:"To \"put someone's nose out of joint\" means to:",o:["Irritate or upset someone","Sneeze","Cause a facial injury","Help someone with a fracture"],c:0},{q:"To \"turn up one's nose\" means to:",o:["Be hungry","Look at the sky","Sneeze","Show dislike or disapproval"],c:3}];
       
-      item.options.forEach((optText, oIdx) => {
-        const opt = document.createElement("div");
-        opt.className = "opt";
-        opt.innerHTML = `<div class="badge">${String.fromCharCode(65+oIdx)}</div><div class="txt">${optText}</div>`;
-        
-        opt.onclick = () => {
-            if (optsDiv.classList.contains("locked")) return;
-            optsDiv.classList.add("locked");
-            clearInterval(timerInterval);
-            state.answered++;
-            
-            if (oIdx === parseInt(item.correct)) {
-                opt.classList.add("correct");
-                state.score++;
-                showToast("✅ ممتاز! إجابة صحيحة");
-            } else {
-                opt.classList.add("wrong");
-                optsDiv.children[item.correct].classList.add("correct");
-                showToast("❌ إجابة خاطئة");
-            }
-            
-            optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
-            updateHUD();
-            
-            setTimeout(() => { currentQ++; renderLiveCard(); }, 2000);
-        };
-        optsDiv.appendChild(opt);
-      });
+      const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
+      function _0xerr(_0x1,_0x2){_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";}
+      function _0xvt(){if(!_0xu||!_0xt){_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);return;}_0xsn=decodeURIComponent(_0xu);if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){_0xsep();return;}const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);_0xtr.once('\x76\x61\x6c\x75\x65').then((s)=>{const _0xd=s.val();if(_0xd&&_0xd.token===_0xt){if(Date.now()-_0xd.timestamp>120000){_0xerr("Please login first \uD83D\uDD12","\u0627\u0646\u062a\u0647\u062a \u0627\u0644\u0635\u0644\u0627\u062d\u064a\u0629...");setTimeout(()=>{_0xwn.location.replace("/");},2000);_0xtr.remove();return;}sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn,_0xt);_0xtr.remove().then(()=>{_0xsep();});}else{_0xerr("Please login first \uD83D\uDD12","\u0633\u064a\u062a\u0645 \u062a\u062d\u0648\u064a\u0644\u0643...");setTimeout(()=>{_0xwn.location.replace("/");},2000);}}).catch(()=>{_0xerr("\u062e\u0637\u0623 \u0641\u064a \u0627\u0644\u0627\u062a\u0635\u0627\u0644","\u062a\u0639\u0630\u0631 \u0627\u0644\u062a\u062d\u0642\u0642.");setTimeout(()=>{_0xwn.location.replace("/");},2000);});}
+      function _0xsep(){_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){_0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");}else{_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";_0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";_0xia();if(!_0xini){_0xini=!0;_0xiss();}}});}
+      function _0xia(){_0xeq=_0xAQ;_0xst.l=Array(_0xeq.length).fill(!1);_0xst.so=Array(_0xeq.length).fill(null);_0xst.a=0;_0xst.s=0;_0xdc.getElementById("total").textContent=_0xeq.length;_0xrnd();}
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.9;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      function _0xiss(){_0xstR=_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x74\x75\x64\x65\x6e\x74\x73').push();_0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});}
+      const _0xG=_0xdc.getElementById("grid"),_0xA=_0xdc.getElementById("answered"),_0xS=_0xdc.getElementById("score"),_0xB=_0xdc.getElementById("bar"),_0xTst=_0xdc.getElementById("toast");
+      function _0xstst(_0xM){_0xTst.textContent=_0xM;_0xTst.classList.add("show");setTimeout(()=>_0xTst.classList.remove("show"),1200);}
+      function _0xuhd(){_0xA.textContent=_0xst.a;_0xS.textContent=_0xst.s;_0xB.style.width=(_0xst.a/_0xeq.length*100)+"%";}
+      function _0xrnd(){_0xG.innerHTML='';_0xeq.forEach((_0xi,_0xidx)=>{const _0xc=_0xdc.createElement("section");_0xc.className="\x63\x61\x72\x64";const _0xqt=_0xdc.createElement("div");_0xqt.className="\x71\x74\x6f\x70";const _0xsT=_0xi.q.replace(/'/g,"\\'").replace(/"/g,'&quot;');_0xqt.innerHTML=`<p class="qtext">${_0xi.q}</p><div class="tts-btn" onclick="speakText('${_0xsT}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div><div class="qno">${_0xidx+1}</div>`;const _0xod=_0xdc.createElement("div");_0xod.className="\x6f\x70\x74\x73";_0xi.o.forEach((_0xot,_0xoid)=>{const _0xo=_0xdc.createElement("div");_0xo.className="\x6f\x70\x74";_0xo.innerHTML
 
-      timeLeft = 30;
-      const bar = document.getElementById("timerBar");
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-          timeLeft--;
-          let pct = (timeLeft / 30) * 100;
-          bar.style.width = pct + '%';
-          
-          if(timeLeft <= 10) bar.classList.add("danger");
-          
-          if(timeLeft <= 0) {
-              clearInterval(timerInterval);
-              optsDiv.classList.add("locked");
-              optsDiv.children[item.correct].classList.add("correct");
-              optsDiv.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
-              showToast("⏰ انتهى الوقت!");
-              state.answered++; updateHUD();
-              setTimeout(() => { currentQ++; renderLiveCard(); }, 2000);
-          }
-      }, 1000);
-  }
-
-  // الاتصال بقاعدة البيانات وسحب الأسئلة عند فتح الصفحة
-  db.ref('research_questions').once('value', (snap) => {
-      if (snap.exists()) {
-          snap.forEach(childSnap => {
-              examQuestions.push(childSnap.val());
-          });
-          updateHUD();
-          renderLiveCard();
-      } else {
-          container.innerHTML = "<h2 style='text-align:center; color:#ef4444; margin-top:50px;'>لا توجد أسئلة متاحة حالياً. يرجى إضافة أسئلة من لوحة التحكم.</h2>";
-      }
-  });
-
-  </script>
- </body>
-</html>
