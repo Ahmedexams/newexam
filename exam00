@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Exam</title>
+  <style>
+    :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; }
+    header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
+    .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{display:flex; align-items:center; gap:12px;}
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
+    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
+    
+    .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
+    .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
+    .premium-logo::after { filter: blur(8px); opacity: 0.8; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
+    
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:12px}
+    .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .pill b{color:var(--text);font-weight:900}
+    .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
+    .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
+    .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
+    @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
+    .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
+    .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+    .opts{display:grid; gap:10px; margin-top:10px}
+    .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
+    .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
+    .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
+    .opt.locked{cursor:not-allowed; opacity:.95}
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
+    
+    #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
+    .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
+    .live-pulse { width: 15px; height: 15px; background: #fb7185; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #fb7185; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); } }
+    .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow4), var(--glow2)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+    .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+ </head>
+ <body>
+  <div id="adminDashboard">
+   <div class="dash-card">
+       <div class="live-pulse"></div>
+       <h3 style="color: var(--muted); margin: 0;">متصل باللجنة الآن</h3>
+       <div class="online-count" id="onlineCounter">0</div>
+       <p style="color: var(--muted); font-size: 13px;">طالب داخل الامتحان حالياً</p>
+       <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+   </div>
+  </div>
+
+  <div id="overlay">
+   <div class="modal" id="modalContent">
+    <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">جاري التحقق...</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار...</p>
+   </div>
+  </div>
+
+  <header>
+   <div class="headin">
+    <div class="brand">
+     <div class="back-btn" onclick="window.location.replace('/')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
+        
+     <div class="premium-logo" onclick="handleSecretTap()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ee7ff" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                </linearGradient>
+            </defs>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+     </div>
+     <div>
+      <h1 style="margin-bottom: 4px;">Online Exam</h1>
+      <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+        
+      </p>
+     </div>
+    </div>
+    <div class="pillbar">
+     <div class="pill">
+      تم الحل: <b id="answered">0</b> / <b id="total">0</b>
+     </div>
+     <div class="pill">
+      النتيجة: <b id="score">0</b>
+     </div>
+     <div class="progress">
+      <span id="bar"></span>
+     </div>
+    </div>
+   </div>
+  </header>
+
+  <div class="wrap" id="examWrap" style="display: none;">
+   <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  (function(){
+      const _0xdc=document,_0xwn=window;
+      _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
+      _0xdc.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
+      _0xdc.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
+      setInterval(function(){debugger;},150);
+      _0xdc.addEventListener('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',function(){_0xwn.history.pushState('exam',null,'');_0xwn.onpopstate=function(){_0xwn.location.replace('/');};});
+      
+      let _0xdb=null;
+      try{
+          const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
+          firebase.initializeApp(_0xcfg);
+          _0xdb=firebase.database();
+
+          const sessionRef = _0xdb.ref('active_exam_visitors/research_exam').push();
+          const connectedRef = _0xdb.ref('.info/connected');
+          connectedRef.on('value', (snap) => {
+              if (snap.val() === true) {
+                  sessionRef.onDisconnect().remove(); 
+                  sessionRef.set(true); 
+              }
+          });
+      }catch(e){}
+
+      let tapCount = 0;
+      let tapTimer;
+      let adminListener = null;
+      
+      _0xwn.handleSecretTap = function() {
+          tapCount++;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+          if (tapCount >= 5) {
+              if(!_0xdb) return;
+              const dash = _0xdc.getElementById('adminDashboard');
+              dash.style.display = 'flex';
+              setTimeout(() => dash.style.opacity = '1', 10);
+              
+              adminListener = _0xdb.ref('active_exam_visitors/research_exam').on('value', (snapshot) => {
+                  const count = snapshot.numChildren() || 0;
+                  _0xdc.getElementById('onlineCounter').innerText = count;
+              });
+              tapCount = 0;
+          }
+      };
+
+      _0xwn.closeAdminDash = function() {
+          const dash = _0xdc.getElementById('adminDashboard');
+          dash.style.opacity = '0';
+          setTimeout(() => dash.style.display = 'none', 300);
+          if(adminListener && _0xdb) {
+              _0xdb.ref('active_exam_visitors/research_exam').off('value', adminListener);
+          }
+      };
+
+      let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
+      
+      const _0xAQ=[
+        {q:"What is the colloquial term for 'Bladder'?",o:["Waterworks","Engine","Ticker","Bellows"],c:0},
+        {q:"What is the Cockney slang for 'Heart'?",o:["Ticker","Jam tart","Engine","All of the above"],c:3},
+        {q:"Which term means 'use your brain'?",o:["Head-piece","Noodle","Nut","Skull"],c:2},
+        {q:"What is the colloquial term for artificial breasts?",o:["Boobs","Falsies","Buffers","Chestnut"],c:1},
+        {q:"What does 'broad in the beam' mean?",o:["Large buttocks","Wide shoulders","Big chest","Fat belly"],c:0},
+        {q:"What is the colloquial term for 'Cervix'?",o:["Neck of womb","Birth canal","Box","Womb"],c:0},
+        {q:"Which terms are used ONLY for female chest?",o:["Bosom, breast, buffers, bust","Flat, barrel, hollow","Pigeon chest","All of the above"],c:0},
+        {q:"What is the colloquial term for 'Clitoris'?",o:["Clit","Bits","Private","Thing"],c:0},
+        {q:"What is 'cauliflower ear'?",o:["Bat ears","Ear from boxing","Flappers","Lug"],c:1},
+        {q:"What is the 'funny bone'?",o:["Elbow","Knee","Wrist","Ankle"],c:0},
+        {q:"What is 'middle-age spread'?",o:["Enlargement of abdomen in older people","Weight loss","Muscle gain","Hair loss"],c:0},
+        {q:"What does 'boss-eyed' mean?",o:["Having a squint","Beautiful eyes","Blue eyes","Blind"],c:0},
+        {q:"Which terms are used for genitals (male and female)?",o:["Bits","Package","Down below","All of the above"],c:3},
+        {q:"What does 'nous-box' mean?",o:["Head","Brain","Intelligence","Memory"],c:1},
+        {q:"What are colloquial terms for 'Hymen'?",o:["Cherry","Maidenhead","Maid's ring (Cockney)","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Intestines'?",o:["Bowels","Guts","Innards","All of the above"],c:3},
+        {q:"What is a 'peg leg'?",o:["Artificial leg","Broken leg","Short leg","Thin leg"],c:0},
+        {q:"What are colloquial terms for 'Lungs'?",o:["Bellows","Tubes","Engine","A and B"],c:3},
+        {q:"What is the colloquial term for 'Navel'?",o:["Belly button","Belly","Tummy","Pinafore"],c:0},
+        {q:"What is a 'beacon' in colloquial terms?",o:["Red and large nose","Big ear","Wide mouth","Small eye"],c:0},
+        {q:"What does 'to be bunged up' mean?",o:["Constipated","Diarrhoea","Vomiting","Fainting"],c:0},
+        {q:"Which terms mean 'to defaecate'?",o:["Do number two","Do one's business","Go to the toilet","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Diarrhoea'?",o:["The trots","Collywobbles","Gippy tummy","All of the above"],c:3},
+        {q:"What does 'to be taken short' mean?",o:["Sudden diarrhoea attack","Fainting","Death","Constipation"],c:0},
+        {q:"What does 'to kick the bucket' mean?",o:["To die","To sleep","To work","To eat"],c:0},
+        {q:"What does 'to push up daisies' mean?",o:["To be dead","To work hard","To sleep","To be sick"],c:0},
+        {q:"What are colloquial terms for 'Faint'?",o:["To black out","To pass out","To go off hooks","All of the above"],c:3},
+        {q:"What is 'baby's yellow'?",o:["Infantile excrement","Baby food","Baby medicine","Baby clothing"],c:0},
+        {q:"What does 'His toilet is green' mean?",o:["His stools are green","He went to toilet","He's sick","He's clean"],c:0},
+        {q:"What are colloquial expressions for impotence?",o:["To lose one's nature","Can't keep it up","To be no good to one's wife","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Menstruate'?",o:["One's period","The curse","The time of the month","All of the above"],c:3},
+        {q:"What does 'I haven't seen anything for 6 weeks' mean?",o:["No menstruation, possibly pregnant","No food for 6 weeks","No sleep for 6 weeks","No work for 6 weeks"],c:0},
+        {q:"What are colloquial terms for 'Naked'?",o:["In one's birthday suit","In the altogether","Starkers","All of the above"],c:3},
+        {q:"What is the Scottish working class term for pregnant?",o:["Away the trip","In the family way","Up the duff","Preggers"],c:0},
+        {q:"What does 'She's 6 months gone' mean?",o:["6 months pregnant","Sick for 6 months","Absent for 6 months","Dead for 6 months"],c:0},
+        {q:"What does 'to fly off the handle' mean?",o:["To get very angry","To fall","To fly","To break"],c:0},
+        {q:"What does 'to be all at sea' mean?",o:["Confused","Traveling","Swimming","Drowning"],c:0},
+        {q:"What does 'to be down in the dumps' mean?",o:["Depressed","Happy","Healthy","Angry"],c:0},
+        {q:"What does 'to see pink elephants' mean?",o:["Alcohol hallucination (DTs)","Happiness","Dreaming","Fear"],c:0},
+        {q:"What does 'to be as fit as a fiddle' mean?",o:["Very healthy","Thin","Athletic","Sick"],c:0},
+        {q:"What does 'to have bats in the belfry' mean?",o:["To be mad/crazy","To be scared","To be happy","To be smart"],c:0},
+        {q:"What does 'to have butterflies in one's stomach' mean?",o:["To be nervous/anxious","Hungry","In love","Sick"],c:0},
+        {q:"What does 'to be under the weather' mean?",o:["Not feeling well","Traveling","Weather-related","Working"],c:0},
+        {q:"What does 'to feel like death warmed up' mean?",o:["Feel very unwell","Fear of death","Sadness","Exhaustion"],c:0},
+        {q:"What does 'to be on the mend' mean?",o:["Improving/recovering","Dying","Sick","Happy"],c:0},
+        {q:"What does 'to have a face as long as a fiddle' mean?",o:["Depressed/sad","Angry","Happy","Scared"],c:0},
+        {q:"What does 'to lose one's cool' mean?",o:["Lose temper/get angry","Die","Get sick","Become happy"],c:0},
+        {q:"What does 'to be full of beans' mean?",o:["Full of energy","Happy","Angry","Hungry"],c:0},
+        {q:"What does 'to go bananas' mean?",o:["Go crazy/very angry","Happy","Hungry","Scared"],c:0},
+        {q:"What does 'to have the heebie-jeebies' mean?",o:["To be nervous/anxious","To be sick","To be tired","To be hungry"],c:0},
+        {q:"What does 'to be at death's door' mean?",o:["Dangerously ill","In hospital","Sick","Sad"],c:0},
+        {q:"What does 'to be laid up' mean?",o:["Confined to bed","At work","Happy","Traveling"],c:0},
+        {q:"What does 'to have a temperature' mean?",o:["Fever/high temperature","Coldness","Happiness","Anger"],c:0},
+        {q:"What does 'to have a jab' mean?",o:["To have an injection","To take medicine","To have a check-up","To have surgery"],c:0},
+        {q:"What does 'to have gas' mean in medical context?",o:["General anaesthetic","Stomach gas","Oxygen","Medicine"],c:0},
+        {q:"What does 'to take medicine for the bowels' mean?",o:["To take a laxative","To take antibiotic","To take painkiller","To take vitamin"],c:0},
+        {q:"What does 'to get a chit from the doctor' mean?",o:["Get medical certificate","Get medicine","Get appointment","Get examination"],c:0},
+        {q:"What does 'to go under' mean?",o:["Have general anaesthetic","Die","Faint","Sleep"],c:0},
+        {q:"What does 'to have a set-back' mean?",o:["Have a relapse","Improvement","Recovery","Examination"],c:0},
+        {q:"What does 'to find one's legs' mean?",o:["Begin to walk after illness","Fall","Run","Dance"],c:0},
+        {q:"What is the gentle term used instead of 'abortion'?",o:["Miscarriage","Miss","It came away","All of the above"],c:3},
+        {q:"What is the colloquial term for 'D&C'?",o:["A scrape","A cut","A stitch","A jab"],c:0},
+        {q:"What are colloquial terms for 'Hysterectomy'?",o:["To have all taken away","To have an internal operation","To have a major operation","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Menopause'?",o:["The change","The turn (of life)","That certain age","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Condom'?",o:["French letter","Johnny","Rubber","All of the above"],c:3},
+        {q:"What is the colloquial term for 'IUCD'?",o:["The coil","The pill","The cap","The ring"],c:0},
+        {q:"What are colloquial terms for 'Gonorrhoea'?",o:["Clap","The whites","A dose","All of the above"],c:3},
+        {q:"What are colloquial terms for 'Syphilis'?",o:["Bad blood","Pox","Siff","All of the above"],c:3},
+        {q:"What does 'I've got a full house' mean in sexual health clinic?",o:["Syphilis and gonorrhoea together","Pregnancy","Marriage","Recovery"],c:0},
+        {q:"What is the colloquial term for 'IVF'?",o:["Test tube baby","Tube baby","Lab baby","Science baby"],c:0},
+        {q:"What is the colloquial term for 'Alopecia'?",o:["Baldness","Hair loss","Thin hair","No hair"],c:0},
+        {q:"What is the colloquial term for 'Arteriosclerosis'?",o:["Hardening of the arteries","Blocked arteries","Weak arteries","Thin arteries"],c:0},
+        {q:"What is the colloquial term for 'Cerebrovascular accident'?",o:["Stroke","Brain attack","Head attack","Heart attack"],c:0},
+        {q:"What is the colloquial term for 'Conjunctivitis'?",o:["Pink eye","Red eye","Sore eye","Bad eye"],c:0},
+        {q:"What is the colloquial term for 'Diabetes mellitus'?",o:["Sugar diabetes","Sweet disease","Sugar disease","Blood sugar"],c:0},
+        {q:"What is the colloquial term for 'Dysmenorrhoea'?",o:["Painful periods","Bad periods","Heavy periods","Sick periods"],c:0},
+        {q:"What is the colloquial term for 'Enuresis'?",o:["Bed-wetting","Night wetting","Sleep wetting","Uncontrolled wetting"],c:0},
+        {q:"What is the colloquial term for 'Epistaxis'?",o:["Nosebleeds","Bloody nose","Running nose","Sore nose"],c:0},
+        {q:"What is the colloquial term for 'Hypertension'?",o:["High blood pressure","Fast blood","Strong blood","Hard blood"],c:0},
+        {q:"What is the colloquial term for 'Incontinence'?",o:["Leaky","Not able to hold one's water","To have an accident","All of the above"],c:3},
+        {q:"What does 'A shot in the arm' mean?",o:["Something beneficial","An injection","Pain","Accident"],c:0},
+        {q:"What does 'To give one's right arm' mean?",o:["Willing to sacrifice something precious","Give the arm","Work","Help"],c:0},
+        {q:"What does 'Blood is thicker than water' mean?",o:["Family comes first","Blood is important","Water is important","Friendship first"],c:0},
+        {q:"What does 'To do something in cold blood' mean?",o:["Deliberately/calmly","Quickly","Angrily","Fearfully"],c:0},
+        {q:"What does 'To have a bone to pick with someone' mean?",o:["Have a complaint against someone","Eat with someone","Work with someone","Fight with someone"],c:0},
+        {q:"What does 'To work one's fingers to the bone' mean?",o:["Work very hard without appreciation","Steal","Write","Draw"],c:0},
+        {q:"What does 'To pick someone's brains' mean?",o:["Get ideas from someone","Hit on head","Steal","Criticize"],c:0},
+        {q:"What does 'To keep someone at arm's length' mean?",o:["Avoid someone","Help","Be close","Be friends"],c:0},
+        {q:"What does 'To be all ears' mean?",o:["Listen very carefully","Deaf","Talk a lot","Angry"],c:0},
+        {q:"What does 'To play it by ear' mean?",o:["Improvise/do what seems best","Play music","Listen","Escape"],c:0},
+        {q:"What does 'To turn a deaf ear' mean?",o:["Ignore/pretend not to hear","Listen","Deafness","Anger"],c:0},
+        {q:"What does 'An eye for an eye' mean?",o:["Revenge/equal punishment","Justice","Mercy","Forgiveness"],c:0},
+        {q:"What does 'To pull the wool over someone's eyes' mean?",o:["Deceive someone/hide truth","Help","Advise","Protect"],c:0},
+        {q:"What does 'To lose face' mean?",o:["Lose dignity/respect","Die","Get sick","Get angry"],c:0},
+        {q:"What does 'To face the music' mean?",o:["Face consequences/criticism","Listen to music","Be happy","Dance"],c:0},
+        {q:"What does 'To get cold feet' mean?",o:["Lose courage/be afraid","Coldness","Sickness","Caution"],c:0},
+        {q:"What does 'To put one's best foot forward' mean?",o:["Do one's best","Walk fast","Run","Dance"],c:0},
+        {q:"What does 'To have one's feet on the ground' mean?",o:["Be practical/sensible","Standing","Walking","Successful"],c:0},
+        {q:"What does 'To keep one's hair on' mean?",o:["Stay calm/don't get angry","Keep hair","Beauty","Health"],c:0},
+        {q:"What does 'To split hairs' mean?",o:["Argue about trivial details","Cut hair","Cleanliness","Precision"],c:0}
+      ];
+      
+      const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
+      function _0xerr(_0x1,_0x2){_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";}
+      
+      function _0xvt(){
+          if(!_0xu||!_0xt){
+              _0xerr(" Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
+              setTimeout(()=>{_0xwn.location.replace("/");},2000);
+              return;
+          }
+          _0xsn=decodeURIComponent(_0xu);
+          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){
+              _0xsep();
+              return;
+          }
+          if(!_0xdb) {
+              _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
+              return;
+          }
+          
+          const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);
+
+          function checkTicket(retries) {
+              _0xtr.once('value').then((s)=>{
+                  const _0xd=s.val();
+                  if(_0xd && _0xd.token===_0xt){
+                      if(Date.now()-_0xd.timestamp>120000){
+                          _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
+                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                          _0xtr.remove();
+                          return;
+                      }
+                      sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
+                      _0xtr.remove().then(()=>{_0xsep();});
+                  }else{
+                      if(retries > 0){
+                          setTimeout(() => checkTicket(retries - 1), 800);
+                      }else{
+                          _0xerr("Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
+                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                      }
+                  }
+              }).catch(()=>{
+                  if(retries > 0){
+                      setTimeout(() => checkTicket(retries - 1), 800);
+                  }else{
+                      _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
+                  }
+              });
+          }
+          checkTicket(4);
+      }
+
+      function _0xsep(){
+          if(!_0xdb) return;
+          _0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{
+              if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+              }else{
+                  _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
+                  _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
+                  _0xia();
+                  if(!_0xini){_0xini=!0;_0xiss();}
+              }
+          });
+      }
+
+      function _0xia(){_0xeq=_0xAQ;_0xst.l=Array(_0xeq.length).fill(!1);_0xst.so=Array(_0xeq.length).fill(null);_0xst.a=0;_0xst.s=0;_0xdc.getElementById("total").textContent=_0xeq.length;_0xrnd();}
+      
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      
+      function _0xiss(){
+          if(!_0xdb) return;
+          try {
+             _0xstR=_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x74\x75\x64\x65\x6e\x74\x73').push();
+             _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
+          } catch(e) {}
+      }
+      
+      const _0xG=_0xdc.getElementById("grid"),_0xA=_0xdc.getElementById("answered"),_0xS=_0xdc.getElementById("score"),_0xB=_0xdc.getElementById("bar"),_0xTst=_0xdc.getElementById("toast");
+      function _0xstst(_0xM){_0xTst.textContent=_0xM;_0xTst.classList.add("show");setTimeout(()=>_0xTst.classList.remove("show"),1200);}
+      function _0xuhd(){_0xA.textContent=_0xst.a;_0xS.textContent=_0xst.s;_0xB.style.width=(_0xst.a/_0xeq.length*100)+"%";}
+      function _0xrnd(){_0xG.innerHTML='';_0xeq.forEach((_0xi,_0xidx)=>{const _0xc=_0xdc.createElement("section");_0xc.className="\x63\x61\x72\x64";const _0xqt=_0xdc.createElement("div");_0xqt.className="\x71\x74\x6f\x70";const _0xsT=_0xi.q.replace(/'/g,"\\'").replace(/"/g,'&quot;');_0xqt.innerHTML=`<p class="qtext">${_0xi.q}</p><div class="tts-btn" onclick="speakText('${_0xsT}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div><div class="qno">${_0xidx+1}</div>`;const _0xod=_0xdc.createElement("div");_0xod.className="\x6f\x70\x74\x73";_0xi.o.forEach((_0xot,_0xoid)=>{const _0xo=_0xdc.createElement("div");_0xo.className="\x6f\x70\x74";_0xo.innerHTML=`<div class="badge">${String.fromCharCode(65+_0xoid)}</div><div class="txt">${_0xot}</div>`;if(_0xst.l[_0xidx]){_0xo.classList.add("\x6c\x6f\x63\x6b\x65\x64");if(_0xoid===_0xi.c)_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");if(_0xoid===_0xst.so[_0xidx]&&_0xoid!==_0xi.c)_0xo.classList.add("\x77\x72\x6f\x6e\x67");}_0xo.onclick=()=>{if(_0xst.l[_0xidx])return;_0xst.l[_0xidx]=!0;_0xst.so[_0xidx]=_0xoid;_0xst.a++;if(_0xoid===_0xi.c){_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xst.s++;_0xstst("\u2705 \u0625\u062c\u0627\u0628\u0629 \u0635\u062d\u064a\u062d\u0629");}else{_0xo.classList.add("\x77\x72\x6f\x6e\x67");_0xod.children[_0xi.c].classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xstst("\u274C \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629");}if(_0xstR)try{_0xstR.update({score:_0xst.s});}catch(e){}_0xod.querySelectorAll(".\x6f\x70\x74").forEach(o=>o.classList.add("\x6c\x6f\x63\x6b\x65\x64"));_0xuhd();};_0xod.appendChild(_0xo);});_0xc.appendChild(_0xqt);_0xc.appendChild(_0xod);_0xG.appendChild(_0xc);});_0xuhd();}
+      _0xvt();
+  })();
+  </script>
+ </body>
+</html>
+
