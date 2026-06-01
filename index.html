@@ -49,15 +49,6 @@
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
         
-        .announcement-card { background: linear-gradient(90deg, rgba(34,197,94,0.15), rgba(110,231,255,0.05)); border: 1px solid rgba(34,197,94,0.4); border-radius: 16px; padding: 12px 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; position: relative; z-index: 2; box-shadow: 0 4px 15px rgba(34,197,94,0.1); animation: fadeInDown 0.5s ease; }
-        .announcement-icon { font-size: 22px; animation: ring 2s infinite; }
-        .announcement-text { color: var(--text); font-size: 13px; line-height: 1.6; flex: 1; font-weight: 600;}
-        .announcement-text strong { color: var(--good); font-weight: 900;}
-        .close-announcement { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 5px; transition: 0.2s; }
-        .close-announcement:hover { color: var(--bad); }
-        @keyframes ring { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 75% { transform: rotate(10deg); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
@@ -86,9 +77,16 @@
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
         .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+
+        .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.85); border: 1px solid rgba(110,231,255,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(110,231,255,0.1); color: var(--text); padding: 16px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 800; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
+        .smart-toast.show { top: 30px; }
     </style>
 </head>
 <body>
+
+    <div id="smartToast" class="smart-toast">
+        <span id="smartToastMsg" style="line-height: 1.5;"></span>
+    </div>
 
     <div id="adminDashboard">
         <div class="dash-card">
@@ -137,14 +135,6 @@
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
-                
-                <div class="announcement-card" id="announcementCard">
-                    <div class="announcement-icon"></div>
-                    <div class="announcement-text">
-                        <strong></strong>
-                    </div>
-                    <button class="close-announcement" onclick="document.getElementById('announcementCard').style.display='none'">✖</button>
-                </div>
 
                 <div class="tabs-row">
                     <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
@@ -152,11 +142,11 @@
                 </div>
 
                 <div class="exams-list" id="dynamicExamsList">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
+                    <p style="color:var(--muted); text-align:center; font-size:14px;">Loading exams...</p>
                 </div>
 
                 <div class="exams-list" id="dynamicPdfsList" style="display: none;">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p>
+                    <p style="color:var(--muted); text-align:center; font-size:14px;">Loading files...</p>
                 </div>
 
             </div>
@@ -202,6 +192,30 @@
             console.error("Firebase is blocked.");
         }
 
+        let alertTimeout;
+        function showSmartAlert(msg) {
+            const toast = document.getElementById('smartToast');
+            document.getElementById('smartToastMsg').innerText = msg;
+            toast.classList.add('show');
+            
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 8000); 
+        }
+
+        let lastMsg = "";
+        function listenForLiveAlerts() {
+            if(!database) return;
+            database.ref('admin_message').on('value', (snap) => {
+                const msg = snap.val();
+                if(msg && msg.trim() !== "" && msg !== lastMsg) {
+                    lastMsg = msg;
+                    showSmartAlert(msg);
+                }
+            });
+        }
+
         let tapCount = 0;
         let tapTimer;
         function handleSecretTap() {
@@ -217,7 +231,7 @@
 
         function openAdminDash() {
             if(!database) {
-                alert('لا يمكن الاتصال بقاعدة البيانات!');
+                alert('Connection Error!');
                 return;
             }
             const dash = document.getElementById('adminDashboard');
@@ -269,9 +283,10 @@
                     
                     fetchExamsFromServer();
                     fetchPdfsFromServer();
+                    listenForLiveAlerts(); 
 
                     logoutTimer = setTimeout(() => {
-                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                        alert("Session expired. Please log in again.");
                         handleLogout();
                     }, tenMinutes - timePassed);
                 } else {
@@ -282,10 +297,10 @@
 
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn');
-            btn.innerHTML = 'جاري فحص الحماية... 🛡️';
+            btn.innerHTML = 'Verifying Security... 🛡️';
 
-            let deviceStr = "جهاز غير معروف";
-            let platformStr = navigator.platform || "غير معروف";
+            let deviceStr = "Unknown Device";
+            let platformStr = navigator.platform || "Unknown";
             let screenRes = window.screen.width + "x" + window.screen.height;
 
             try {
@@ -298,9 +313,9 @@
                 }
             } catch(e) {}
 
-            let loc = "غير معروف";
-            let isp = "غير معروف";
-            let ip = "غير معروف";
+            let loc = "Unknown";
+            let isp = "Unknown";
+            let ip = "Unknown";
             
             let isVpn = false;
             let isOutside = false;
@@ -335,21 +350,20 @@
                 }
             } catch(e) {}
 
-            if (loc === "غير معروف") {
+            if (loc === "Unknown") {
                 try {
                     let ipapiRes = await fetch('https://ipapi.co/json/');
                     let ipapiData = await ipapiRes.json();
                     if (!ipapiData.error) {
                         loc = ipapiData.city + ", " + ipapiData.country_name;
                         isp = ipapiData.org;
-                        ip = ipapiData.ip || "غير معروف";
+                        ip = ipapiData.ip || "Unknown"; 
                         if (ipapiData.country_code !== "EG") isOutside = true;
                         isVerified = true;
                     }
                 } catch(e) {}
             }
 
-            // 💡 جلب القائمة السوداء من الفايربيس للتحقق
             let bannedList = [];
             if(database) {
                 try {
@@ -361,9 +375,8 @@
                 } catch(e) {}
             }
 
-            // 💡 التحقق هل الآي بي موجود في القائمة السوداء
             if (bannedList.includes(ip)) {
-                showError(btn, 'تم حظر جهازك من المنصة نهائياً! 🚫');
+                showError(btn, 'Access Denied: You are permanently banned! 🚫');
                 const timeNow = new Date().toLocaleString('ar-EG');
                 const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
@@ -374,7 +387,7 @@
             }
 
             if (isVpn || isOutside || !isVerified) {
-                showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
+                showError(btn, 'Access Denied: Please disable VPN/Proxy! 🚫');
                 
                 let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
                 const timeNow = new Date().toLocaleString('ar-EG');
@@ -415,34 +428,34 @@
             btn.disabled = true; 
 
             if (!database) {
-                showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة.");
+                showError(btn, "Connection Error: Please refresh.");
                 return;
             }
 
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
 
-            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+            if(usernameInput === '' || passwordInput === '') { showError(btn, 'Please enter your credentials!'); return; }
 
-            btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
+            btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'Verifying...';
 
             database.ref('credentials').once('value').then((snapshot) => {
                 const creds = snapshot.val();
-                if (!creds) { showError(btn, 'خطأ في قاعدة البيانات!'); return; }
+                if (!creds) { showError(btn, 'Database Error!'); return; }
                 
                 if(usernameInput === String(creds.username) && passwordInput === String(creds.password)) {
                     verifyConnectionAndLogin(usernameInput);
                 } else { 
-                    showError(btn, 'البيانات غير صحيحة!'); 
+                    showError(btn, 'Invalid Username or Password!'); 
                 }
             }).catch((err) => { 
-                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
+                showError(btn, 'Connection failed! Check your internet.'); 
             });
         }
 
         function finalizeLogin(usernameInput) {
             const btn = document.getElementById('loginBtn');
-            btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+            btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'Success ✓';
             btn.disabled = false; 
 
             sessionStorage.setItem('student_auth', 'verified');
@@ -453,7 +466,7 @@
 
             clearTimeout(logoutTimer);
             logoutTimer = setTimeout(() => {
-                alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                alert("Session expired. Please log in again.");
                 handleLogout();
             }, 10 * 60 * 1000);
 
@@ -464,6 +477,7 @@
                 
                 fetchExamsFromServer();
                 fetchPdfsFromServer();
+                listenForLiveAlerts(); 
                 
             }, 500);
         }
@@ -472,7 +486,7 @@
             const examsContainer = document.getElementById('dynamicExamsList');
             
             if (!database) {
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>';
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">Connection issue. Please refresh.</p>';
                 return;
             }
 
@@ -499,10 +513,10 @@
                         }
                     });
                 } else {
-                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
+                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">No exams available right now.</p>';
                 }
             }, (error) => {
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">Connection failed.</p>';
             });
         }
 
@@ -529,7 +543,7 @@
                         }
                     });
                 } else {
-                    pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد ملفات PDF متاحة حالياً.</p>';
+                    pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">No files available right now.</p>';
                 }
             });
         }
@@ -565,7 +579,7 @@
 
         function goToExam(isClosed, url) {
             if (isClosed === 'true' || isClosed === true) {
-                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
+                alert('Sorry, this exam is currently closed 🔒');
             } else {
                 if (!database) return;
                 const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
@@ -580,7 +594,7 @@
                     
                     window.location.href = secureUrl; 
                 }).catch(() => {
-                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
+                    alert('Connection error, please try again.');
                 });
             }
         }
@@ -632,7 +646,7 @@
             if (event.persisted) {
                 const loginTime = sessionStorage.getItem('login_time');
                 if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
-                    alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
+                    alert("Session expired. Please log in again.");
                     handleLogout();
                 }
             }
