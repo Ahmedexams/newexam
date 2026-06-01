@@ -96,7 +96,7 @@
             <h3 style="color: var(--muted); margin: 0;">متصل الآن بالمنصة</h3>
             <div class="online-count" id="onlineCounter">0</div>
             <p style="color: var(--muted); font-size: 13px;">أجهزة نشطة في هذه اللحظة</p>
-            <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+            <button class="close-dash" onclick="closeAdminDash()"> إغلاق ❌</button>
         </div>
     </div>
 
@@ -363,7 +363,7 @@
 
             // 💡 التحقق هل الآي بي موجود في القائمة السوداء
             if (bannedList.includes(ip)) {
-                showError(btn, 'تم حظر جهازك من المنصة نهائياً! 🚫');
+                showError(btn,'تم حظر جهازك من المنصة ¡ 🚫');
                 const timeNow = new Date().toLocaleString('ar-EG');
                 const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
