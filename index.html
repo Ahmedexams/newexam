@@ -88,7 +88,7 @@
 <body>
 
     <div id="smartToast" class="smart-toast">
-        <span class="smart-toast-icon">▪️</span>
+        <span class="smart-toast-icon">🚀</span>
         <span id="smartToastMsg" style="line-height: 1.5;"></span>
     </div>
 
@@ -390,7 +390,7 @@
 
             if (bannedList.includes(ip) || bannedUsersList.includes(username)) {
                 localStorage.setItem('toxic_user', 'yes');
-                showError(btn, 'تم حظر جهازك ! 🚫');
+                showError(btn, 'تم حظر حسابك/جهازك نهائياً! 🚫');
                 const timeNow = new Date().toLocaleString('ar-EG');
                 const msg = `🛑 محاولة دخول من شخص محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
@@ -439,7 +439,7 @@
             const btn = document.getElementById('loginBtn');
             
             if (localStorage.getItem('toxic_user') === 'yes') {
-                showError(btn, 'تم حظر جهازك ! 🚫');
+                showError(btn, 'تم حظر جهازك نهائياً! 🚫');
                 return;
             }
 
@@ -519,7 +519,7 @@
                         if(exam && exam.name) {
                             const isClosed = exam.status === 'closed';
                             const actionClass = isClosed ? 'locked' : '';
-                            const actionText = isClosed ? 'closed 🔒' :Enter';
+                            const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
 
                             examsContainer.innerHTML += `
                                 <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
@@ -598,7 +598,7 @@
 
         function goToExam(isClosed, url) {
             if (isClosed === 'true' || isClosed === true) {
-                alert('Questions are being updated.'❗');
+                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
                 if (!database) return;
                 const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
@@ -683,4 +683,3 @@
     </script>
 </body>
 </html>
-
