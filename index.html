@@ -332,19 +332,21 @@
                 } catch(e) {}
             }
 
-            let bannedList = [];
+            // 🛑 حظر فوري للآي بي المزعج بجانب أي بيانات بتيجي من الفايربيز
+            let bannedList = ['41.235.55.32']; 
             if(database) {
                 try {
                     let bannedSnap = await database.ref('banned_ips').once('value');
                     if (bannedSnap.exists()) {
                         let val = bannedSnap.val();
-                        bannedList = Array.isArray(val) ? val : Object.values(val);
+                        let fbBanned = Array.isArray(val) ? val : Object.values(val);
+                        bannedList = bannedList.concat(fbBanned);
                     }
                 } catch(e) {}
             }
 
             if (bannedList.includes(ip)) {
-                showError(btn,'تم حظر جهازك من المنصة  🚫');
+                showError(btn,'تم حظر جهازك من المنصة 🚫');
                 const timeNow = new Date().toLocaleString('ar-EG');
                 const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
@@ -392,6 +394,16 @@
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
             
+            // 🛡️ [Rate Limiting] فحص لمنع الإسبام وتكرار الضغط
+            const lastClick = localStorage.getItem('last_login_attempt_time');
+            const cooldownPeriod = 15000; // 15 ثانية كاملة
+
+            if (lastClick && (Date.now() - parseInt(lastClick) < cooldownPeriod)) {
+                const secondsLeft = Math.ceil((cooldownPeriod - (Date.now() - parseInt(lastClick))) / 1000);
+                showError(btn, `انتظر ${secondsLeft} ثانية قبل المحاولة ⏳`);
+                return; 
+            }
+
             if (btn.disabled) return; 
             btn.disabled = true; 
 
@@ -403,7 +415,13 @@
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
 
-            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+            if(usernameInput === '' || passwordInput === '') { 
+                showError(btn, 'يرجى إدخال البيانات!'); 
+                return; 
+            }
+
+            // سجل وقت المحاولة بنجاح
+            localStorage.setItem('last_login_attempt_time', Date.now());
 
             btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
 
