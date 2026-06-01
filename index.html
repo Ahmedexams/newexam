@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
-    <title>منصة الأختبارات</title>
+    <title>Exams Platform</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -15,7 +15,7 @@
 
     <style>
         :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
         
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
@@ -28,11 +28,11 @@
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
         
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
-        .header p { color: var(--muted); font-size: 15px; font-weight: 800; }
+        .header p { color: var(--muted); font-size: 15px; font-weight: 700; }
         
         .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
-        .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
+        .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 700; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
         .input-group input::placeholder { color: #5a6b9c; font-weight: 500; }
         
@@ -46,7 +46,7 @@
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
         
         .tabs-row { display: flex; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
-        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
         
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
@@ -56,7 +56,7 @@
         
         .exam-info { display: flex; flex-direction: column; gap: 6px; }
         .exam-name { font-weight: 900; color: var(--text); font-size: 16px; }
-        .exam-meta { color: var(--muted); font-size: 13px; font-weight: 800; }
+        .exam-meta { color: var(--muted); font-size: 13px; font-weight: 600; }
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
         
@@ -91,10 +91,10 @@
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
-            <h3 style="color: var(--muted); margin: 0;">متصل الآن بالمنصة</h3>
+            <h3 style="color: var(--muted); margin: 0;">Online Users</h3>
             <div class="online-count" id="onlineCounter">0</div>
-            <p style="color: var(--muted); font-size: 13px;">أجهزة نشطة في هذه اللحظة</p>
-            <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+            <p style="color: var(--muted); font-size: 13px;">Active devices right now</p>
+            <button class="close-dash" onclick="closeAdminDash()">Close Dashboard ❌</button>
         </div>
     </div>
 
@@ -112,33 +112,33 @@
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
             </div>
-            <h1>منصة الاختبارات</h1>
-            <p id="headerSubtitle">أهلاً بك، يرجى تسجيل الدخول للبدء</p>
+            <h1>Exams Platform</h1>
+            <p id="headerSubtitle">Welcome, please login to continue</p>
         </div>
 
         <div class="card fade-in" style="animation-delay: 0.1s;">
             <div id="loginSection">
                 <div class="input-group">
-                    <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" autocorrect="off" autocapitalize="none">
+                    <input type="text" id="username" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="none">
                 </div>
                 <div class="input-group">
-                    <input type="password" id="password" placeholder="كلمة المرور">
+                    <input type="password" id="password" placeholder="Password">
                 </div>
-                <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+                <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Login</button>
             </div>
 
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
                     <h2 class="section-title"> </h2>
                     <button class="logout-btn" onclick="handleLogout()">
-                        رجوع
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Logout
                     </button>
                 </div>
 
                 <div class="tabs-row">
-                    <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
-                    <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
+                    <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 Exams</button>
+                    <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 Files</button>
                 </div>
 
                 <div class="exams-list" id="dynamicExamsList">
@@ -377,8 +377,8 @@
 
             if (bannedList.includes(ip)) {
                 showError(btn, 'Access Denied: You are permanently banned! 🚫');
-                const timeNow = new Date().toLocaleString('ar-EG');
-                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                const timeNow = new Date().toLocaleString('en-US');
+                const msg = `🛑 Banned IP Access Attempt!\n👤 User: ${username}\n📱 Device: ${deviceStr}\n🔗 IP: ${ip}\n⏰ Time: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
@@ -389,10 +389,10 @@
             if (isVpn || isOutside || !isVerified) {
                 showError(btn, 'Access Denied: Please disable VPN/Proxy! 🚫');
                 
-                let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
-                const timeNow = new Date().toLocaleString('ar-EG');
+                let blockReason = isVpn ? "VPN / Proxy Used" : (isOutside ? "IP outside Egypt" : "IP Hidden/Blocked");
+                const timeNow = new Date().toLocaleString('en-US');
                 
-                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                const msg = `⚠️ Blocked Access Attempt!\nReason: ${blockReason}\n👤 User: ${username}\n📱 Device: ${deviceStr}\n📍 Location: ${loc}\n📡 ISP: ${isp}\n🔗 IP: ${ip}\n⏰ Time: ${timeNow}`;
                 
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
@@ -408,13 +408,13 @@
 
         function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
             if(!database) return;
-            const timeNow = new Date().toLocaleString('ar-EG');
+            const timeNow = new Date().toLocaleString('en-US');
             
             database.ref('login_logs').push({ 
                 username: username, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow 
             }).catch(e=>{});
             
-            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            const msg = `🟢 New Student Login!\n👤 User: ${username}\n📱 Device: ${device}\n🖥 OS: ${platform}\n📐 Screen: ${screen}\n📍 Location: ${loc}\n📡 ISP: ${isp}\n🔗 IP: ${ip}\n⏰ Time: ${timeNow}`;
             
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
@@ -424,6 +424,32 @@
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
             
+            let banTime = localStorage.getItem('temp_ban_until');
+            if (banTime && Date.now() < parseInt(banTime)) {
+                let minsLeft = Math.ceil((parseInt(banTime) - Date.now()) / 60000);
+                showError(btn, `Auto-Banned! Try again in ${minsLeft} mins 🚫`);
+                return;
+            } else if (banTime) {
+                localStorage.removeItem('temp_ban_until');
+                localStorage.removeItem('login_attempts');
+            }
+
+            let attempts = JSON.parse(localStorage.getItem('login_attempts') || '[]');
+            attempts = attempts.filter(time => Date.now() - time < 60000); 
+            attempts.push(Date.now());
+            localStorage.setItem('login_attempts', JSON.stringify(attempts));
+
+            if (attempts.length >= 5) { 
+                localStorage.setItem('temp_ban_until', Date.now() + 15 * 60 * 1000); 
+                showError(btn, 'Suspicious activity! Auto-Banned for 15 mins 🚫');
+                
+                const msg = `🤖 🛡️ Auto-Ban Shield Triggered!\nA device was temporarily banned for 15 mins.\nReason: Brute-Force/Spam (5 attempts in 1 min).\nTime: ${new Date().toLocaleString('en-US')}`;
+                fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                }).catch(e=>{});
+                return;
+            }
+
             if (btn.disabled) return; 
             btn.disabled = true; 
 
@@ -500,13 +526,13 @@
                         if(exam && exam.name) {
                             const isClosed = exam.status === 'closed';
                             const actionClass = isClosed ? 'locked' : '';
-                            const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
+                            const actionText = isClosed ? 'Closed 🔒' : 'Enter';
 
                             examsContainer.innerHTML += `
                                 <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
                                     <div class="exam-info">
                                         <span class="exam-name">${exam.name}</span>
-                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
+                                        <span class="exam-meta">${exam.questionsCount} Questions</span>
                                     </div>
                                     <div class="exam-status ${actionClass}">${actionText}</div>
                                 </div>`;
@@ -536,9 +562,9 @@
                                 <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
                                     <div class="exam-info">
                                         <span class="exam-name">${pdf.name}</span>
-                                        <span class="exam-meta">${pdf.size || 'ملف مقروء'}</span>
+                                        <span class="exam-meta">${pdf.size || 'Readable File'}</span>
                                     </div>
-                                    <div class="pdf-status">فتح 📖</div>
+                                    <div class="pdf-status">Open 📖</div>
                                 </div>`;
                         }
                     });
@@ -558,8 +584,8 @@
             modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s ease;';
             
             const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = 'إغلاق الملف ❌';
-            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-family:Tajawal, sans-serif; font-size:15px; box-shadow: 0 4px 15px rgba(239,68,68,0.2);';
+            closeBtn.innerHTML = 'Close File ❌';
+            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-family:Outfit, sans-serif; font-size:15px; box-shadow: 0 4px 15px rgba(239,68,68,0.2);';
             
             closeBtn.onclick = () => {
                 modal.style.opacity = '0';
@@ -603,7 +629,7 @@
             button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
             setTimeout(() => { 
                 button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
-                button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
+                button.style.color = 'var(--bg0)'; button.innerHTML = 'Login'; 
                 button.disabled = false; 
             }, 2500);
         }
@@ -620,7 +646,7 @@
             const btn = document.getElementById('loginBtn');
             btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
             btn.style.color = 'var(--bg0)';
-            btn.innerHTML = 'تسجيل الدخول';
+            btn.innerHTML = 'Login';
             btn.disabled = false; 
 
             document.getElementById('examsSection').style.display = 'none';
