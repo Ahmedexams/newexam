@@ -49,15 +49,6 @@
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
         
-        .announcement-card { background: linear-gradient(90deg, rgba(34,197,94,0.15), rgba(110,231,255,0.05)); border: 1px solid rgba(34,197,94,0.4); border-radius: 16px; padding: 12px 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; position: relative; z-index: 2; box-shadow: 0 4px 15px rgba(34,197,94,0.1); animation: fadeInDown 0.5s ease; }
-        .announcement-icon { font-size: 22px; animation: ring 2s infinite; }
-        .announcement-text { color: var(--text); font-size: 13px; line-height: 1.6; flex: 1; font-weight: 600;}
-        .announcement-text strong { color: var(--good); font-weight: 900;}
-        .close-announcement { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 5px; transition: 0.2s; }
-        .close-announcement:hover { color: var(--bad); }
-        @keyframes ring { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 75% { transform: rotate(10deg); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
@@ -86,9 +77,20 @@
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
         .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+
+        /* 💡 تصميم الإشعار الطائر الذكي */
+        .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.85); border: 1px solid rgba(110,231,255,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(110,231,255,0.1); color: var(--text); padding: 16px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
+        .smart-toast.show { top: 30px; }
+        .smart-toast-icon { font-size: 22px; animation: bounce 1s infinite; flex: 0 0 auto;}
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
     </style>
 </head>
 <body>
+
+    <div id="smartToast" class="smart-toast">
+        <span class="smart-toast-icon">🚀</span>
+        <span id="smartToastMsg" style="line-height: 1.5;"></span>
+    </div>
 
     <div id="adminDashboard">
         <div class="dash-card">
@@ -96,7 +98,7 @@
             <h3 style="color: var(--muted); margin: 0;">متصل الآن بالمنصة</h3>
             <div class="online-count" id="onlineCounter">0</div>
             <p style="color: var(--muted); font-size: 13px;">أجهزة نشطة في هذه اللحظة</p>
-            <button class="close-dash" onclick="closeAdminDash()"> إغلاق ❌</button>
+            <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
         </div>
     </div>
 
@@ -136,14 +138,6 @@
                         رجوع
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
-                </div>
-                
-                <div class="announcement-card" id="announcementCard">
-                    <div class="announcement-icon"></div>
-                    <div class="announcement-text">
-                        <strong></strong>
-                    </div>
-                    <button class="close-announcement" onclick="document.getElementById('announcementCard').style.display='none'">✖</button>
                 </div>
 
                 <div class="tabs-row">
@@ -200,6 +194,32 @@
             }
         } catch(e) {
             console.error("Firebase is blocked.");
+        }
+
+        // 💡 إظهار الإشعار الطائر
+        let alertTimeout;
+        function showSmartAlert(msg) {
+            const toast = document.getElementById('smartToast');
+            document.getElementById('smartToastMsg').innerText = msg;
+            toast.classList.add('show');
+            
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 8000); // بيختفي أوتوماتيك بعد 8 ثواني
+        }
+
+        // 💡 مراقبة رسايل المدير من الفايربيس لايف
+        let lastMsg = "";
+        function listenForLiveAlerts() {
+            if(!database) return;
+            database.ref('admin_message').on('value', (snap) => {
+                const msg = snap.val();
+                if(msg && msg.trim() !== "" && msg !== lastMsg) {
+                    lastMsg = msg;
+                    showSmartAlert(msg);
+                }
+            });
         }
 
         let tapCount = 0;
@@ -269,6 +289,7 @@
                     
                     fetchExamsFromServer();
                     fetchPdfsFromServer();
+                    listenForLiveAlerts(); // 💡 تشغيل المراقبة للإشعارات بعد الدخول
 
                     logoutTimer = setTimeout(() => {
                         alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
@@ -342,15 +363,15 @@
                     if (!ipapiData.error) {
                         loc = ipapiData.city + ", " + ipapiData.country_name;
                         isp = ipapiData.org;
-                        ip = ipapiData.ip || "غير معروف";
+                        ip = ipapiData.ip || "غير معروف"; 
                         if (ipapiData.country_code !== "EG") isOutside = true;
                         isVerified = true;
                     }
                 } catch(e) {}
             }
 
-            // 💡 جلب القائمة السوداء من الفايربيس للتحقق
             let bannedList = [];
+            let bannedUsersList = [];
             if(database) {
                 try {
                     let bannedSnap = await database.ref('banned_ips').once('value');
@@ -358,14 +379,20 @@
                         let val = bannedSnap.val();
                         bannedList = Array.isArray(val) ? val : Object.values(val);
                     }
+                    
+                    let bannedUsersSnap = await database.ref('banned_users').once('value');
+                    if (bannedUsersSnap.exists()) {
+                        let valU = bannedUsersSnap.val();
+                        bannedUsersList = Array.isArray(valU) ? valU : Object.values(valU);
+                    }
                 } catch(e) {}
             }
 
-            // 💡 التحقق هل الآي بي موجود في القائمة السوداء
-            if (bannedList.includes(ip)) {
-                showError(btn,'تم حظر جهازك من المنصة  🚫');
+            if (bannedList.includes(ip) || bannedUsersList.includes(username)) {
+                localStorage.setItem('toxic_user', 'yes');
+                showError(btn, 'تم حظر حسابك/جهازك نهائياً! 🚫');
                 const timeNow = new Date().toLocaleString('ar-EG');
-                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                const msg = `🛑 محاولة دخول من شخص محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
@@ -411,6 +438,11 @@
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
             
+            if (localStorage.getItem('toxic_user') === 'yes') {
+                showError(btn, 'تم حظر جهازك نهائياً! 🚫');
+                return;
+            }
+
             if (btn.disabled) return; 
             btn.disabled = true; 
 
@@ -464,6 +496,7 @@
                 
                 fetchExamsFromServer();
                 fetchPdfsFromServer();
+                listenForLiveAlerts(); // 💡 تشغيل المراقبة للإشعارات
                 
             }, 500);
         }
@@ -650,3 +683,4 @@
     </script>
 </body>
 </html>
+
