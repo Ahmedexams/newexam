@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Enter<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,6 @@
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
         
         .header { text-align: center; margin-bottom: 10px; }
-        /* 💡 خلينا اللوجو يبقى هو الزرار السري */
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
@@ -39,6 +38,7 @@
         
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         
         .exams-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2;}
         .section-title { font-size: 20px; font-weight: 900; color: var(--text); margin: 0; }
@@ -49,6 +49,15 @@
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
         
+        .announcement-card { background: linear-gradient(90deg, rgba(34,197,94,0.15), rgba(110,231,255,0.05)); border: 1px solid rgba(34,197,94,0.4); border-radius: 16px; padding: 12px 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; position: relative; z-index: 2; box-shadow: 0 4px 15px rgba(34,197,94,0.1); animation: fadeInDown 0.5s ease; }
+        .announcement-icon { font-size: 22px; animation: ring 2s infinite; }
+        .announcement-text { color: var(--text); font-size: 13px; line-height: 1.6; flex: 1; font-weight: 600;}
+        .announcement-text strong { color: var(--good); font-weight: 900;}
+        .close-announcement { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 5px; transition: 0.2s; }
+        .close-announcement:hover { color: var(--bad); }
+        @keyframes ring { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 75% { transform: rotate(10deg); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
         
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
@@ -71,7 +80,6 @@
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
 
-        /* 💡 استايل شاشة المراقبة السرية */
         #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
         .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
         .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
@@ -82,7 +90,6 @@
 </head>
 <body>
 
-    <!-- 💡 شاشة المراقبة السرية للمدير -->
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
@@ -95,7 +102,6 @@
 
     <div class="app-container" id="appContainer">
         <div class="header fade-in">
-            <!-- 💡 خلينا اللوجو يشتغل بالضربة السرية -->
             <div class="premium-logo" onclick="handleSecretTap()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <defs>
@@ -130,6 +136,14 @@
                         رجوع
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
+                </div>
+                
+                <div class="announcement-card" id="announcementCard">
+                    <div class="announcement-icon">🔔</div>
+                    <div class="announcement-text">
+                        <strong>تنويه هام:</strong> تم تصحيح إجابة سؤال (Budgeting is only necessary) في امتحان الإدارة لتصبح (True). نتمنى لكم التوفيق!
+                    </div>
+                    <button class="close-announcement" onclick="document.getElementById('announcementCard').style.display='none'">✖</button>
                 </div>
 
                 <div class="tabs-row">
@@ -168,20 +182,19 @@
 
         let database = null;
         let logoutTimer;
-        let adminListener = null; // للاستماع لعدد الزوار
+        let adminListener = null;
 
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
                 
-                // 💡 تسجيل الأجهزة المتصلة أوتوماتيك في الخلفية
                 const sessionRef = database.ref('active_visitors').push();
                 const connectedRef = database.ref('.info/connected');
                 connectedRef.on('value', (snap) => {
                     if (snap.val() === true) {
-                        sessionRef.onDisconnect().remove(); // لما يقفل يمسحه
-                        sessionRef.set(true); // يسجله إنه أونلاين
+                        sessionRef.onDisconnect().remove(); 
+                        sessionRef.set(true); 
                     }
                 });
             }
@@ -189,18 +202,16 @@
             console.error("Firebase is blocked.");
         }
 
-        // 💡 كود الضربة السرية (5 خبطات في اللوجو)
         let tapCount = 0;
         let tapTimer;
         function handleSecretTap() {
             tapCount++;
             clearTimeout(tapTimer);
-            // لو معداش ثانية ونص والضربة اللي بعدها مجتش، صفر العداد
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
             
             if (tapCount >= 5) {
                 openAdminDash();
-                tapCount = 0; // صفر عشان لما يفتح متفضلش متسجلة
+                tapCount = 0; 
             }
         }
 
@@ -213,7 +224,6 @@
             dash.style.display = 'flex';
             setTimeout(() => dash.style.opacity = '1', 10);
 
-            // تشغيل العداد المباشر
             adminListener = database.ref('active_visitors').on('value', (snapshot) => {
                 const count = snapshot.numChildren() || 0;
                 document.getElementById('onlineCounter').innerText = count;
@@ -225,7 +235,6 @@
             dash.style.opacity = '0';
             setTimeout(() => dash.style.display = 'none', 300);
             
-            // قفل العداد عشان ميسحبش نت في الخلفية
             if(adminListener) {
                 database.ref('active_visitors').off('value', adminListener);
             }
@@ -333,10 +342,35 @@
                     if (!ipapiData.error) {
                         loc = ipapiData.city + ", " + ipapiData.country_name;
                         isp = ipapiData.org;
+                        ip = ipapiData.ip || "غير معروف";
                         if (ipapiData.country_code !== "EG") isOutside = true;
                         isVerified = true;
                     }
                 } catch(e) {}
+            }
+
+            // 💡 جلب القائمة السوداء من الفايربيس للتحقق
+            let bannedList = [];
+            if(database) {
+                try {
+                    let bannedSnap = await database.ref('banned_ips').once('value');
+                    if (bannedSnap.exists()) {
+                        let val = bannedSnap.val();
+                        bannedList = Array.isArray(val) ? val : Object.values(val);
+                    }
+                } catch(e) {}
+            }
+
+            // 💡 التحقق هل الآي بي موجود في القائمة السوداء
+            if (bannedList.includes(ip)) {
+                showError(btn, 'تم حظر جهازك من المنصة نهائياً! 🚫');
+                const timeNow = new Date().toLocaleString('ar-EG');
+                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                }).catch(e=>{});
+                btn.disabled = false; 
+                return; 
             }
 
             if (isVpn || isOutside || !isVerified) {
@@ -351,6 +385,7 @@
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
                 
+                btn.disabled = false; 
                 return; 
             }
 
@@ -376,6 +411,9 @@
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
             
+            if (btn.disabled) return; 
+            btn.disabled = true; 
+
             if (!database) {
                 showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة.");
                 return;
@@ -405,6 +443,7 @@
         function finalizeLogin(usernameInput) {
             const btn = document.getElementById('loginBtn');
             btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+            btn.disabled = false; 
 
             sessionStorage.setItem('student_auth', 'verified');
             sessionStorage.setItem('student_name', usernameInput);
@@ -551,6 +590,7 @@
             setTimeout(() => { 
                 button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
                 button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
+                button.disabled = false; 
             }, 2500);
         }
 
@@ -567,6 +607,7 @@
             btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
             btn.style.color = 'var(--bg0)';
             btn.innerHTML = 'تسجيل الدخول';
+            btn.disabled = false; 
 
             document.getElementById('examsSection').style.display = 'none';
             document.getElementById('headerSubtitle').style.display = 'block';
@@ -609,4 +650,3 @@
     </script>
 </body>
 </html>
-
