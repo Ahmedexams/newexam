@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Exam - Community Health</title>
+  <style>
+    :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; }
+    header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
+    .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{display:flex; align-items:center; gap:12px;}
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
+    .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
+    
+    .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
+    .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
+    .premium-logo::after { filter: blur(8px); opacity: 0.8; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
+    
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:12px}
+    .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .pill b{color:var(--text);font-weight:900}
+    .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
+    .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
+    .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
+    @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
+    .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
+    .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+    .opts{display:grid; gap:10px; margin-top:10px}
+    .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; }
+    .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
+    .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
+    .opt.locked{cursor:not-allowed; opacity:.95}
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
+    
+    #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
+    .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
+    .live-pulse { width: 15px; height: 15px; background: #fb7185; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #fb7185; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); } }
+    .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow4), var(--glow2)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+    .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+ </head>
+ <body>
+  <div id="adminDashboard">
+   <div class="dash-card">
+       <div class="live-pulse"></div>
+       <h3 style="color: var(--muted); margin: 0;">متصل باللجنة الآن</h3>
+       <div class="online-count" id="onlineCounter">0</div>
+       <p style="color: var(--muted); font-size: 13px;">طالب داخل الامتحان حالياً</p>
+       <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+   </div>
+  </div>
+
+  <div id="overlay">
+   <div class="modal" id="modalContent">
+    <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">جاري التحقق...</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار...</p>
+   </div>
+  </div>
+
+  <header>
+   <div class="headin">
+    <div class="brand">
+     <div class="back-btn" onclick="window.location.replace('/')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
+        
+     <div class="premium-logo" onclick="handleSecretTap()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ee7ff" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                </linearGradient>
+            </defs>
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+     </div>
+     <div>
+      <h1 style="margin-bottom: 4px;">Community Health Exam</h1>
+      <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
+        
+      </p>
+     </div>
+    </div>
+    <div class="pillbar">
+     <div class="pill">
+      تم الحل: <b id="answered">0</b> / <b id="total">0</b>
+     </div>
+     <div class="pill">
+      النتيجة: <b id="score">0</b>
+     </div>
+     <div class="progress">
+      <span id="bar"></span>
+     </div>
+    </div>
+   </div>
+  </header>
+
+  <div class="wrap" id="examWrap" style="display: none;">
+   <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  (function(){
+      const _0xdc=document,_0xwn=window;
+      _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
+      _0xdc.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
+      _0xdc.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
+      setInterval(function(){debugger;},150);
+      _0xdc.addEventListener('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',function(){_0xwn.history.pushState('exam',null,'');_0xwn.onpopstate=function(){_0xwn.location.replace('/');};});
+      
+      let _0xdb=null;
+      try{
+          const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
+          firebase.initializeApp(_0xcfg);
+          _0xdb=firebase.database();
+
+          const sessionRef = _0xdb.ref('active_exam_visitors/research_exam').push();
+          const connectedRef = _0xdb.ref('.info/connected');
+          connectedRef.on('value', (snap) => {
+              if (snap.val() === true) {
+                  sessionRef.onDisconnect().remove(); 
+                  sessionRef.set(true); 
+              }
+          });
+      }catch(e){}
+
+      let tapCount = 0;
+      let tapTimer;
+      let adminListener = null;
+      
+      _0xwn.handleSecretTap = function() {
+          tapCount++;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+          if (tapCount >= 5) {
+              if(!_0xdb) return;
+              const dash = _0xdc.getElementById('adminDashboard');
+              dash.style.display = 'flex';
+              setTimeout(() => dash.style.opacity = '1', 10);
+              
+              adminListener = _0xdb.ref('active_exam_visitors/research_exam').on('value', (snapshot) => {
+                  const count = snapshot.numChildren() || 0;
+                  _0xdc.getElementById('onlineCounter').innerText = count;
+              });
+              tapCount = 0;
+          }
+      };
+
+      _0xwn.closeAdminDash = function() {
+          const dash = _0xdc.getElementById('adminDashboard');
+          dash.style.opacity = '0';
+          setTimeout(() => dash.style.display = 'none', 300);
+          if(adminListener && _0xdb) {
+              _0xdb.ref('active_exam_visitors/research_exam').off('value', adminListener);
+          }
+      };
+
+      let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
+      
+      const _0xAQ=[
+        {q:"____ is the traditional role of the nurse when the family's or individual's coping mechanism fails during a stressful situation or event",o:["Genogram","Family health tree","Crisis intervention","Ecomap"],c:2},
+        {q:"The community health nurse should be focused on:",o:["Wellness for every individual","Economic forces of community","Evaluation of the practice","Advanced technology"],c:0},
+        {q:"When we detect any hearing defect, height, weight in school health service, the community nurse play one of the:",o:["Health protection role","Health promotion role","Screening role","Counseling role"],c:2},
+        {q:"Which of the following is considered as physical hazards?",o:["Constant loud noise","Poor posture","Vapors and fumes","Bacteria and viruses"],c:0},
+        {q:"An example for tertiary prevention in a school health services is:",o:["TB skin test for students","Eating a well balanced diet","Vision screening","Caring of disabled"],c:3},
+        {q:"Which of the following is considered as a biological hazard?",o:["Blood and other body fluids","High exposure to sunlight ultraviolet rays","Gases like acetylene","Poor posture"],c:0},
+        {q:"____ is all measures taken to maintain the physical mental and social well being of individuals and families and the local community.",o:["Community","Community health nursing","Community health","None of the above"],c:2},
+        {q:"All of the following are hazards of exposure to noise except:",o:["Nerve deafness","Impaired dexterity","Respiratory problems","Anxiety psychosocial effects"],c:2},
+        {q:"What is the importance of occupational health?",o:["It is important to maintain good relationship","It concentrates relationship between work and individual health","Occupational health is important to understand the hygiene requirement","It provides the legal obligation"],c:1},
+        {q:"Role of school health nurse as researcher is necessary to:",o:["Justify its practices and develop new knowledge","Evaluate health education curriculum","See health care need and problem of students","Enhance communication between providers"],c:0},
+        {q:"The organized activity to assess the health status of the school students is known as:",o:["Health counseling","Health observation","Health appraisal","Screening"],c:2},
+        {q:"The community nurse has been asked to investigate a sudden outbreak of symptoms among restaurant customers. This nurse will be acting as:",o:["Case finder","Educator","Community mobilizer","Change agent"],c:0},
+        {q:"A community nurse who working in maternal and child health nursing center decides to conduct a health education session about antenatal care. In this situation the nurse is working in the role of:",o:["Consultant","Educator","Counselor","Manager"],c:1},
+        {q:"Which of the following types of structure represent a non-traditional family?",o:["Cohabitating","Nuclear","Extended","Single parent"],c:0},
+        {q:"The functions of the family are the following except:",o:["Environmental health","Security and acceptance","Socialization","Establish control"],c:0},
+        {q:"An Ecomap is a tool that:",o:["Outline family structure and function","Illustrates family births deaths and divorces","Explains family link to the supra system","Help nurses to diagram correct family form"],c:2},
+        {q:"Which of the following is the most prominent feature of public health nursing?",o:["Public health nursing focuses on preventive not curative services","It involves providing health care to individual patients","Services are provided free of charge","None of the above"],c:0},
+        {q:"The negative health effects of exposure to mechanical hazards are:",o:["Exhaustion and anxiety","Back pain and injuries","Influenza and cold","Induced hearing loss"],c:1},
+        {q:"The school age children are vaccinated against:",o:["Poliomyelitis","DPT","DT","Hepatitis B"],c:2},
+        {q:"School health nurse as a health screener is responsible for:",o:["Deliver health services for students","Studying health problems","Observing health practice","Conduct a special survey to detect any health problems"],c:3},
+        {q:"During the health appraisal a school health nurse noticed that many students have tooth decay obesity and visual impairment so the guidance message for those students is:",o:["Physical activity","Nutritional habits","Rest and sleep","Personal hygiene"],c:1},
+        {q:"During the health appraisal approach a school health nurse noticed that many students have tooth decay obesity and visual impairment so the nurse should refer those students to:",o:["Hospitals","General practitioner","Rehabilitation center","Specialist in polyclinics"],c:3},
+        {q:"A school nurse when provides direct health care services to students is working the role of:",o:["Advocate","Educator","Coordinator","Care provider"],c:3},
+        {q:"What are the chemical occupational health hazards?",o:["Lack of job satisfaction insecurity","Physical hazards like excessive noise","Hazards like exposure to toxic chemical pollutants","Hazards of exposure to bacteria viruses"],c:2},
+        {q:"Biological agents are many of viruses and gases which have potential hazards on the health of the workers",o:["True","False"],c:1},
+        {q:"Purpose of school health program is to maintain improve and promote the health of every school child",o:["True","False"],c:0},
+        {q:"Occupational chemical hazards include exposure to extreme heat and cold noise radiation and",o:["True","False"],c:1},
+        {q:"The unguarded machines protruding and moving parts are the major problem in industry",o:["True","False"],c:0},
+        {q:"Community is a social group determined by geographic boundaries and or common values and interests",o:["True","False"],c:0},
+        {q:"The family reflects the culture values and health status of the community",o:["True","False"],c:0},
+        {q:"The focus of the school health program is help in learning through implementing strategies",o:["True","False"],c:0},
+        {q:"Residential institutions is one of the setting for community health practice",o:["True","False"],c:0},
+        {q:"Family process is considered as the change that occurs over time to the family",o:["True","False"],c:0},
+        {q:"In community health practice providing nursing care is different than that of hospital",o:["True","False"],c:0},
+        {q:"A healthy family establish regular link with broader community",o:["True","False"],c:0},
+        {q:"Hazard of exposure to viruses bacteria and fungi is considered a chemical occupational health hazard",o:["True","False"],c:1},
+        {q:"What is the primary goal of community health nursing?",o:["To train individuals in hospital management","To promote and protect the health of the community","To cure diseases in a clinical setting","To provide hospital based care"],c:1},
+        {q:"What does the term community refer to in community health nursing?",o:["A specific geographical area with common characteristics","Rural populations","A family unit","A group of patients in a hospital"],c:0},
+        {q:"Which of the following environmental factors can most directly affect community health?",o:["Family history of diseases","Access to higher education","Air and water pollution","Daily exercise routine"],c:2},
+        {q:"Which of the following is a key characteristic of community health nursing practice?",o:["Focus on curing diseases","Focus on patient centered care in a clinical setting","Providing specialized care in a hospital environment","Emphasis on preventive care and health education"],c:3},
+        {q:"When the occupational health nurse employs ergonomic principles she is performing which of her roles?",o:["Health care provider","Health care coordinator","Environment manager","Health educator"],c:2},
+        {q:"All of the following are examples of occupational diseases Except:",o:["Noise induced hearing loss","Bruises and suicide","Pneumoconiosis","Skin disorders and dermatitis"],c:1},
+        {q:"Is a synthesis of nursing practices and public health practice applying in promoting and preserving the health of population",o:["Community Health Nursing","Community Health","Community","Public health"],c:0},
+        {q:"Secondary prevention:",o:["Involves efforts to detect and treat health problems","Aims at promotes health","It include measures to restore individual's function","It involves measures for preventing diseases"],c:0},
+        {q:"Health promotion is the first level of contact of individual with the health care",o:["True","False"],c:1},
+        {q:"The main focus of primary health care is providing essential health care to individuals and communities",o:["True","False"],c:0},
+        {q:"Which of the following is a characteristic of a healthy family?",o:["Usually treat sick children at home","Never gather to eat together","Promote trusting relationship","Violate each other's independency"],c:2},
+        {q:"Which complications of a sedentary lifestyle will the school nurse include in a presentation on the importance of participating in exercise on a regular basis?",o:["Obesity","Dental caries","Hypotension","Underweight"],c:0},
+        {q:"Which activities will the school nurse include when preparing for flu season?",o:["Teaching to reuse tissues","Preventing hand sanitizers","Instructing on hand washing","Staying at school when febrile"],c:2},
+        {q:"Mrs Rana is a school health nurse. One of her activities is yearly testing for sight and hearing difficulties. This activity is an example of:",o:["Health promotion","Primary prevention","Secondary prevention","Tertiary prevention"],c:2},
+        {q:"One of the main predictors of domestic violence is:",o:["Personal bankruptcy","Marital dissatisfaction","Tobacco use","A second marriage"],c:1},
+        {q:"Physical occupational health hazards include exposure to:",o:["Radiation and electro-magnetic fields","Vapors, gases, medications and pesticides","Work-related stress, anxiety or burn-out","Contamination with viruses or bacteria"],c:0},
+        {q:"Which type of rehabilitation in which restoration of body function:",o:["Vocational rehabilitation","Social rehabilitation","Primary prevention","None of the above"],c:3},
+        {q:"Abdullah has an amputated left leg. He is physically deviated from normal structures and functions. This deviation is considered:",o:["Disability","Handicap","Impairment","Limitation"],c:2},
+        {q:"One of the most common problems in the rural areas is:",o:["Improper sewage disposal","Proper sewage disposal","Provision of health education","None of the above"],c:0},
+        {q:"Which of these pollutants is most commonly linked to respiratory diseases?",o:["Carbon monoxide","Sulfur dioxide","Nitrogen gas","Oxygen"],c:1},
+        {q:"Exposure is a core concept related to environment. It means:",o:["The amount of a hazard that actually gets in and enters our body","That some people are more susceptible to be harmed than others","The genes that make us more or less susceptible to be harmed","The amount of a hazard that comes in direct contact with our body"],c:3},
+        {q:"Natural outdoor pollution includes:",o:["Computers, TV and microwaves","Cigarette smoking and lead poisoning","Industry and farm equipment","Floods, storms and volcanoes"],c:3},
+        {q:"Application of nursing process in caring for individual, families and groups where they live or work is considered as:",o:["Community based nursing","Community health nursing","Public health nursing","Population based nursing"],c:0},
+        {q:"A girl regularly doing breast self-examination, which level of disease prevention she is following:",o:["Primordial","Primary","Secondary","Tertiary"],c:2}
+      ];
+      
+      const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
+      function _0xerr(_0x1,_0x2){_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";}
+      
+      function _0xvt(){
+          if(!_0xu||!_0xt){
+              _0xerr(" Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
+              setTimeout(()=>{_0xwn.location.replace("/");},2000);
+              return;
+          }
+          _0xsn=decodeURIComponent(_0xu);
+          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){
+              _0xsep();
+              return;
+          }
+          if(!_0xdb) {
+              _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
+              return;
+          }
+          
+          const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);
+
+          function checkTicket(retries) {
+              _0xtr.once('value').then((s)=>{
+                  const _0xd=s.val();
+                  if(_0xd && _0xd.token===_0xt){
+                      if(Date.now()-_0xd.timestamp>120000){
+                          _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
+                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                          _0xtr.remove();
+                          return;
+                      }
+                      sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
+                      _0xtr.remove().then(()=>{_0xsep();});
+                  }else{
+                      if(retries > 0){
+                          setTimeout(() => checkTicket(retries - 1), 800);
+                      }else{
+                          _0xerr("Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
+                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                      }
+                  }
+              }).catch(()=>{
+                  if(retries > 0){
+                      setTimeout(() => checkTicket(retries - 1), 800);
+                  }else{
+                      _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
+                  }
+              });
+          }
+          checkTicket(4);
+      }
+
+      function _0xsep(){
+          if(!_0xdb) return;
+          _0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{
+              if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+              }else{
+                  _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
+                  _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
+                  _0xia();
+                  if(!_0xini){_0xini=!0;_0xiss();}
+              }
+          });
+      }
+
+      function _0xia(){_0xeq=_0xAQ;_0xst.l=Array(_0xeq.length).fill(!1);_0xst.so=Array(_0xeq.length).fill(null);_0xst.a=0;_0xst.s=0;_0xdc.getElementById("total").textContent=_0xeq.length;_0xrnd();}
+      
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      
+      function _0xiss(){
+          if(!_0xdb) return;
+          try {
+             _0xstR=_0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x74\x75\x64\x65\x6e\x74\x73').push();
+             _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
+          } catch(e) {}
+      }
+      
+      const _0xG=_0xdc.getElementById("grid"),_0xA=_0xdc.getElementById("answered"),_0xS=_0xdc.getElementById("score"),_0xB=_0xdc.getElementById("bar"),_0xTst=_0xdc.getElementById("toast");
+      function _0xstst(_0xM){_0xTst.textContent=_0xM;_0xTst.classList.add("show");setTimeout(()=>_0xTst.classList.remove("show"),1200);}
+      function _0xuhd(){_0xA.textContent=_0xst.a;_0xS.textContent=_0xst.s;_0xB.style.width=(_0xst.a/_0xeq.length*100)+"%";}
+      function _0xrnd(){_0xG.innerHTML='';_0xeq.forEach((_0xi,_0xidx)=>{const _0xc=_0xdc.createElement("section");_0xc.className="\x63\x61\x72\x64";const _0xqt=_0xdc.createElement("div");_0xqt.className="\x71\x74\x6f\x70";const _0xsT=_0xi.q.replace(/'/g,"\\'").replace(/"/g,'&quot;');_0xqt.innerHTML=`<p class="qtext">${_0xi.q}</p><div class="tts-btn" onclick="speakText('${_0xsT}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div><div class="qno">${_0xidx+1}</div>`;const _0xod=_0xdc.createElement("div");_0xod.className="\x6f\x70\x74\x73";_0xi.o.forEach((_0xot,_0xoid)=>{const _0xo=_0xdc.createElement("div");_0xo.className="\x6f\x70\x74";_0xo.innerHTML=`<div class="badge">${String.fromCharCode(65+_0xoid)}</div><div class="txt">${_0xot}</div>`;if(_0xst.l[_0xidx]){_0xo.classList.add("\x6c\x6f\x63\x6b\x65\x64");if(_0xoid===_0xi.c)_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");if(_0xoid===_0xst.so[_0xidx]&&_0xoid!==_0xi.c)_0xo.classList.add("\x77\x72\x6f\x6e\x67");}_0xo.onclick=()=>{if(_0xst.l[_0xidx])return;_0xst.l[_0xidx]=!0;_0xst.so[_0xidx]=_0xoid;_0xst.a++;if(_0xoid===_0xi.c){_0xo.classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xst.s++;_0xstst("\u2705 \u0625\u062c\u0627\u0628\u0629 \u0635\u062d\u064a\u062d\u0629");}else{_0xo.classList.add("\x77\x72\x6f\x6e\x67");_0xod.children[_0xi.c].classList.add("\x63\x6f\x72\x72\x65\x63\x74");_0xstst("\u274C \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629");}if(_0xstR)try{_0xstR.update({score:_0xst.s});}catch(e){}_0xod.querySelectorAll(".\x6f\x70\x74").forEach(o=>o.classList.add("\x6c\x6f\x63\x6b\x65\x64"));_0xuhd();};_0xod.appendChild(_0xo);});_0xc.appendChild(_0xqt);_0xc.appendChild(_0xod);_0xG.appendChild(_0xc);});_0xuhd();}
+      _0xvt();
+  })();
+  </script>
+ </body>
+</html>
