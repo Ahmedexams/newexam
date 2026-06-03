@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipwho.is https://ipapi.co https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+
     <title>منصة الاختبارات</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
@@ -17,82 +21,62 @@
         :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
-        
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
-        
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
-        
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; }
-        
         .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
         .input-group input::placeholder { color: #5a6b9c; font-weight: 500; }
-        
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
-        
         .btn-secondary { width: 100%; padding: 14px; border: 1px solid rgba(110,231,255,.3); border-radius: 16px; background: rgba(7,9,18,.6); color: var(--glow1); font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; }
         .btn-secondary:active { transform: scale(0.97); }
         .btn-secondary:hover { background: rgba(110,231,255,.1); border-color: rgba(110,231,255,.6); }
         .btn-secondary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; color: var(--muted); border-color: rgba(26,43,85,.85); }
-
         .exams-header-row { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; position: relative; z-index: 2;}
-        
         .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; height: 100%; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
-        
         .tabs-row { display: flex; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
-        
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
-        
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
         .exam-item:hover, .exam-item:active { transform: translateY(-2px); border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
-        
         .exam-info { display: flex; flex-direction: column; gap: 6px; }
         .exam-name { font-weight: 900; color: var(--text); font-size: 16px; }
         .exam-meta { color: var(--muted); font-size: 13px; font-weight: 800; }
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
-        
         .pdf-status { background: rgba(110,231,255,.15); color: var(--glow1); border: 1px solid rgba(110,231,255,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
-
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
         .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
         .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; }
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
-        
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
-
         #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
         .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
         .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
         .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
-        
         .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.85); border: 1px solid rgba(110,231,255,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(110,231,255,0.1); color: var(--text); padding: 16px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 800; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
         .smart-toast.show { top: 30px; }
     </style>
 </head>
 <body>
-
-    <div id="smartToast" class="smart-toast">
-        <span id="smartToastMsg" style="line-height: 1.5;"></span>
-    </div>
-
+    <div id="smartToast" class="smart-toast"><span id="smartToastMsg" style="line-height: 1.5;"></span></div>
+    
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
@@ -102,25 +86,19 @@
             <button class="close-dash" onclick="closeAdminDash()"> إغلاق ❌</button>
         </div>
     </div>
-
+    
     <div class="app-container" id="appContainer">
         <div class="header fade-in">
             <div class="premium-logo" onclick="handleSecretTap()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#6ee7ff" />
-                            <stop offset="100%" stop-color="#a78bfa" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    <defs><linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" /></linearGradient></defs>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
             </div>
             <h1>منصة الاختبارات</h1>
             <p id="headerSubtitle">أهلاً بك، يرجى تسجيل الدخول للبدء</p>
         </div>
-
+        
         <div class="card fade-in" style="animation-delay: 0.1s;">
             <div id="loginSection">
                 <div class="input-group">
@@ -130,53 +108,80 @@
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
-                
                 <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء حساب جديد</button>
             </div>
-
+            
             <div id="examsSection" style="display: none;">
-                
                 <div class="exams-header-row">
-                    <button class="logout-btn" onclick="handleLogout()">
-                        خروج
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    </button>
+                    <button class="logout-btn" onclick="handleLogout()">خروج <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
                 </div>
-
                 <div class="tabs-row">
                     <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
                     <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
                 </div>
-
-                <div class="exams-list" id="dynamicExamsList">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
-                </div>
-
-                <div class="exams-list" id="dynamicPdfsList" style="display: none;">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p>
-                </div>
-
+                <div class="exams-list" id="dynamicExamsList"><p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p></div>
+                <div class="exams-list" id="dynamicPdfsList" style="display: none;"><p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p></div>
             </div>
         </div>
-
+        
         <div class="footer fade-in">
-            <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
-                <span class="neon">DEVELOPED BY AHMED HAMED</span>
-            </a>
+            <a href="https://wa.me/201016781843" target="_blank" class="glass-box"><span class="neon">DEVELOPED BY AHMED HAMED</span></a>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
-            authDomain: "ahmedexams-3e267.firebaseapp.com",
-            databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com", 
-            projectId: "ahmedexams-3e267",
-            storageBucket: "ahmedexams-3e267.firebasestorage.app",
-            messagingSenderId: "151411096023",
-            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+    (function() {
+        // 1. Anti-Debugging and Console Protection
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.onkeydown = function(e) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { 
+                return false; 
+            }
+        };
+        setInterval(function() { 
+            console.clear(); 
+            console.log("%c🛑 منطقة محظورة!", "color: red; font-size: 30px; font-weight: bold;"); 
+        }, 1000);
+        
+        let devtools = function() {};
+        devtools.toString = function() {
+            if(window.location.hostname !== 'localhost') {
+                setInterval(function() { Function("debugger")(); }, 150);
+            }
+            return '';
+        };
+        console.log('%c', devtools);
+        document.addEventListener('copy', function(e) { 
+            if (!localStorage.getItem('account_generated_v2')) e.preventDefault(); 
+        });
+
+        // 2. Base64 Encoded Keys (Safe from simple scraping)
+        const fbKeys = {
+            k: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
+            d: atob("YWhtZWRleGFtcy0zZTI2Ny5maXJlYmFzZWFwcC5jb20="),
+            u: atob("aHR0cHM6Ly9haG1lZGV4YW1zLTNlMjY3LWRlZmF1bHQtcnRkYi5maXJlYmFzZWlvLmNvbQ=="),
+            p: atob("YWhtZWRleGFtcy0zZTI2Nw==")
+        };
+        const firebaseConfig = { 
+            apiKey: fbKeys.k, 
+            authDomain: fbKeys.d, 
+            databaseURL: fbKeys.u, 
+            projectId: fbKeys.p, 
+            storageBucket: "ahmedexams-3e267.firebasestorage.app", 
+            messagingSenderId: "151411096023", 
+            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392" 
         };
 
+        const tgKeys = {
+            p1: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA=="),
+            p2: atob("ODkyNTYyMDU5NDo="),
+            p3: atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc="),
+            p4: atob("L3NlbmRNZXNzYWdl"),
+            cid: atob("ODQ0NjUwMDk3OA==")
+        };
+        const getTeleUrl = () => tgKeys.p1 + tgKeys.p2 + tgKeys.p3 + tgKeys.p4;
+
+        // 3. App Variables
         let database = null;
         let logoutTimer;
         let adminListener = null;
@@ -185,607 +190,440 @@
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
-                
                 const sessionRef = database.ref('active_visitors').push();
                 const connectedRef = database.ref('.info/connected');
-                connectedRef.on('value', (snap) => {
-                    if (snap.val() === true) {
+                connectedRef.on('value', function(snap) {
+                    if (snap.val() === true) { 
                         sessionRef.onDisconnect().remove(); 
                         sessionRef.set(true); 
                     }
                 });
             }
-        } catch(e) {
-            console.error("Firebase is blocked.");
-        }
+        } catch(e) { console.error("Firebase Error"); }
 
+        // 4. Alerts and Admin Panel
         let alertTimeout;
+        let lastMsg = "";
+
         function showSmartAlert(msg) {
             const toast = document.getElementById('smartToast');
             document.getElementById('smartToastMsg').innerText = msg;
             toast.classList.add('show');
-            
             clearTimeout(alertTimeout);
-            alertTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 8000); 
+            alertTimeout = setTimeout(() => { toast.classList.remove('show'); }, 8000); 
         }
 
-        let lastMsg = "";
         function listenForLiveAlerts() {
             if(!database) return;
-            database.ref('admin_message').on('value', (snap) => {
+            database.ref('admin_message').on('value', function(snap) {
                 const msg = snap.val();
-                if(msg && msg.trim() !== "" && msg !== lastMsg) {
-                    lastMsg = msg;
-                    showSmartAlert(msg);
+                if(msg && msg.trim() !== "" && msg !== lastMsg) { 
+                    lastMsg = msg; 
+                    showSmartAlert(msg); 
                 }
             });
         }
 
-        let tapCount = 0;
-        let tapTimer;
-        function handleSecretTap() {
+        let tapCount = 0, tapTimer;
+        window.handleSecretTap = function() {
             tapCount++;
             clearTimeout(tapTimer);
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
-            
-            if (tapCount >= 5) {
-                openAdminDash();
+            if (tapCount >= 5) { 
+                openAdminDash(); 
                 tapCount = 0; 
             }
-        }
+        };
 
         function openAdminDash() {
-            if(!database) {
-                alert('لا يمكن الاتصال بقاعدة البيانات!');
-                return;
-            }
+            if(!database) { alert('لا يمكن الاتصال!'); return; }
             const dash = document.getElementById('adminDashboard');
             dash.style.display = 'flex';
             setTimeout(() => dash.style.opacity = '1', 10);
-
-            adminListener = database.ref('active_visitors').on('value', (snapshot) => {
-                const count = snapshot.numChildren() || 0;
-                document.getElementById('onlineCounter').innerText = count;
+            adminListener = database.ref('active_visitors').on('value', function(snapshot) {
+                document.getElementById('onlineCounter').innerText = snapshot.numChildren() || 0;
             });
         }
 
-        function closeAdminDash() {
+        window.closeAdminDash = function() {
             const dash = document.getElementById('adminDashboard');
             dash.style.opacity = '0';
             setTimeout(() => dash.style.display = 'none', 300);
-            
-            if(adminListener) {
-                database.ref('active_visitors').off('value', adminListener);
-            }
-        }
+            if(adminListener) database.ref('active_visitors').off('value', adminListener);
+        };
 
-        function switchTab(tab) {
+        window.switchTab = function(tab) {
             document.getElementById('tabExamsBtn').classList.remove('active');
             document.getElementById('tabPdfsBtn').classList.remove('active');
             document.getElementById('dynamicExamsList').style.display = 'none';
             document.getElementById('dynamicPdfsList').style.display = 'none';
-
+            
             if (tab === 'exams') {
-                document.getElementById('tabExamsBtn').classList.add('active');
+                document.getElementById('tabExamsBtn').classList.add('active'); 
                 document.getElementById('dynamicExamsList').style.display = 'flex';
             } else {
-                document.getElementById('tabPdfsBtn').classList.add('active');
+                document.getElementById('tabPdfsBtn').classList.add('active'); 
                 document.getElementById('dynamicPdfsList').style.display = 'flex';
             }
-        }
+        };
 
-        document.addEventListener("DOMContentLoaded", () => {
-            // غيرنا الأسماء لـ v2 عشان يتجاهل الحسابات القديمة
+        // 5. Authentication Flow
+        document.addEventListener("DOMContentLoaded", function() {
             const savedUser = localStorage.getItem('saved_username_v2');
             const savedPass = localStorage.getItem('saved_password_v2');
             if(savedUser && savedPass) {
-                const uInput = document.getElementById('username');
+                const uInput = document.getElementById('username'); 
                 const pInput = document.getElementById('password');
-                if(uInput) uInput.value = savedUser;
+                if(uInput) uInput.value = savedUser; 
                 if(pInput) pInput.value = savedPass;
             }
 
             const isAuth = sessionStorage.getItem('student_auth') === 'verified';
             const loginTime = sessionStorage.getItem('login_time');
-            const tenMinutes = 10 * 60 * 1000; 
-
+            
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
-                if (timePassed < tenMinutes) {
+                if (timePassed < 10 * 60 * 1000) {
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
-                    
-                    fetchExamsFromServer();
-                    fetchPdfsFromServer();
+                    fetchExamsFromServer(); 
+                    fetchPdfsFromServer(); 
                     listenForLiveAlerts();
-
-                    logoutTimer = setTimeout(() => {
-                        alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
-                        handleLogout();
-                    }, tenMinutes - timePassed);
-                } else {
-                    handleLogout();
+                    logoutTimer = setTimeout(() => { 
+                        alert("انتهت الجلسة."); 
+                        window.handleLogout(); 
+                    }, (10 * 60 * 1000) - timePassed);
+                } else { 
+                    window.handleLogout(); 
                 }
             }
         });
 
-        function generateAccount() {
+        window.generateAccount = function() {
             const btn = document.getElementById('genBtn');
-            
-            // التأكد من المتغير الجديد v2
-            if(localStorage.getItem('account_generated_v2') === 'true') {
-                alert("⚠️ لقد قمت بإنشاء حساب بالفعل! يرجى استخدامه للدخول أو التواصل مع الإدارة.");
-                return;
+            if(localStorage.getItem('account_generated_v2') === 'true') { 
+                alert("⚠️ لديك حساب بالفعل!"); 
+                return; 
             }
-
-            btn.disabled = true;
+            
+            btn.disabled = true; 
             btn.innerHTML = 'جاري الإنشاء... ⏳';
-
-            const randomId = Math.floor(1000 + Math.random() * 9000);
-            const username = 'stu' + randomId;
+            
+            const username = 'stu' + Math.floor(1000 + Math.random() * 9000);
+            let password = ''; 
             const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-            let password = '';
             for (let i = 0; i < 4; i++) {
                 password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
 
-            if (!database) {
-                alert("مشكلة في الاتصال! يرجى تحديث الصفحة.");
-                btn.disabled = false;
-                btn.innerHTML = 'إنشاء حساب جديد';
-                return;
+            if (!database) { 
+                alert("مشكلة اتصال!"); 
+                btn.disabled = false; 
+                btn.innerHTML = 'إنشاء حساب جديد'; 
+                return; 
             }
 
-            database.ref('credentials/' + username).set({
-                password: password
-            }).then(() => {
-                // حفظ بالأسماء الجديدة v2
+            database.ref('credentials/' + username).set({ password: password }).then(() => {
                 localStorage.setItem('account_generated_v2', 'true'); 
-                localStorage.setItem('saved_username_v2', username);
+                localStorage.setItem('saved_username_v2', username); 
                 localStorage.setItem('saved_password_v2', password);
-                
-                const credentialsText = `اسم المستخدم: ${username}\nكلمة المرور: ${password}`;
                 try {
-                    const tempInput = document.createElement("textarea");
-                    tempInput.value = credentialsText;
-                    document.body.appendChild(tempInput);
-                    tempInput.select();
-                    document.execCommand("copy");
+                    const tempInput = document.createElement("textarea"); 
+                    tempInput.value = `اسم: ${username}\nمرور: ${password}`;
+                    document.body.appendChild(tempInput); 
+                    tempInput.select(); 
+                    document.execCommand("copy"); 
                     document.body.removeChild(tempInput);
-                    
-                    alert(`✅ تم إنشاء الحساب ونسخ البيانات تلقائياً!\n\n👤 اسم المستخدم: ${username}\n🔑 كلمة المرور: ${password}\n\n(تم حفظ هذه البيانات في متصفحك للدخول السريع لاحقاً)`);
-                } catch(e) {
-                    alert(`✅ تم إنشاء الحساب بنجاح!\n\n👤 اسم المستخدم: ${username}\n🔑 كلمة المرور: ${password}\n\n⚠️ يرجى حفظ هذه البيانات قبل الدخول.`);
+                    alert(`✅ تم إنشاء الحساب ونسخ البيانات!\n\n👤 اسم: ${username}\n🔑 مرور: ${password}`);
+                } catch(e) { 
+                    alert(`✅ تم!\n👤 اسم: ${username}\n🔑 مرور: ${password}`); 
                 }
-                
-                document.getElementById('username').value = username;
+                document.getElementById('username').value = username; 
                 document.getElementById('password').value = password;
-                
-                btn.disabled = false;
+                btn.disabled = false; 
                 btn.innerHTML = 'إنشاء حساب جديد';
-            }).catch((err) => {
-                alert("فشل إنشاء الحساب. تأكد من جودة الإنترنت لديك.");
-                btn.disabled = false;
-                btn.innerHTML = 'إنشاء حساب جديد';
+            }).catch(() => { 
+                alert("فشل الإنشاء."); 
+                btn.disabled = false; 
+                btn.innerHTML = 'إنشاء حساب جديد'; 
             });
-        }
+        };
 
         async function verifyConnectionAndLogin(username) {
-            const btn = document.getElementById('loginBtn');
-            btn.innerHTML = 'جاري فحص الحماية... 🛡️';
-
-            let deviceStr = "جهاز غير معروف";
-            let platformStr = navigator.platform || "غير معروف";
-            let screenRes = window.screen.width + "x" + window.screen.height;
-
-            try {
-                const parser = new UAParser();
-                const result = parser.getResult();
-                if (result.device.vendor && result.device.model) {
-                    deviceStr = result.device.vendor + " " + result.device.model;
-                } else if (result.os.name) {
-                    deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
-                }
-            } catch(e) {}
-
-            let loc = "غير معروف";
-            let isp = "غير معروف";
-            let ip = "غير معروف";
+            const btn = document.getElementById('loginBtn'); 
+            btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            let isVpn = false;
-            let isOutside = false;
-            let isVerified = false;
-
-            try {
-                let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace');
-                let cfText = await cfRes.text();
-                let cfIp = cfText.match(/ip=([^\n]+)/);
-                let cfLoc = cfText.match(/loc=([^\n]+)/);
-                if (cfIp && cfLoc) {
-                    ip = cfIp[1];
-                    if (cfLoc[1] !== "EG") isOutside = true;
-                    isVerified = true;
-                }
+            let deviceStr = "غير معروف", platformStr = navigator.platform || "غير معروف", screenRes = window.screen.width + "x" + window.screen.height;
+            try { 
+                const parser = new UAParser(); 
+                const res = parser.getResult(); 
+                if (res.device.vendor) deviceStr = res.device.vendor + " " + res.device.model; 
+                else if (res.os.name) deviceStr = res.os.name; 
             } catch(e) {}
 
-            try {
-                let ipwhoRes = await fetch('https://ipwho.is/');
-                let ipwhoData = await ipwhoRes.json();
-                if (ipwhoData.success) {
-                    loc = ipwhoData.city + ", " + ipwhoData.country;
-                    isp = ipwhoData.connection.isp;
-                    ip = ipwhoData.ip; 
-                    if (ipwhoData.security.vpn || ipwhoData.security.proxy || ipwhoData.security.tor || ipwhoData.security.hosting) {
-                        isVpn = true;
-                    }
-                    if (ipwhoData.country_code !== "EG") {
-                        isOutside = true;
-                    }
-                    isVerified = true;
-                }
+            let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
+            
+            try { 
+                let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
+                let cfText = await cfRes.text(); 
+                let cfIp = cfText.match(/ip=([^\n]+)/), cfLoc = cfText.match(/loc=([^\n]+)/); 
+                if (cfIp && cfLoc) { ip = cfIp[1]; if (cfLoc[1] !== "EG") isOutside = true; isVerified = true; } 
             } catch(e) {}
-
-            if (loc === "غير معروف") {
-                try {
-                    let ipapiRes = await fetch('https://ipapi.co/json/');
-                    let ipapiData = await ipapiRes.json();
-                    if (!ipapiData.error) {
-                        loc = ipapiData.city + ", " + ipapiData.country_name;
-                        isp = ipapiData.org;
-                        ip = ipapiData.ip || "غير معروف";
-                        if (ipapiData.country_code !== "EG") isOutside = true;
-                        isVerified = true;
-                    }
-                } catch(e) {}
+            
+            try { 
+                let ipwhoRes = await fetch('https://ipwho.is/'); 
+                let d = await ipwhoRes.json(); 
+                if (d.success) { 
+                    loc = d.city + ", " + d.country; 
+                    isp = d.connection.isp; 
+                    ip = d.ip; 
+                    if (d.security.vpn || d.security.proxy || d.security.tor) isVpn = true; 
+                    if (d.country_code !== "EG") isOutside = true; 
+                    isVerified = true; 
+                } 
+            } catch(e) {}
+            
+            let bannedList = ['41.235.55.32'];
+            if(database) { 
+                try { 
+                    let bSnap = await database.ref('banned_ips').once('value'); 
+                    if (bSnap.exists()) bannedList = bannedList.concat(Object.values(bSnap.val())); 
+                } catch(e) {} 
             }
 
-            let bannedList = ['41.235.55.32']; 
+            const sendTg = (txt) => fetch(getTeleUrl(), { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ chat_id: tgKeys.cid, text: txt }) 
+            }).catch(e=>{});
+
+            if (bannedList.includes(ip)) { 
+                showError(btn,'محظور 🚫'); 
+                sendTg(`🛑 محظور يدخل: ${username} | IP: ${ip}`); 
+                btn.disabled = false; 
+                return; 
+            }
+            if (isVpn || isOutside || !isVerified) { 
+                showError(btn, 'أغلق الـ VPN 🚫'); 
+                sendTg(`⚠️ دخول مرفوض بـ VPN لـ ${username}`); 
+                btn.disabled = false; 
+                return; 
+            }
+
             if(database) {
-                try {
-                    let bannedSnap = await database.ref('banned_ips').once('value');
-                    if (bannedSnap.exists()) {
-                        let val = bannedSnap.val();
-                        let fbBanned = Array.isArray(val) ? val : Object.values(val);
-                        bannedList = bannedList.concat(fbBanned);
-                    }
-                } catch(e) {}
-            }
-
-            if (bannedList.includes(ip)) {
-                showError(btn,'تم حظر جهازك من المنصة 🚫');
-                const timeNow = new Date().toLocaleString('ar-EG');
-                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-                fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
+                database.ref('login_logs').push({ 
+                    username: username, 
+                    device: deviceStr, 
+                    platform: platformStr, 
+                    screen: screenRes, 
+                    location: loc, 
+                    isp: isp, 
+                    ip: ip, 
+                    time: new Date().toLocaleString('ar-EG') 
                 }).catch(e=>{});
-                btn.disabled = false; 
-                return; 
             }
-
-            if (isVpn || isOutside || !isVerified) {
-                showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
-                
-                let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
-                const timeNow = new Date().toLocaleString('ar-EG');
-                
-                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-                
-                fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
-                }).catch(e=>{});
-                
-                btn.disabled = false; 
-                return; 
-            }
-
-            saveToFirebaseAndTelegram(username, deviceStr, platformStr, screenRes, loc, isp, ip);
+            
+            sendTg(`🟢 دخول: ${username}\n📍 ${loc}\n🔗 ${ip}`);
             finalizeLogin(username);
         }
 
-        function saveToFirebaseAndTelegram(username, device, platform, screen, loc, isp, ip) {
-            if(!database) return;
-            const timeNow = new Date().toLocaleString('ar-EG');
-            
-            database.ref('login_logs').push({ 
-                username: username, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow 
-            }).catch(e=>{});
-            
-            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-            
-            fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
-            }).catch(e=>{});
-        }
-
-        function handleLogin() {
+        window.handleLogin = function() {
             const btn = document.getElementById('loginBtn');
-            
             const lastClick = localStorage.getItem('last_login_attempt_time');
-            const cooldownPeriod = 15000;
-
-            if (lastClick && (Date.now() - parseInt(lastClick) < cooldownPeriod)) {
-                const secondsLeft = Math.ceil((cooldownPeriod - (Date.now() - parseInt(lastClick))) / 1000);
-                showError(btn, `انتظر ${secondsLeft} ثانية قبل المحاولة ⏳`);
+            
+            if (lastClick && (Date.now() - parseInt(lastClick) < 15000)) { 
+                showError(btn, `انتظر ${Math.ceil((15000 - (Date.now() - parseInt(lastClick))) / 1000)} ثانية ⏳`); 
+                return; 
+            }
+            
+            if (btn.disabled) return; 
+            btn.disabled = true; 
+            
+            if (!database) { 
+                showError(btn, "مشكلة اتصال!"); 
                 return; 
             }
 
-            if (btn.disabled) return; 
-            btn.disabled = true; 
-
-            if (!database) {
-                showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة.");
-                return;
-            }
-
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
-
-            if(usernameInput === '' || passwordInput === '') { 
-                showError(btn, 'يرجى إدخال البيانات!'); 
+            const uVal = document.getElementById('username').value.trim();
+            const pVal = document.getElementById('password').value.trim();
+            
+            if(uVal === '' || pVal === '') { 
+                showError(btn, 'أدخل البيانات!'); 
                 return; 
             }
 
             localStorage.setItem('last_login_attempt_time', Date.now());
+            btn.style.background = 'rgba(26,43,85,.8)'; 
+            btn.innerHTML = 'جاري التحقق...';
 
-            btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
-
-            database.ref('credentials/' + usernameInput).once('value').then((snapshot) => {
+            database.ref('credentials/' + uVal).once('value').then((snapshot) => {
                 const userData = snapshot.val();
-                if (userData && String(userData.password) === passwordInput) {
-                    // التحديث هنا لـ v2
-                    localStorage.setItem('saved_username_v2', usernameInput);
-                    localStorage.setItem('saved_password_v2', passwordInput);
-                    
-                    verifyConnectionAndLogin(usernameInput);
+                if (userData && String(userData.password) === pVal) {
+                    localStorage.setItem('saved_username_v2', uVal); 
+                    localStorage.setItem('saved_password_v2', pVal);
+                    verifyConnectionAndLogin(uVal);
                 } else { 
-                    showError(btn, 'البيانات غير صحيحة!'); 
+                    showError(btn, 'خطأ بالبيانات!'); 
                 }
-            }).catch((err) => { 
-                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
+            }).catch(() => { 
+                showError(btn, 'فشل الاتصال!'); 
             });
-        }
+        };
 
-        function finalizeLogin(usernameInput) {
+        function finalizeLogin(uVal) {
             const btn = document.getElementById('loginBtn');
-            btn.style.background = 'rgba(34,197,94,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'تم بنجاح ✓';
+            btn.style.background = 'rgba(34,197,94,.8)'; 
+            btn.innerHTML = 'تم بنجاح ✓'; 
             btn.disabled = false; 
-
-            sessionStorage.setItem('student_auth', 'verified');
-            sessionStorage.setItem('student_name', usernameInput);
-            sessionStorage.setItem('login_time', Date.now()); 
             
+            sessionStorage.setItem('student_auth', 'verified'); 
+            sessionStorage.setItem('student_name', uVal); 
+            sessionStorage.setItem('login_time', Date.now()); 
             history.pushState({page: 'exams'}, 'Exams', '#exams');
-
-            clearTimeout(logoutTimer);
-            logoutTimer = setTimeout(() => {
-                alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
-                handleLogout();
+            
+            clearTimeout(logoutTimer); 
+            logoutTimer = setTimeout(() => { 
+                alert("انتهت الجلسة."); 
+                window.handleLogout(); 
             }, 10 * 60 * 1000);
-
-            setTimeout(() => {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('headerSubtitle').style.display = 'none';
-                document.getElementById('examsSection').style.display = 'block';
-                
-                fetchExamsFromServer();
-                fetchPdfsFromServer();
-                
+            
+            setTimeout(() => { 
+                document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('headerSubtitle').style.display = 'none'; 
+                document.getElementById('examsSection').style.display = 'block'; 
+                fetchExamsFromServer(); 
+                fetchPdfsFromServer(); 
             }, 500);
         }
 
+        // 6. Data Fetching
         function fetchExamsFromServer() {
-            const examsContainer = document.getElementById('dynamicExamsList');
+            const cont = document.getElementById('dynamicExamsList');
+            if (!database) { cont.innerHTML = '<p>مشكلة اتصال.</p>'; return; }
             
-            if (!database) {
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>';
-                return;
-            }
-
-            database.ref('exams').on('value', (snapshot) => {
-                examsContainer.innerHTML = ''; 
-                const examsData = snapshot.val();
-                
-                if (examsData) {
-                    Object.keys(examsData).forEach((key) => {
-                        const exam = examsData[key];
+            database.ref('exams').on('value', function(snap) {
+                cont.innerHTML = ''; 
+                const data = snap.val();
+                if (data) {
+                    Object.values(data).forEach((exam) => {
                         if(exam && exam.name) {
-                            const isClosed = exam.status === 'closed';
-                            const actionClass = isClosed ? 'locked' : '';
-                            const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
-
-                            examsContainer.innerHTML += `
-                                <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${exam.name}</span>
-                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
-                                    </div>
-                                    <div class="exam-status ${actionClass}">${actionText}</div>
-                                </div>`;
+                            const isC = exam.status === 'closed';
+                            const aClass = isC ? 'locked' : '';
+                            const aText = isC ? 'مغلق 🔒' : 'دخول';
+                            cont.innerHTML += `<div class="exam-item" onclick="goToExam('${isC}', '${exam.url}')"><div class="exam-info"><span class="exam-name">${exam.name}</span><span class="exam-meta">${exam.questionsCount} سؤال</span></div><div class="exam-status ${aClass}">${aText}</div></div>`;
                         }
                     });
-                } else {
-                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
+                } else { 
+                    cont.innerHTML = '<p style="color:var(--muted); text-align:center;">لا توجد اختبارات.</p>'; 
                 }
-            }, (error) => {
-                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
             });
         }
 
         function fetchPdfsFromServer() {
-            const pdfsContainer = document.getElementById('dynamicPdfsList');
+            const cont = document.getElementById('dynamicPdfsList');
             if (!database) return;
-
-            database.ref('pdfs').on('value', (snapshot) => {
-                pdfsContainer.innerHTML = ''; 
-                const pdfsData = snapshot.val();
-                
-                if (pdfsData) {
-                    Object.keys(pdfsData).forEach((key) => {
-                        const pdf = pdfsData[key];
+            
+            database.ref('pdfs').on('value', function(snap) {
+                cont.innerHTML = ''; 
+                const data = snap.val();
+                if (data) {
+                    Object.values(data).forEach((pdf) => {
                         if(pdf && pdf.name) {
-                            pdfsContainer.innerHTML += `
-                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${pdf.name}</span>
-                                        <span class="exam-meta">${pdf.size || 'ملف مقروء'}</span>
-                                    </div>
-                                    <div class="pdf-status">فتح 📖</div>
-                                </div>`;
+                            cont.innerHTML += `<div class="exam-item" onclick="openPdfModal('${pdf.url}')"><div class="exam-info"><span class="exam-name">${pdf.name}</span><span class="exam-meta">${pdf.size || 'ملف'}</span></div><div class="pdf-status">فتح 📖</div></div>`;
                         }
                     });
-                } else {
-                    pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد ملفات PDF متاحة حالياً.</p>';
                 }
             });
         }
 
-        function openPdfModal(url) {
-            let finalUrl = url;
-            if(url.includes('drive.google.com') && url.includes('/view')) {
-                finalUrl = url.replace(/\/view.*/, '/preview');
-            }
+        window.openPdfModal = function(url) {
+            let fUrl = url.includes('drive.google.com/view') ? url.replace(/\/view.*/, '/preview') : url;
+            const modal = document.createElement('div'); 
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s;';
             
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s ease;';
-            
-            const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = 'إغلاق الملف ❌';
-            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-family:Tajawal, sans-serif; font-size:15px; box-shadow: 0 4px 15px rgba(239,68,68,0.2);';
-            
-            closeBtn.onclick = () => {
-                modal.style.opacity = '0';
-                setTimeout(() => document.body.removeChild(modal), 300);
+            const closeBtn = document.createElement('button'); 
+            closeBtn.innerHTML = 'إغلاق ❌'; 
+            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer;';
+            closeBtn.onclick = () => { 
+                modal.style.opacity = '0'; 
+                setTimeout(() => document.body.removeChild(modal), 300); 
             };
             
-            const iframe = document.createElement('iframe');
-            iframe.src = finalUrl;
-            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff; box-shadow: 0 10px 40px rgba(0,0,0,0.6);';
+            const iframe = document.createElement('iframe'); 
+            iframe.src = fUrl; 
+            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff;';
             
-            modal.appendChild(closeBtn);
-            modal.appendChild(iframe);
-            document.body.appendChild(modal);
-
+            modal.appendChild(closeBtn); 
+            modal.appendChild(iframe); 
+            document.body.appendChild(modal); 
             setTimeout(() => modal.style.opacity = '1', 10);
-        }
+        };
 
-        function goToExam(isClosed, url) {
-            if (isClosed === 'true' || isClosed === true) {
-                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
+        window.goToExam = function(isClosed, url) {
+            if (isClosed === 'true' || isClosed === true) { 
+                alert('مغلق 🔒'); 
             } else {
                 if (!database) return;
-                
-                const isAuth = sessionStorage.getItem('student_auth') === 'verified';
-                const studentName = sessionStorage.getItem('student_name');
-                
-                if (!isAuth || !studentName) {
-                    alert("يبدو أن الجلسة غير صالحة، يرجى تسجيل الدخول من جديد.");
-                    handleLogout();
-                    return;
+                const sName = sessionStorage.getItem('student_name');
+                if (!sessionStorage.getItem('student_auth') || !sName) { 
+                    window.handleLogout(); 
+                    return; 
                 }
-
-                showSmartAlert('جاري تأمين الجلسة وفتح الاختبار... ⏳');
-
-                const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
-                
-                database.ref('active_tickets/' + studentName).set({
-                    token: secureToken,
-                    timestamp: Date.now()
-                }).then(() => {
-                    const separator = url.includes('?') ? '&' : '?';
-                    const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
-                    
-                    window.location.href = secureUrl; 
-                }).catch(() => {
-                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
+                showSmartAlert('تأمين الجلسة... ⏳');
+                const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                database.ref('active_tickets/' + sName).set({ token: token, timestamp: Date.now() }).then(() => {
+                    window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(sName)}&t=${token}`; 
                 });
             }
-        }
+        };
 
-        function showError(button, message) {
-            button.style.background = 'rgba(239,68,68,.8)'; button.style.color = '#fff'; button.innerHTML = message;
+        function showError(btn, msg) {
+            btn.style.background = 'rgba(239,68,68,.8)'; 
+            btn.innerHTML = msg;
             setTimeout(() => { 
-                button.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; 
-                button.style.color = 'var(--bg0)'; button.innerHTML = 'تسجيل الدخول'; 
-                button.disabled = false; 
+                btn.style.background = ''; 
+                btn.innerHTML = 'تسجيل الدخول'; 
+                btn.disabled = false; 
             }, 2500);
         }
 
-        function handleLogout() {
-            sessionStorage.removeItem('student_auth');
-            sessionStorage.removeItem('student_name');
-            sessionStorage.removeItem('login_time');
-            
-            let keysToRemove = [];
-            for(let i = 0; i < sessionStorage.length; i++) {
-                let key = sessionStorage.key(i);
-                if(key && key.startsWith('exam_session_')) {
-                    keysToRemove.push(key);
-                }
-            }
-            keysToRemove.forEach(k => sessionStorage.removeItem(k));
-
+        window.handleLogout = function() {
+            sessionStorage.clear(); 
             clearTimeout(logoutTimer); 
-            
-            // قراءة البيانات من v2
-            const savedUser = localStorage.getItem('saved_username_v2');
-            const savedPass = localStorage.getItem('saved_password_v2');
-            if(savedUser && savedPass) {
-                document.getElementById('username').value = savedUser;
-                document.getElementById('password').value = savedPass;
-            } else {
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-            }
-            
-            const btn = document.getElementById('loginBtn');
-            btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
-            btn.style.color = 'var(--bg0)';
-            btn.innerHTML = 'تسجيل الدخول';
+            document.getElementById('username').value = localStorage.getItem('saved_username_v2') || ''; 
+            document.getElementById('password').value = localStorage.getItem('saved_password_v2') || '';
+            const btn = document.getElementById('loginBtn'); 
+            btn.style.background = ''; 
+            btn.innerHTML = 'تسجيل الدخول'; 
             btn.disabled = false; 
-
-            document.getElementById('examsSection').style.display = 'none';
-            document.getElementById('headerSubtitle').style.display = 'block';
+            
+            document.getElementById('examsSection').style.display = 'none'; 
+            document.getElementById('headerSubtitle').style.display = 'block'; 
             document.getElementById('loginSection').style.display = 'block';
-
-            switchTab('exams');
-
+            
+            window.switchTab('exams'); 
             if (location.hash === '#exams') history.back();
-        }
-
-        window.addEventListener('popstate', function(event) {
-            if (document.getElementById('examsSection').style.display === 'block') {
-                if(sessionStorage.getItem('student_auth') === 'verified') {
-                    history.pushState({page: 'exams'}, 'Exams', '#exams');
-                } else {
-                    handleLogout();
-                }
-            }
-        });
-
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                const loginTime = sessionStorage.getItem('login_time');
-                if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
-                    alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
-                    handleLogout();
-                }
-            }
-        });
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = e => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
         };
-        document.addEventListener('copy', e => {
-            if (!localStorage.getItem('account_generated_v2')) e.preventDefault();
-        });
-        setInterval(() => {
-            (function() { return false; }['constructor']('debugger')());
-        }, 150);
 
+        window.addEventListener('popstate', function() { 
+            if (document.getElementById('examsSection').style.display === 'block') { 
+                if(sessionStorage.getItem('student_auth')) {
+                    history.pushState({page:'exams'},'Exams','#exams'); 
+                } else {
+                    window.handleLogout(); 
+                }
+            } 
+        });
+        
+        window.addEventListener('pageshow', function(e) { 
+            if (e.persisted) { 
+                const lt = sessionStorage.getItem('login_time'); 
+                if (lt && (Date.now() - parseInt(lt) > 600000)) window.handleLogout(); 
+            } 
+        });
+
+    })();
     </script>
 </body>
 </html>
