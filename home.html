@@ -7,17 +7,28 @@
     <meta name="theme-color" content="#070912">
     <title>منصة الاختبارات</title>
     
-    <!-- نظام الحماية المبكر -->
     <script>
         var _0xua = navigator.userAgent || navigator.vendor || window.opera;
         var _0xloc = window.location.protocol;
+        var _0xhost = window.location.hostname;
         
+        // 1. قفل النطاق (Domain Lock): منع سرقة الكود ورفعه على موقع آخر
+        if (_0xhost && _0xhost.indexOf('am-nu.vercel.app') === -1 && _0xhost !== 'localhost' && _0xhost !== '127.0.0.1') {
+            document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:999999; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; font-family:sans-serif; padding:20px; border:2px solid #ef4444; border-radius:15px; background:#0b1020; width:85%; line-height:1.6;'>نسخة مسروقة أو غير مصرح بها 🚫<br>يرجى زيارة الرابط الرسمي للمنصة.</h2></div>");
+            window.stop();
+        }
+
+        // 2. منع الفتح من الملفات المحلية أو تطبيقات الأكواد والمتصفحات المضمنة
         if (_0xloc === 'file:' || _0xloc === 'content:' || _0xua.indexOf("wv") > -1 || _0xua.indexOf("IDE") > -1 || _0xua.indexOf("FBAN") > -1) {
-            document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:999999; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; font-family:sans-serif; padding:20px; border:2px solid #ef4444; border-radius:15px; background:#0b1020; width:85%; line-height:1.6;'>عذراً، لا يمكن فتح المنصة من هنا.<br>يرجى نسخ الرابط وفتحه في متصفح جوجل كروم (Chrome) الأساسي. 🚫</h2></div>");
+            document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:999999; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; font-family:sans-serif; padding:20px; border:2px solid #ef4444; border-radius:15px; background:#0b1020; width:85%; line-height:1.6;'>عذراً، لا يمكن فتح المنصة من هنا.<br>يرجى نسخ الرابط وفتحه في متصفح أساسي (مثل Chrome أو Safari). 🚫</h2></div>");
             window.stop();
         }
         
-        // مسحت كود الحظر القديم هنا عشان تقدر تدخل من غير ما تمسح بيانات المتصفح
+        // 3. طرد الجهاز المحظور أمنياً قبل تحميل باقي الصفحة
+        if (localStorage.getItem('_is_hacker_banned') === 'true') {
+            document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:999999; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; font-family:sans-serif; padding:20px; border:2px solid #ef4444; border-radius:15px; background:#0b1020; width:85%;'>تم حظر هذا الجهاز لانتهاك سياسات الأمان. 🚫</h2></div>");
+            window.stop();
+        }
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
@@ -360,14 +371,20 @@
             const username = 'stu' + randomId;
             const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
             let password = '';
-            for (let i = 0; i < 4; i++) password += chars.charAt(Math.floor(Math.random() * chars.length));
+            for (let i = 0; i < 4; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
 
             if (!database) {
                 alert("مشكلة في الاتصال! يرجى تحديث الصفحة.");
-                btn.disabled = false; btn.innerHTML = 'إنشاء حساب جديد'; return;
+                btn.disabled = false;
+                btn.innerHTML = 'إنشاء حساب جديد';
+                return;
             }
 
-            database.ref('credentials/' + username).set({ password: password }).then(() => {
+            database.ref('credentials/' + username).set({
+                password: password
+            }).then(() => {
                 localStorage.setItem('last_account_date', todayDate); 
                 localStorage.setItem('saved_username_v2', username);
                 localStorage.setItem('saved_password_v2', password);
@@ -380,6 +397,7 @@
                     tempInput.select();
                     document.execCommand("copy");
                     document.body.removeChild(tempInput);
+                    
                     alert(`✅ تم إنشاء الحساب ونسخ البيانات تلقائياً!\n\n👤 اسم المستخدم: ${username}\n🔑 كلمة المرور: ${password}\n\n(تم حفظ هذه البيانات في متصفحك للدخول السريع اليوم)`);
                 } catch(e) {
                     alert(`✅ تم إنشاء الحساب بنجاح!\n\n👤 اسم المستخدم: ${username}\n🔑 كلمة المرور: ${password}\n\n⚠️ يرجى حفظ هذه البيانات قبل الدخول.`);
@@ -387,10 +405,13 @@
                 
                 document.getElementById('username').value = username;
                 document.getElementById('password').value = password;
-                btn.disabled = false; btn.innerHTML = 'إنشاء حساب جديد';
-            }).catch(() => {
+                
+                btn.disabled = false;
+                btn.innerHTML = 'إنشاء حساب جديد';
+            }).catch((err) => {
                 alert("فشل إنشاء الحساب. تأكد من جودة الإنترنت لديك.");
-                btn.disabled = false; btn.innerHTML = 'إنشاء حساب جديد';
+                btn.disabled = false;
+                btn.innerHTML = 'إنشاء حساب جديد';
             });
         }
 
@@ -399,38 +420,68 @@
             btn.innerHTML = 'جاري فحص الحماية... 🛡️';
 
             const deviceId = _0x_fp();
-            let deviceStr = "جهاز غير معروف"; let platformStr = navigator.platform || "غير معروف"; let screenRes = window.screen.width + "x" + window.screen.height;
+
+            let deviceStr = "جهاز غير معروف";
+            let platformStr = navigator.platform || "غير معروف";
+            let screenRes = window.screen.width + "x" + window.screen.height;
 
             try {
-                const parser = new UAParser(); const result = parser.getResult();
-                if (result.device.vendor && result.device.model) deviceStr = result.device.vendor + " " + result.device.model;
-                else if (result.os.name) deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
+                const parser = new UAParser();
+                const result = parser.getResult();
+                if (result.device.vendor && result.device.model) {
+                    deviceStr = result.device.vendor + " " + result.device.model;
+                } else if (result.os.name) {
+                    deviceStr = result.os.name + " (" + (result.browser.name || "") + ")";
+                }
             } catch(e) {}
 
-            let loc = "غير معروف"; let isp = "غير معروف"; let ip = "غير معروف";
-            let isVpn = false; let isOutside = false; let isVerified = false;
+            let loc = "غير معروف";
+            let isp = "غير معروف";
+            let ip = "غير معروف";
+            
+            let isVpn = false;
+            let isOutside = false;
+            let isVerified = false;
 
             try {
-                let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); let cfText = await cfRes.text();
-                let cfIp = cfText.match(/ip=([^\n]+)/); let cfLoc = cfText.match(/loc=([^\n]+)/);
-                if (cfIp && cfLoc) { ip = cfIp[1]; if (cfLoc[1] !== "EG") isOutside = true; isVerified = true; }
+                let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace');
+                let cfText = await cfRes.text();
+                let cfIp = cfText.match(/ip=([^\n]+)/);
+                let cfLoc = cfText.match(/loc=([^\n]+)/);
+                if (cfIp && cfLoc) {
+                    ip = cfIp[1];
+                    if (cfLoc[1] !== "EG") isOutside = true;
+                    isVerified = true;
+                }
             } catch(e) {}
 
             try {
-                let ipwhoRes = await fetch('https://ipwho.is/'); let ipwhoData = await ipwhoRes.json();
+                let ipwhoRes = await fetch('https://ipwho.is/');
+                let ipwhoData = await ipwhoRes.json();
                 if (ipwhoData.success) {
-                    loc = ipwhoData.city + ", " + ipwhoData.country; isp = ipwhoData.connection.isp; ip = ipwhoData.ip; 
-                    if (ipwhoData.security.vpn || ipwhoData.security.proxy || ipwhoData.security.tor || ipwhoData.security.hosting) isVpn = true;
-                    if (ipwhoData.country_code !== "EG") isOutside = true; isVerified = true;
+                    loc = ipwhoData.city + ", " + ipwhoData.country;
+                    isp = ipwhoData.connection.isp;
+                    ip = ipwhoData.ip; 
+                    if (ipwhoData.security.vpn || ipwhoData.security.proxy || ipwhoData.security.tor || ipwhoData.security.hosting) {
+                        isVpn = true;
+                    }
+                    if (ipwhoData.country_code !== "EG") {
+                        isOutside = true;
+                    }
+                    isVerified = true;
                 }
             } catch(e) {}
 
             if (loc === "غير معروف") {
                 try {
-                    let ipapiRes = await fetch('https://ipapi.co/json/'); let ipapiData = await ipapiRes.json();
+                    let ipapiRes = await fetch('https://ipapi.co/json/');
+                    let ipapiData = await ipapiRes.json();
                     if (!ipapiData.error) {
-                        loc = ipapiData.city + ", " + ipapiData.country_name; isp = ipapiData.org; ip = ipapiData.ip || "غير معروف";
-                        if (ipapiData.country_code !== "EG") isOutside = true; isVerified = true;
+                        loc = ipapiData.city + ", " + ipapiData.country_name;
+                        isp = ipapiData.org;
+                        ip = ipapiData.ip || "غير معروف";
+                        if (ipapiData.country_code !== "EG") isOutside = true;
+                        isVerified = true;
                     }
                 } catch(e) {}
             }
@@ -449,19 +500,29 @@
 
             if (bannedList.includes(ip)) {
                 showError(btn,'تم حظر جهازك من المنصة 🚫');
+                const timeNow = new Date().toLocaleString('ar-EG');
+                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n🔖 كود الجهاز (ID): ${deviceId}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n🔖 كود: ${deviceId}\n🔗 IP: ${ip}\n⏰ الوقت: ${new Date().toLocaleString('ar-EG')}` })
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
-                btn.disabled = false; return; 
+                btn.disabled = false; 
+                return; 
             }
 
             if (isVpn || isOutside || !isVerified) {
                 showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
+                
                 let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
+                const timeNow = new Date().toLocaleString('ar-EG');
+                
+                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n🔖 كود الجهاز (ID): ${deviceId}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                
                 fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n🔖 كود الجهاز (ID): ${deviceId}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${new Date().toLocaleString('ar-EG')}` })
+                    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
                 }).catch(e=>{});
-                btn.disabled = false; return; 
+                
+                btn.disabled = false; 
+                return; 
             }
 
             saveToFirebaseAndTelegram(username, deviceId, deviceStr, platformStr, screenRes, loc, isp, ip);
@@ -471,28 +532,48 @@
         function saveToFirebaseAndTelegram(username, deviceId, device, platform, screen, loc, isp, ip) {
             if(!database) return;
             const timeNow = new Date().toLocaleString('ar-EG');
-            database.ref('login_logs').push({ username: username, device_id: deviceId, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow }).catch(e=>{});
+            
+            database.ref('login_logs').push({ 
+                username: username, device_id: deviceId, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow 
+            }).catch(e=>{});
+            
+            const msg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}` })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: msg })
             }).catch(e=>{});
         }
 
         function handleLogin() {
             const btn = document.getElementById('loginBtn');
+            
             const lastClick = localStorage.getItem('last_login_attempt_time');
-            if (lastClick && (Date.now() - parseInt(lastClick) < 15000)) {
-                showError(btn, `انتظر ${Math.ceil((15000 - (Date.now() - parseInt(lastClick))) / 1000)} ثانية قبل المحاولة ⏳`); return; 
+            const cooldownPeriod = 15000;
+
+            if (lastClick && (Date.now() - parseInt(lastClick) < cooldownPeriod)) {
+                const secondsLeft = Math.ceil((cooldownPeriod - (Date.now() - parseInt(lastClick))) / 1000);
+                showError(btn, `انتظر ${secondsLeft} ثانية قبل المحاولة ⏳`);
+                return; 
             }
+
             if (btn.disabled) return; 
             btn.disabled = true; 
 
-            if (!database) { showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة."); return; }
+            if (!database) {
+                showError(btn, "يوجد مشكلة في الاتصال! يرجى تحديث الصفحة.");
+                return;
+            }
 
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
-            if(usernameInput === '' || passwordInput === '') { showError(btn, 'يرجى إدخال البيانات!'); return; }
+
+            if(usernameInput === '' || passwordInput === '') { 
+                showError(btn, 'يرجى إدخال البيانات!'); 
+                return; 
+            }
 
             localStorage.setItem('last_login_attempt_time', Date.now());
+
             btn.style.background = 'rgba(26,43,85,.8)'; btn.style.color = '#fff'; btn.innerHTML = 'جاري التحقق...';
 
             database.ref('credentials/' + usernameInput).once('value').then((snapshot) => {
@@ -500,11 +581,14 @@
                 if (userData && String(userData.password) === passwordInput) {
                     localStorage.setItem('saved_username_v2', usernameInput);
                     localStorage.setItem('saved_password_v2', passwordInput);
+                    
                     verifyConnectionAndLogin(usernameInput);
                 } else { 
                     showError(btn, 'البيانات غير صحيحة!'); 
                 }
-            }).catch(() => { showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); });
+            }).catch((err) => { 
+                showError(btn, 'فشل الاتصال! تأكد من جودة الإنترنت.'); 
+            });
         }
 
         function finalizeLogin(usernameInput) {
@@ -515,25 +599,38 @@
             sessionStorage.setItem('student_auth', 'verified');
             sessionStorage.setItem('student_name', usernameInput);
             sessionStorage.setItem('login_time', Date.now()); 
+            
             history.pushState({page: 'exams'}, 'Exams', '#exams');
 
             clearTimeout(logoutTimer);
-            logoutTimer = setTimeout(() => { alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً."); handleLogout(); }, 10 * 60 * 1000);
+            logoutTimer = setTimeout(() => {
+                alert("انتهت صلاحية الجلسة (10 دقائق). يرجى تسجيل الدخول مجدداً.");
+                handleLogout();
+            }, 10 * 60 * 1000);
 
             setTimeout(() => {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('headerSubtitle').style.display = 'none';
                 document.getElementById('examsSection').style.display = 'block';
-                fetchExamsFromServer(); fetchPdfsFromServer();
+                
+                fetchExamsFromServer();
+                fetchPdfsFromServer();
+                
             }, 500);
         }
 
         function fetchExamsFromServer() {
             const examsContainer = document.getElementById('dynamicExamsList');
-            if (!database) { examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>'; return; }
+            
+            if (!database) {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>';
+                return;
+            }
+
             database.ref('exams').on('value', (snapshot) => {
                 examsContainer.innerHTML = ''; 
                 const examsData = snapshot.val();
+                
                 if (examsData) {
                     Object.keys(examsData).forEach((key) => {
                         const exam = examsData[key];
@@ -541,97 +638,177 @@
                             const isClosed = exam.status === 'closed';
                             const actionClass = isClosed ? 'locked' : '';
                             const actionText = isClosed ? 'مغلق 🔒' : 'دخول';
-                            examsContainer.innerHTML += `<div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')"><div class="exam-info"><span class="exam-name">${exam.name}</span><span class="exam-meta">${exam.questionsCount} سؤال</span></div><div class="exam-status ${actionClass}">${actionText}</div></div>`;
+
+                            examsContainer.innerHTML += `
+                                <div class="exam-item" onclick="goToExam('${isClosed}', '${exam.url}')">
+                                    <div class="exam-info">
+                                        <span class="exam-name">${exam.name}</span>
+                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
+                                    </div>
+                                    <div class="exam-status ${actionClass}">${actionText}</div>
+                                </div>`;
                         }
                     });
-                } else { examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>'; }
-            }, () => { examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>'; });
+                } else {
+                    examsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد اختبارات متاحة حالياً.</p>';
+                }
+            }, (error) => {
+                examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">تعذر الاتصال بالخادم. تأكد من جودة الإنترنت.</p>';
+            });
         }
 
         function fetchPdfsFromServer() {
             const pdfsContainer = document.getElementById('dynamicPdfsList');
             if (!database) return;
+
             database.ref('pdfs').on('value', (snapshot) => {
                 pdfsContainer.innerHTML = ''; 
                 const pdfsData = snapshot.val();
+                
                 if (pdfsData) {
                     Object.keys(pdfsData).forEach((key) => {
                         const pdf = pdfsData[key];
                         if(pdf && pdf.name) {
-                            pdfsContainer.innerHTML += `<div class="exam-item" onclick="openPdfModal('${pdf.url}')"><div class="exam-info"><span class="exam-name">${pdf.name}</span><span class="exam-meta">${pdf.size || 'ملف مقروء'}</span></div><div class="pdf-status">فتح 📖</div></div>`;
+                            pdfsContainer.innerHTML += `
+                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
+                                    <div class="exam-info">
+                                        <span class="exam-name">${pdf.name}</span>
+                                        <span class="exam-meta">${pdf.size || 'ملف مقروء'}</span>
+                                    </div>
+                                    <div class="pdf-status">فتح 📖</div>
+                                </div>`;
                         }
                     });
-                } else { pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد ملفات PDF متاحة حالياً.</p>'; }
+                } else {
+                    pdfsContainer.innerHTML = '<p style="color:var(--muted); text-align:center; font-size:14px; padding:20px;">لا توجد ملفات PDF متاحة حالياً.</p>';
+                }
             });
         }
 
         function openPdfModal(url) {
             let finalUrl = url;
-            if(url.includes('drive.google.com') && url.includes('/view')) finalUrl = url.replace(/\/view.*/, '/preview');
+            if(url.includes('drive.google.com') && url.includes('/view')) {
+                finalUrl = url.replace(/\/view.*/, '/preview');
+            }
+            
             const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s ease;';
-            const closeBtn = document.createElement('button'); closeBtn.innerHTML = 'إغلاق الملف ❌';
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s ease;';
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = 'إغلاق الملف ❌';
             closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-family:Tajawal, sans-serif; font-size:15px; box-shadow: 0 4px 15px rgba(239,68,68,0.2);';
-            closeBtn.onclick = () => { modal.style.opacity = '0'; setTimeout(() => document.body.removeChild(modal), 300); };
-            const iframe = document.createElement('iframe'); iframe.src = finalUrl;
+            
+            closeBtn.onclick = () => {
+                modal.style.opacity = '0';
+                setTimeout(() => document.body.removeChild(modal), 300);
+            };
+            
+            const iframe = document.createElement('iframe');
+            iframe.src = finalUrl;
             iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff; box-shadow: 0 10px 40px rgba(0,0,0,0.6);';
-            modal.appendChild(closeBtn); modal.appendChild(iframe); document.body.appendChild(modal);
+            
+            modal.appendChild(closeBtn);
+            modal.appendChild(iframe);
+            document.body.appendChild(modal);
+
             setTimeout(() => modal.style.opacity = '1', 10);
         }
 
         function goToExam(isClosed, url) {
-            if (isClosed === 'true' || isClosed === true) { alert('عذراً، هذا الاختبار مغلق حالياً 🔒'); } 
-            else {
+            if (isClosed === 'true' || isClosed === true) {
+                alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
+            } else {
                 if (!database) return;
+                
                 const isAuth = sessionStorage.getItem('student_auth') === 'verified';
                 const studentName = sessionStorage.getItem('student_name');
-                if (!isAuth || !studentName) { alert("يبدو أن الجلسة غير صالحة، يرجى تسجيل الدخول من جديد."); handleLogout(); return; }
+                
+                if (!isAuth || !studentName) {
+                    alert("يبدو أن الجلسة غير صالحة، يرجى تسجيل الدخول من جديد.");
+                    handleLogout();
+                    return;
+                }
+
                 showSmartAlert('جاري تأمين الجلسة وفتح الاختبار... ⏳');
+
                 const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
-                database.ref('active_tickets/' + studentName).set({ token: secureToken, timestamp: Date.now() }).then(() => {
+                
+                database.ref('active_tickets/' + studentName).set({
+                    token: secureToken,
+                    timestamp: Date.now()
+                }).then(() => {
                     const separator = url.includes('?') ? '&' : '?';
-                    window.location.href = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`; 
-                }).catch(() => { alert('خطأ في الاتصال، يرجى المحاولة مجدداً.'); });
+                    const secureUrl = `${url}${separator}u=${encodeURIComponent(studentName)}&t=${secureToken}`;
+                    
+                    window.location.href = secureUrl; 
+                }).catch(() => {
+                    alert('خطأ في الاتصال، يرجى المحاولة مجدداً.');
+                });
             }
         }
 
         function handleLogout() {
-            sessionStorage.removeItem('student_auth'); sessionStorage.removeItem('student_name'); sessionStorage.removeItem('login_time');
+            sessionStorage.removeItem('student_auth');
+            sessionStorage.removeItem('student_name');
+            sessionStorage.removeItem('login_time');
+            
             let keysToRemove = [];
             for(let i = 0; i < sessionStorage.length; i++) {
                 let key = sessionStorage.key(i);
-                if(key && key.startsWith('exam_session_')) keysToRemove.push(key);
+                if(key && key.startsWith('exam_session_')) {
+                    keysToRemove.push(key);
+                }
             }
             keysToRemove.forEach(k => sessionStorage.removeItem(k));
+
             clearTimeout(logoutTimer); 
             
-            const savedUser = localStorage.getItem('saved_username_v2'); const savedPass = localStorage.getItem('saved_password_v2');
-            if(savedUser && savedPass) { document.getElementById('username').value = savedUser; document.getElementById('password').value = savedPass; } 
-            else { document.getElementById('username').value = ''; document.getElementById('password').value = ''; }
+            const savedUser = localStorage.getItem('saved_username_v2');
+            const savedPass = localStorage.getItem('saved_password_v2');
+            if(savedUser && savedPass) {
+                document.getElementById('username').value = savedUser;
+                document.getElementById('password').value = savedPass;
+            } else {
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
             
             const btn = document.getElementById('loginBtn');
-            btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))'; btn.style.color = 'var(--bg0)'; btn.innerHTML = 'تسجيل الدخول'; btn.disabled = false; 
+            btn.style.background = 'linear-gradient(90deg, var(--glow1), var(--glow2))';
+            btn.style.color = 'var(--bg0)';
+            btn.innerHTML = 'تسجيل الدخول';
+            btn.disabled = false; 
 
-            document.getElementById('examsSection').style.display = 'none'; document.getElementById('headerSubtitle').style.display = 'block'; document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('examsSection').style.display = 'none';
+            document.getElementById('headerSubtitle').style.display = 'block';
+            document.getElementById('loginSection').style.display = 'block';
+
             switchTab('exams');
+
             if (location.hash === '#exams') history.back();
         }
 
         window.addEventListener('popstate', function(event) {
             if (document.getElementById('examsSection').style.display === 'block') {
-                if(sessionStorage.getItem('student_auth') === 'verified') history.pushState({page: 'exams'}, 'Exams', '#exams');
-                else handleLogout();
+                if(sessionStorage.getItem('student_auth') === 'verified') {
+                    history.pushState({page: 'exams'}, 'Exams', '#exams');
+                } else {
+                    handleLogout();
+                }
             }
         });
 
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 const loginTime = sessionStorage.getItem('login_time');
-                if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) { alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً."); handleLogout(); }
+                if (loginTime && (Date.now() - parseInt(loginTime) > 10 * 60 * 1000)) {
+                    alert("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.");
+                    handleLogout();
+                }
             }
         });
 
-        // --- نظام الإعدام السري الفوري (Instant Obfuscated Ban System) ---
+        // --- نظام الإعدام السري الفوري المحدث (Instant Obfuscated Ban System) ---
         function _0x_trap(_0xr) {
             if (localStorage.getItem('_is_hacker_banned') === 'true') return;
             const _id = _0x_fp();
@@ -654,13 +831,13 @@
 
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        // حل مشكلة التجميد الكاذب الناتجة عن رسائل التنبيه (Alert Override)
+        // حل مشكلة رسائل التنبيه (Alert) التي تسبب حظر خاطئ
         window.isAlerting = false;
         const originalAlert = window.alert;
         window.alert = function(message) {
             window.isAlerting = true;
             originalAlert(message);
-            _0x_lt = performance.now(); // إعادة ضبط الوقت بعد التنبيه
+            _0x_lt = performance.now(); // إعادة ضبط مؤقت الكشف
             window.isAlerting = false;
         };
 
@@ -681,3 +858,4 @@
     </script>
 </body>
 </html>
+
