@@ -626,7 +626,7 @@
                     window.handleLogout(); 
                     return; 
                 }
-                showSmartAlert('تأمين الجلسة... ⏳');
+                showSmartAlert('Loading Exam ⏳');
                 const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
                 database.ref('active_tickets/' + sName).set({ token: token, timestamp: Date.now() }).then(() => {
                     window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(sName)}&t=${token}`; 
