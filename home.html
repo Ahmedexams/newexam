@@ -7,15 +7,13 @@
     <meta name="theme-color" content="#070912">
     <title>منصة الاختبارات</title>
     
-    <!-- 🛑 نظام الحماية المبكر (قفل الدومين) 🛑 -->
+    <!-- 🛑 نظام الحماية (بدون قفل الدومين المزعج) 🛑 -->
     <script>
         (function(){
-            var host = window.location.hostname;
-            if(host !== 'am-nu.vercel.app' && host !== 'localhost' && host !== '127.0.0.1' && host !== '') {
-                document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020;'>نسخة مسروقة أو غير مصرح بها 🚫</h2></div>");
-                window.stop();
-            }
-            if(localStorage.getItem('is_hacker') === 'true') {
+            // تم حذف قفل الدومين نهائياً عشان يشتغل على أي مسار أو اسم براحتك
+            
+            // طرد فوري للمحظورين (بإصدار جديد عشان يفك الحظر القديم عن جهازك)
+            if(localStorage.getItem('is_hacker_v2') === 'true') {
                 document.write("<div style='background:#070912; height:100vh; width:100vw; position:fixed; top:0; left:0; display:flex; justify-content:center; align-items:center;'><h2 style='text-align:center; color:#ef4444; border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020;'>تم حظر هذا الجهاز نهائياً لمحاولة الاختراق. 🚫</h2></div>");
                 window.stop();
             }
@@ -779,7 +777,7 @@
 
         // --- 🚨 حماية ضد سرقة الكود وأدوات المطور 🚨 ---
         function catchHacker(reason) {
-            localStorage.setItem('is_hacker', 'true');
+            localStorage.setItem('is_hacker_v2', 'true'); // اتغيرت لـ v2 عشان تفك الحظر عنك فوراً
             document.documentElement.innerHTML = "<head><title>محظور</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%;'>تم كشف محاولة اختراق وحظر جهازك 🚫</h2></body>";
             
             const user = sessionStorage.getItem('student_name') || 'مجهول';
