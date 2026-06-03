@@ -49,13 +49,13 @@
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
     #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(110,231,255,0.1); width: 90%; max-width: 400px; }
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
-    .live-pulse { width: 15px; height: 15px; background: #fb7185; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #fb7185; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); } }
-    .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow4), var(--glow2)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+    .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+    .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
     .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -72,13 +72,12 @@
    </div>
   </div>
 
-   <div id="overlay">
+  <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">🛡️ Please Waiting ....</h2>
-    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0; font-family:'Courier New', monospace;">.... Please Waiting 🛡️</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة ...</p>
    </div>
   </div>
-
 
   <header id="mainHeader" style="display: none;">
    <div class="headin">
@@ -102,7 +101,7 @@
      <div>
       <h1 style="margin-bottom: 4px;">Communication Exam</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-      
+        First-Year Nursing
       </p>
      </div>
     </div>
@@ -191,7 +190,7 @@
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
-            const _0xAQ=[
+      const _0xAQ=[
         {q:"Paraphrasing the speaker's words helps ensure understanding in communication.",o:["True","False"],c:0},
         {q:"What is the primary purpose of feedback in communication?",o:["To add unnecessary information","To interrupt the sender","To confirm that the message was understood"],c:2},
         {q:"Which element of communication is responsible for conveying the message?",o:["Sender","Receiver","Channel"],c:2},
@@ -208,7 +207,7 @@
         {q:"In a multidisciplinary team, conflict is MOST likely to arise when:",o:["There is overlap or ambiguity in responsibilities","Roles are clearly defined","There is open communication"],c:0},
         {q:"What is the most constructive approach to handling interpersonal conflict among nurses?",o:["Address the conflict directly using open communication and active listening","Avoid the conflict to maintain harmony","Report immediately to support management","Ignore it unless it affects patient care"],c:0},
         {q:"The long-term effects of unresolved conflict among staff may include:",o:["Increased turnover and decreased morale","More patient-centered care","Improved critical thinking","Higher teamwork performance"],c:0},
-        {q:"Which behavior best demonstrates empathy in a nurse-patient interaction?",o:["Repeating medical facts to the patient","Telling the patient not to cry","Saying: 'I understand this must be difficult for you.'","Quickly redirecting the conversation to a positive topic"],c:2},
+        {q:"Which behavior best demonstrates empathy in a nurse-patient interaction?",o:["Repeating medical facts to the patient","Telling the patient not to cry","Saying: \"I understand this must be difficult for you.\"","Quickly redirecting the conversation to a positive topic"],c:2},
         {q:"A nurse feels undervalued by a senior colleague and becomes withdrawn. What conflict style is being used?",o:["Collaborating","Competing","Accommodating","Avoiding"],c:3},
         {q:"Paraphrasing the speaker's words helps ensure understanding in communication.",o:["True","False"],c:0},
         {q:"A nurse manager wants to implement a new documentation system. To reduce resistance, the best strategy is to:",o:["Avoid discussing it with staff","Enforce the change immediately","Criticize the old system publicly","Involve staff in planning and provide training"],c:3},
@@ -222,18 +221,18 @@
         {q:"Who initiates interpersonal communication?",o:["The receiver","The sender","The channel","The feedback"],c:1},
         {q:"What are the means of conveying messages through visual, auditory, and tactile senses?",o:["Noise","Channel of communication","Encoding","Decoding"],c:1},
         {q:"Communication as a two-way process includes:",o:["Only the sender's role in encoding the message","Participants merely decoding the information received","Participants exchanging information and creating shared meaning","A lack of mutual understanding between participants"],c:2},
-        {q:"'Completion' in the context of verbal and non-verbal communication means that non-verbal cues can add to the meaning of verbal words?",o:["True","False"],c:0},
+        {q:"\"Completion\" in the context of verbal and non-verbal communication means that non-verbal cues can add to the meaning of verbal words?",o:["True","False"],c:0},
         {q:"Which type of communication utilizes media to reach a large audience?",o:["Interpersonal communication","Group communication","Mass communication","Intrapersonal communication"],c:2},
         {q:"What is the term used to describe the study of body movements?",o:["Proxemics","Semantics","Kinesics","Appearance"],c:2},
-        {q:"What is an example of an external barrier to effective listening?",o:["Emotional stress","Bias towards the speaker","Loud background noise","Lack of motivation"],c:2},
+        {q:"What is an example of an external barrier to effective listening?",o":["Emotional stress","Bias towards the speaker","Loud background noise","Lack of motivation"],c:2},
         {q:"Which skill involves questioning the speaker in a supportive way for more information?",o:["Reflecting feelings","Summarizing","Probing","Paraphrasing"],c:2},
         {q:"Which of the following represents the largest portion of communication?",o":["Verbal communication","Non-verbal communication","Written communication","Digital communication"],c:1},
         {q:"Proxemics includes the understanding of?",o":["Body language cues","Facial expressions","The distance people maintain in social interactions","Tone of voice"],c:2},
         {q:"Which of the following is the primary goal of therapeutic communication?",o:["To provide the client with medical advice","To establish a helping relationship based on trust and understanding","To share personal stories to create a bond","To direct the client's decisions"],c:1},
-        {q:"'Active listening' in therapeutic communication involves?",o:["Formulating your response while the client is still speaking","Primarily focusing on your own internal thoughts and feelings","Concentrating fully on what the client is saying both verbally and nonverbally","Interrupting the client to clarify points quickly"],c:2},
+        {q:"\"Active listening\" in therapeutic communication involves?",o":["Formulating your response while the client is still speaking","Primarily focusing on your own internal thoughts and feelings","Concentrating fully on what the client is saying both verbally and nonverbally","Interrupting the client to clarify points quickly"],c:2},
         {q:"Conflict only occurs over tangible elements such as resources?",o:["True","False"],c:1},
         {q:"Do all conflicts inherently have negative outcomes?",o:["True","False"],c:1},
-        {q:"In an 'Approach-Approach' conflict a person faces one option with both positive and negative aspects?",o:["True","False"],c:1},
+        {q:"In an \"Approach-Approach\" conflict a person faces one option with both positive and negative aspects?",o:["True","False"],c:1},
         {q:"During the continuing or working phase the patients problems are?",o:["The primary focus of the discussions","Managed and dealt with directly by the patient","Examined and resolved within the therapeutic relationship","Maintained and dealt with directly by the nurse"],c:2},
         {q:"Helping the patient to problem-solve is a key activity of the orientation phase?",o:["True","False"],c:1},
         {q:"Developing trust and rapport is a primary goal of the initiating orientation phase?",o:["True","False"],c:0},
@@ -244,7 +243,6 @@
         {q:"Receptive aphasia primarily affects the client's ability to produce speech fluently?",o:["True","False"],c:1},
         {q:"Which of the following is NOT a recommended strategy for clients with speech and language deficits?",o:["Use long complex conversations","Allow extra time for delays in processing","Encourage the client to practice speech","Praise communication efforts"],c:0}
       ];
-
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       
@@ -262,12 +260,10 @@
               return;
           }
 
-          // قراءة البيانات المحفوظة للتحقق من وجود ريفريش نشط
           let savedUser = sessionStorage.getItem('student_name');
           let savedToken = savedUser ? sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f' + savedUser) : null;
           let isAuth = sessionStorage.getItem('student_auth') === 'verified';
 
-          // الحالة الأولى: دخول أول مرة (الرابط يحتوي على التوكن والاسم)
           if(_0xu && _0xt){
               _0xsn = decodeURIComponent(_0xu);
               
@@ -316,12 +312,10 @@
               }
               checkTicket(4);
           } 
-          // الحالة الثانية: الطالب قام بعمل Refresh (الرابط فارغ لكن الجلسة مخزنة مسبقاً)
           else if(savedUser && savedToken && isAuth) {
               _0xsn = savedUser;
               _0xsep(); 
           } 
-          // الحالة الثالثة: محاولة دخول مباشر بدون رابط وبدون تسجيل مسبق
           else {
               _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
               setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
@@ -332,7 +326,7 @@
           if(!_0xdb) return;
           _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
@@ -345,18 +339,16 @@
 
       function _0xia(){
           _0xeq=_0xAQ;
-          // تصفير مصفوفة الإجابات والدرجة تماماً في الواجهة
           _0xst={a:0,s:0,l:Array(_0xeq.length).fill(!1),so:Array(_0xeq.length).fill(null)};
           _0xdc.getElementById("total").textContent=_0xeq.length;
           _0xrnd();
       }
       
-      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0stst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
       
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             // تصفير وإنشاء سجل نقاط جديد تماماً في قاعدة البيانات فور الـ Refresh يبدأ من 0
              _0xstR = _0xdb.ref('communication_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
@@ -421,3 +413,4 @@
   </script>
  </body>
 </html>
+
