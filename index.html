@@ -367,51 +367,59 @@
             });
         };
 
-        // 🛡️ التحديث الجذري لجلب اللوكيشن ومنع تكرار الإشعارات
+        // 🛡️ التحديث الجذري: إرجاع الشكل القديم للتفاصيل وتفعيل منع التكرار بالسيرفر
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            let deviceStr = "غير معروف", platformStr = navigator.platform || "غير معروف", screenRes = window.screen.width + "x" + window.screen.height;
+            let deviceStr = "جهاز غير معروف", platformStr = navigator.platform || "غير معروف", screenRes = window.screen.width + "x" + window.screen.height;
             try { 
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
-                if (res.device.vendor) deviceStr = res.device.vendor + " " + res.device.model; 
-                else if (res.os.name) deviceStr = res.os.name; 
+                if (res.device.vendor && res.device.model) {
+                    deviceStr = res.device.vendor + " " + res.device.model;
+                } else if (res.os.name) {
+                    deviceStr = res.os.name + " (" + (res.browser.name || "") + ")";
+                } 
             } catch(e) {}
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
-            // 1. جلب الـ IP من كلاود فلير (سريع جداً ومبيفصلش أبداً)
+            // 1. الأساس: Cloudflare (سريع جداً ومستحيل يتم حظره بمانع الإعلانات)
             try { 
                 let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
                 let cfText = await cfRes.text(); 
                 let cfIp = cfText.match(/ip=([^\n]+)/), cfLoc = cfText.match(/loc=([^\n]+)/); 
-                if (cfIp && cfLoc) { ip = cfIp[1]; if (cfLoc[1] !== "EG") isOutside = true; isVerified = true; } 
+                if (cfIp) ip = cfIp[1]; 
+                if (cfLoc) { 
+                    if (cfLoc[1] === "EG") { loc = "مصر 🇪🇬"; isVerified = true; } 
+                    else { isOutside = true; loc = cfLoc[1]; }
+                } 
             } catch(e) {}
             
-            // 2. جلب الموقع بدقة من GeoJS (السيرفر الأقوى للضغط العالي)
-            try {
-                let geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json' + (ip !== "غير معروف" ? '?ip=' + ip : ''));
-                let geoData = await geoRes.json();
-                if (geoData && geoData.city) {
-                    loc = geoData.city + ", " + geoData.country;
-                    isp = geoData.organization_name || "غير معروف";
-                    ip = geoData.ip || ip;
-                    if (geoData.country_code !== "EG") isOutside = true;
-                    isVerified = true;
-                }
-            } catch(e) {}
-
-            // 3. سيرفر احتياطي أخير عشان الـ VPN
-            if (loc === "غير معروف" || !isVerified) {
+            // 2. محاولة جلب الموقع بدقة (GeoJS) بدون مسح كلمة مصر لو فشل
+            if (ip !== "غير معروف") {
+                try {
+                    let geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json?ip=' + ip);
+                    let geoData = await geoRes.json();
+                    if (geoData && geoData.country) {
+                        loc = (geoData.city ? geoData.city + ", " : "") + geoData.country;
+                        isp = geoData.organization_name || isp;
+                        if (geoData.country_code !== "EG") isOutside = true;
+                        isVerified = true;
+                    }
+                } catch(e) {}
+            }
+            
+            // 3. سيرفر احتياطي أخير عشان يكتشف الـ VPN بدقة
+            if (loc === "غير معروف" || loc === "مصر 🇪🇬" || !isVerified) {
                 try { 
                     let ipwhoRes = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : '')); 
                     let d = await ipwhoRes.json(); 
                     if (d.success) { 
-                        if (loc === "غير معروف") loc = d.city + ", " + d.country; 
+                        loc = d.city + ", " + d.country; 
                         isp = d.connection.isp || isp; 
-                        if (d.security.vpn || d.security.proxy || d.security.tor) isVpn = true; 
+                        if (d.security.vpn || d.security.proxy || d.security.tor || d.security.hosting) isVpn = true; 
                         if (d.country_code !== "EG") isOutside = true; 
                         isVerified = true; 
                     } 
@@ -432,30 +440,49 @@
                 body: JSON.stringify({ chat_id: tgKeys.cid, text: txt }) 
             }).catch(e=>{});
 
+            const timeNow = new Date().toLocaleString('ar-EG');
+
+            // 🛑 حظر نهائي
             if (bannedList.includes(ip)) { 
-                showError(btn,'محظور 🚫'); 
-                sendTg(`🛑 محظور يدخل: ${username} | IP: ${ip}`); 
-                btn.disabled = false; 
-                return; 
-            }
-            if (isVpn || isOutside || !isVerified) { 
-                showError(btn, 'أغلق الـ VPN 🚫'); 
-                sendTg(`⚠️ دخول مرفوض بـ VPN لـ ${username}`); 
+                showError(btn,'تم حظر جهازك من المنصة 🚫'); 
+                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                sendTg(msg); 
                 btn.disabled = false; 
                 return; 
             }
 
+            // ⚠️ محاولة دخول مرفوضة (VPN أو بره مصر)
+            if (isVpn || isOutside || !isVerified) { 
+                showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫'); 
+                let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
+                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+                sendTg(msg); 
+                btn.disabled = false; 
+                return; 
+            }
+
+            // 🟢 الدخول الناجح (الشكل القديم بالتفصيل)
+            const successMsg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📐 دقة الشاشة: ${screenRes}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+
             if(database) {
                 database.ref('login_logs').push({ 
-                    username: username, device: deviceStr, platform: platformStr, screen: screenRes, location: loc, isp: isp, ip: ip, time: new Date().toLocaleString('ar-EG') 
+                    username: username, device: deviceStr, platform: platformStr, screen: screenRes, location: loc, isp: isp, ip: ip, time: timeNow 
                 }).catch(e=>{});
-            }
-            
-            // 🔒 منع التكرار: حفظ الإشعار في localStorage لمدة 12 ساعة
-            let lastSent = localStorage.getItem('tg_sent_' + username);
-            if (!lastSent || (Date.now() - parseInt(lastSent) > 12 * 60 * 60 * 1000)) {
-                sendTg(`🟢 دخول: ${username}\n📍 ${loc}\n🔗 ${ip}`);
-                localStorage.setItem('tg_sent_' + username, Date.now());
+                
+                // الاعتماد على السيرفر لمنع تكرار الإشعار الأخضر لنفس الطالب (كل 4 ساعات)
+                let tgRef = database.ref('student_status/' + username + '/tg_last_sent');
+                tgRef.once('value').then((snap) => {
+                    let lastSent = snap.val();
+                    let now = Date.now();
+                    if (!lastSent || (now - parseInt(lastSent) > 4 * 60 * 60 * 1000)) {
+                        sendTg(successMsg);
+                        tgRef.set(now);
+                    }
+                }).catch(() => {
+                    sendTg(successMsg); // لو السيرفر فيه مشكلة هيبعت عادي
+                });
+            } else {
+                sendTg(successMsg);
             }
             
             finalizeLogin(username);
@@ -660,4 +687,3 @@
     </script>
 </body>
 </html>
-
