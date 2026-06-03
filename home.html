@@ -8,25 +8,25 @@
     <title>منصة الاختبارات</title>
     
     <script>
-        var _0xua = navigator.userAgent || navigator.vendor || window.opera;
-        var _0xloc = window.location.protocol;
-        var _0xhost = window.location.hostname;
-        
-        // 1. قفل النطاق (Domain Lock): يمنع تشغيل الكود خارج موقعك
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var currentProtocol = window.location.protocol;
+        var currentHost = window.location.hostname;
         var allowedDomain = 'am-nu.vercel.app';
-        if (_0xhost && _0xhost !== allowedDomain && _0xhost !== 'localhost' && _0xhost !== '127.0.0.1') {
+        
+        // 1. قفل النطاق (Domain Lock) لمنع تشغيل الكود على أي استضافة أخرى
+        if (currentHost && currentHost !== allowedDomain && currentHost !== 'localhost' && currentHost !== '127.0.0.1') {
             document.documentElement.innerHTML = "<head><title>نسخة غير مصرح بها</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>نسخة مسروقة أو غير مصرح بها 🚫<br>يرجى زيارة الرابط الرسمي للمنصة.</h2></body>";
             window.stop();
         }
 
-        // 2. منع الفتح من الملفات المحلية والتطبيقات المضمنة
-        if (_0xloc === 'file:' || _0xloc === 'content:' || _0xua.indexOf("wv") > -1 || _0xua.indexOf("IDE") > -1 || _0xua.indexOf("FBAN") > -1) {
-            document.documentElement.innerHTML = "<head><title>خطأ في المتصفح</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>عذراً، لا يمكن فتح المنصة من هنا.<br>يرجى نسخ الرابط وفتحه في متصفح أساسي (مثل Chrome). 🚫</h2></body>";
+        // 2. منع الفتح من الملفات المحلية والتطبيقات المضمنة داخل بيئات التطوير
+        if (currentProtocol === 'file:' || currentProtocol === 'content:' || userAgent.indexOf("wv") > -1 || userAgent.indexOf("IDE") > -1 || userAgent.indexOf("FBAN") > -1) {
+            document.documentElement.innerHTML = "<head><title>خطأ في المتصفح</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>عذراً، لا يمكن فتح المنصة من هنا.<br>يرجى نسخ الرابط وفتحه في متصفح أساسي (مثل Chrome أو Safari). 🚫</h2></body>";
             window.stop();
         }
         
-        // 3. طرد الجهاز المحظور أمنياً فوراً وتدمير الصفحة
-        if (localStorage.getItem('_is_hacker_banned') === 'true') {
+        // 3. التحقق من حالة الحظر قبل تحميل الواجهات
+        if (localStorage.getItem('is_hacker_banned') === 'true') {
             document.documentElement.innerHTML = "<head><title>محظور</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%;'>تم حظر هذا الجهاز لانتهاك سياسات الأمان. 🚫</h2></body>";
             window.stop();
         }
@@ -192,22 +192,35 @@
     </div>
 
     <script>
-        // تعريف دوال التشفير والبصمة الرقمية للجهاز
-        String.prototype._0xhsh = function() {
-            var h = 0, i, c; if (this.length === 0) return h;
-            for (i = 0; i < this.length; i++) { c = this.charCodeAt(i); h = ((h << 5) - h) + c; h |= 0; } return h;
+        // ==========================================
+        // تعريف دوال التبصيم الفني للجهاز وقواعد التشفير
+        // ==========================================
+        String.prototype.hashFingerprint = function() {
+            var hash = 0, i, chr; 
+            if (this.length === 0) return hash;
+            for (i = 0; i < this.length; i++) { 
+                chr = this.charCodeAt(i); 
+                hash = ((hash << 5) - hash) + chr; 
+                hash |= 0; 
+            } 
+            return hash;
         };
 
-        function _0x_fp() {
-            let fp = localStorage.getItem('_is_hacker_id');
+        function getDeviceFingerprint() {
+            let fp = localStorage.getItem('is_hacker_id');
             if (!fp) {
-                const nav = window.navigator; const sc = window.screen;
-                const g = nav.mimeTypes.length + '' + nav.userAgent.replace(/\D+/g, '') + '' + nav.plugins.length + '' + sc.height || '' + sc.width || '';
-                fp = 'dev_' + Math.abs(g._0xhsh() || Math.random() * 100000000).toString(36) + '_' + Date.now().toString(36);
-                localStorage.setItem('_is_hacker_id', fp);
-            } return fp;
+                const nav = window.navigator; 
+                const sc = window.screen;
+                const generateID = nav.mimeTypes.length + '' + nav.userAgent.replace(/\D+/g, '') + '' + nav.plugins.length + '' + sc.height || '' + sc.width || '';
+                fp = 'dev_' + Math.abs(generateID.hashFingerprint() || Math.random() * 100000000).toString(36) + '_' + Date.now().toString(36);
+                localStorage.setItem('is_hacker_id', fp);
+            } 
+            return fp;
         }
 
+        // ==========================================
+        // الاتصال بقاعدة البيانات فايربيس
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
             authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -238,13 +251,19 @@
             }
         } catch(e) {}
 
+        // ==========================================
+        // تنبيهات المنظومة الذكية فورياً
+        // ==========================================
         let alertTimeout;
         function showSmartAlert(msg) {
             const toast = document.getElementById('smartToast');
             document.getElementById('smartToastMsg').innerText = msg;
             toast.classList.add('show');
+            
             clearTimeout(alertTimeout);
-            alertTimeout = setTimeout(() => { toast.classList.remove('show'); }, 8000); 
+            alertTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 8000); 
         }
 
         let lastMsg = "";
@@ -253,27 +272,37 @@
             database.ref('admin_message').on('value', (snap) => {
                 const msg = snap.val();
                 if(msg && msg.trim() !== "" && msg !== lastMsg) {
-                    lastMsg = msg; showSmartAlert(msg);
+                    lastMsg = msg;
+                    showSmartAlert(msg);
                 }
             });
         }
 
+        // ==========================================
+        // ميزات لوحة تحكم الأدمن والعد الحركي
+        // ==========================================
         let tapCount = 0;
         let tapTimer;
         function handleSecretTap() {
             tapCount++;
             clearTimeout(tapTimer);
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
-            if (tapCount >= 5) { openAdminDash(); tapCount = 0; }
+            
+            if (tapCount >= 5) {
+                openAdminDash();
+                tapCount = 0; 
+            }
         }
 
         function openAdminDash() {
-            if(!database) { alert('لا يمكن الاتصال بقاعدة البيانات!'); return; }
+            if(!database) return;
             const dash = document.getElementById('adminDashboard');
             dash.style.display = 'flex';
             setTimeout(() => dash.style.opacity = '1', 10);
+
             adminListener = database.ref('active_visitors').on('value', (snapshot) => {
-                document.getElementById('onlineCounter').innerText = snapshot.numChildren() || 0;
+                const count = snapshot.numChildren() || 0;
+                document.getElementById('onlineCounter').innerText = count;
             });
         }
 
@@ -299,6 +328,9 @@
             }
         }
 
+        // ==========================================
+        // التحقق عند تحميل المستند وإدارة الجلسات
+        // ==========================================
         document.addEventListener("DOMContentLoaded", () => {
             const savedUser = localStorage.getItem('saved_username_v2');
             const savedPass = localStorage.getItem('saved_password_v2');
@@ -346,6 +378,9 @@
             }, 2500);
         }
 
+        // ==========================================
+        // منطق معالجة الحسابات اليومية المتجددة
+        // ==========================================
         function generateAccount() {
             const btn = document.getElementById('genBtn');
             const todayDate = new Date().toLocaleDateString('en-EG'); 
@@ -355,7 +390,8 @@
                 return;
             }
 
-            btn.disabled = true; btn.innerHTML = 'جاري الإنشاء... ⏳';
+            btn.disabled = true;
+            btn.innerHTML = 'جاري الإنشاء... ⏳';
 
             const randomId = Math.floor(1000 + Math.random() * 9000);
             const username = 'stu' + randomId;
@@ -395,6 +431,9 @@
             });
         }
 
+        // ==========================================
+        // التحقق من الشبكة، الموقع والأمان عند الدخول
+        // ==========================================
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn');
             btn.innerHTML = 'جاري فحص الحماية... 🛡️';
@@ -474,7 +513,7 @@
             const timeNow = new Date().toLocaleString('ar-EG');
             database.ref('login_logs').push({ username: username, device_id: deviceId, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow }).catch(e=>{});
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}` })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}` })
             }).catch(e=>{});
         }
 
@@ -529,6 +568,9 @@
             }, 500);
         }
 
+        // ==========================================
+        // إدارة جلب الموارد من الخادم
+        // ==========================================
         function fetchExamsFromServer() {
             const examsContainer = document.getElementById('dynamicExamsList');
             if (!database) { examsContainer.innerHTML = '<p style="color:var(--bad); text-align:center; font-size:14px; padding:20px;">مشكلة في الاتصال بالخادم. يرجى التحديث.</p>'; return; }
@@ -631,56 +673,54 @@
             }
         });
 
-        // --- 🛑 نظام التدمير الذاتي عند اكتشاف أدوات المطور (Self-Destruct Mechanism) 🛑 ---
-        function _0x_trap(_0xr) {
-            if (localStorage.getItem('_is_hacker_banned') === 'true') return;
-            const _id = _0x_fp();
-            const _u = sessionStorage.getItem('student_name') || localStorage.getItem('saved_username_v2') || 'مجهول';
-            localStorage.setItem('_is_hacker_banned', 'true');
+        // ==========================================
+        // 🛑 أمن واجهة العرض والتدمير الفوري الصارم 🛑
+        // ==========================================
+        function _0x_trap(reason) {
+            if (localStorage.getItem('is_hacker_banned') === 'true') return;
+            const deviceID = _0x_fp();
+            const studentUser = sessionStorage.getItem('student_name') || localStorage.getItem('saved_username_v2') || 'مجهول';
+            localStorage.setItem('is_hacker_banned', 'true');
             
-            // إرسال إنذار للتليجرام
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
                 method: "POST", headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ chat_id: "8446500978", text: `🚨 تحذير أمني خطير (تدمير ذاتي)! 🚫\n\nطالب حاول فتح أدوات المطور للمنصة!\n👤 الاسم: ${_u}\n🔖 كود الجهاز (ID): ${_id}\n⚠️ الكشف: ${_0xr}\n⏰ الوقت: ${new Date().toLocaleString('ar-EG')}` })
+                body: JSON.stringify({ chat_id: "8446500978", text: `🚨 تحذير أمني خطير (تدمير ذاتي)! 🚫\n\nطالب حاول فتح أدوات المطور للمنصة!\n👤 الاسم: ${studentUser}\n🔖 كود الجهاز (ID): ${deviceID}\n⚠️ الكشف: ${reason}\n⏰ الوقت: ${new Date().toLocaleString('ar-EG')}` })
             }).catch(e=>{});
 
-            // 💥 التدمير الذاتي: مسح الـ HTML بالكامل حتى لا يظهر في الـ Inspect 💥
+            // تدمير الكود تماماً ومسحه حتى من الـ DOM وعرض واجهة الحظر
             document.documentElement.innerHTML = "<head><title>محظور</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>تم حظر هذا الجهاز لانتهاك سياسات الأمان. 🚫</h2></body>";
             window.stop();
         }
 
-        // كشف الاختصارات (F12, Ctrl+Shift+I, etc)
-        document.onkeydown = e => {
+        document.onkeydown = function(e) {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { 
-                _0x_trap('F12 / Inspect Shortcut'); return false; 
+                _0x_trap('F12 / Inspect Elements'); return false; 
             }
         };
 
-        // منع الكليك يمين
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        // حل مشكلة رسائل التنبيه (Alert Override)
+        // حماية دالة alert المخصصة لمنع حظر المستخدمين نتيجة التجميد المؤقت للرسائل
         window.isAlerting = false;
         const originalAlert = window.alert;
         window.alert = function(message) {
             window.isAlerting = true;
             originalAlert(message);
-            _0x_lt = performance.now(); // إعادة ضبط مؤقت الكشف
+            _0x_lt = performance.now(); 
             window.isAlerting = false;
         };
 
-        // كشف التجميد (Debugger / Console opening)
         let _0x_lt = performance.now();
-        setInterval(() => {
+        setInterval(function() {
             if (!window.isAlerting) {
                 let _0x_ct = performance.now();
-                if (_0x_ct - _0x_lt > 500) { _0x_trap('Console / Debugger Freeze'); }
+                // تم رفع الحد لـ 1000ms لمنع الحظر التلقائي الخاطئ على الموبايل
+                if (_0x_ct - _0x_lt > 1000) { _0x_trap('Console / Debugger Freeze'); }
                 _0x_lt = performance.now();
                 (function() { return false; }['constructor']('debugger')());
             }
         }, 100);
 
-        // منع النسخ
         document.addEventListener('copy', e => {
             if (!localStorage.getItem('last_account_date')) e.preventDefault();
         });
@@ -688,3 +728,4 @@
     </script>
 </body>
 </html>
+
