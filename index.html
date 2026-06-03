@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipapi.co https://ipwho.is https://get.geojs.io https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipapi.co https://ipwho.is https://get.geojs.io https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:; frame-src 'self' https://drive.google.com https://docs.google.com;">
     <meta http-equiv="X-Frame-Options" content="DENY">
 
     <title>منصة الاختبارات</title>
@@ -291,7 +291,8 @@
             
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
-                if (timePassed < 10 * 60 * 1000) {
+                // ⏱️ تحديث: زيادة وقت الجلسة إلى 30 دقيقة عند تحميل الصفحة
+                if (timePassed < 30 * 60 * 1000) {
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
@@ -301,7 +302,7 @@
                     logoutTimer = setTimeout(() => { 
                         alert("انتهت الجلسة."); 
                         window.handleLogout(); 
-                    }, (10 * 60 * 1000) - timePassed);
+                    }, (30 * 60 * 1000) - timePassed);
                 } else { 
                     window.handleLogout(); 
                 }
@@ -358,7 +359,6 @@
             });
         };
 
-        // 🛡️ التحديث: شلال السيرفرات لضمان عدم ظهور "غير معروف" وتنسيق الجهاز كما طلبت
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
@@ -368,7 +368,6 @@
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
                 
-                // تنسيق الجهاز ونظام التشغيل بدقة
                 if (res.os.name && res.browser.name) {
                     deviceStr = res.os.name + " (" + res.browser.name + ")";
                 } else if (res.device.vendor && res.device.model) {
@@ -380,7 +379,6 @@
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
-            // 1. الاعتماد الأول: Cloudflare لجلب الـ IP الثابت
             try { 
                 let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
                 let cfText = await cfRes.text(); 
@@ -388,20 +386,18 @@
                 if (cfIp) ip = cfIp[1]; 
             } catch(e) {}
 
-            // 2. المحاولة الأولى: ipwho.is (ممتاز في كشف شبكات المحمول والـ VPN)
             try {
                 let r1 = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : ''));
                 let d1 = await r1.json();
                 if (d1.success) {
                     loc = (d1.city ? d1.city + ", " : "") + d1.country;
                     isp = d1.connection.isp || "غير معروف";
-                    if (d1.security.vpn || d1.security.tor) isVpn = true; // تم إزالة proxy/hosting لتجنب حظر موبايل داتا
+                    if (d1.security.vpn || d1.security.tor) isVpn = true; 
                     if (d1.country_code !== "EG") isOutside = true;
                     isVerified = true;
                 }
             } catch(e) {}
 
-            // 3. المحاولة الثانية: ipapi.co (لو الأول فشل أو جاب معلومات ناقصة)
             if (!isVerified || loc === "غير معروف" || !loc.includes("Egypt")) {
                 try {
                     let r2 = await fetch('https://ipapi.co/' + (ip !== "غير معروف" ? ip + '/' : '') + 'json/');
@@ -415,7 +411,6 @@
                 } catch(e) {}
             }
 
-            // 4. المحاولة الثالثة: GeoJS (لو التاني فشل)
             if (!isVerified || loc === "غير معروف") {
                 try {
                     let r3 = await fetch('https://get.geojs.io/v1/ip/geo.json' + (ip !== "غير معروف" ? '?ip=' + ip : ''));
@@ -429,7 +424,6 @@
                 } catch(e) {}
             }
 
-            // 5. الملاذ الأخير: Cloudflare (عشان يضمن إن الطالب في مصر حتى لو كل السيرفرات التانية مقفولة بمانع إعلانات)
             if (!isVerified) {
                 try { 
                     let cf = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
@@ -456,7 +450,6 @@
 
             const timeNow = new Date().toLocaleString('ar-EG');
 
-            // حظر الايبهات
             if (bannedList.includes(ip)) { 
                 showError(btn,'تم حظر جهازك من المنصة 🚫'); 
                 sendTg(`🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`); 
@@ -464,7 +457,6 @@
                 return; 
             }
             
-            // حظر الـ VPN وخارج مصر
             if (isVpn || isOutside || !isVerified) { 
                 showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫'); 
                 let blockReason = isVpn ? "VPN مستخدم" : (isOutside ? "الآي بي خارج مصر" : "فشل التحقق من الشبكة");
@@ -473,7 +465,6 @@
                 return; 
             }
 
-            // 🟢 الرسالة التفصيلية الشيك
             const successMsg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📐 دقة الشاشة: ${screenRes}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
 
             if(database) {
@@ -482,9 +473,7 @@
                 }).catch(e=>{});
             } 
             
-            // إرسال الإشعار في كل مرة يتم فيها الدخول
             sendTg(successMsg);
-            
             finalizeLogin(username);
         }
 
@@ -543,10 +532,11 @@
             history.pushState({page: 'exams'}, 'Exams', '#exams');
             
             clearTimeout(logoutTimer); 
+            // ⏱️ تحديث: ضبط توقيت انتهاء الجلسة عند تسجيل الدخول الجديد إلى 30 دقيقة
             logoutTimer = setTimeout(() => { 
                 alert("انتهت الجلسة."); 
                 window.handleLogout(); 
-            }, 10 * 60 * 1000);
+            }, 30 * 60 * 1000);
             
             setTimeout(() => { 
                 document.getElementById('loginSection').style.display = 'none'; 
@@ -597,8 +587,13 @@
             });
         }
 
+        // 📚 تحديث دالة الـ PDF لمعالجة الروابط وحل مشكلة الحظر والتضمين
         window.openPdfModal = function(url) {
-            let fUrl = url.includes('drive.google.com/view') ? url.replace(/\/view.*/, '/preview') : url;
+            let fUrl = url;
+            if (url.includes('drive.google.com')) {
+                fUrl = url.replace(/\/(view|edit).*/, '/preview');
+            }
+
             const modal = document.createElement('div'); 
             modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s;';
             
@@ -612,6 +607,7 @@
             
             const iframe = document.createElement('iframe'); 
             iframe.src = fUrl; 
+            iframe.setAttribute('allow', 'autoplay');
             iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff;';
             
             modal.appendChild(closeBtn); 
@@ -679,7 +675,8 @@
         window.addEventListener('pageshow', function(e) { 
             if (e.persisted) { 
                 const lt = sessionStorage.getItem('login_time'); 
-                if (lt && (Date.now() - parseInt(lt) > 600000)) window.handleLogout(); 
+                // ⏱️ تحديث: تعديل شرط التحقق عند الرجوع للمنصة ليطابق الـ 30 دقيقة (1800000 مللي ثانية)
+                if (lt && (Date.now() - parseInt(lt) > 1800000)) window.handleLogout(); 
             } 
         });
 
