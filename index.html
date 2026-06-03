@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipwho.is https://freeipapi.com https://ipapi.co https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://get.geojs.io https://ipwho.is https://freeipapi.com https://ipapi.co https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
     <meta http-equiv="X-Frame-Options" content="DENY">
 
     <title>منصة الاختبارات</title>
@@ -21,55 +21,72 @@
         :root { --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); color: var(--text); padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px; overflow-x: hidden; }
+        
         .app-container { width: 100%; max-width: 420px; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
+        
         .header { text-align: center; margin-bottom: 10px; }
         .premium-logo { position: relative; width: 85px; height: 85px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
         .premium-logo::after { filter: blur(12px); opacity: 0.8; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .premium-logo svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(110,231,255,0.8)); }
+        
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; }
+        
         .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
         .input-group input::placeholder { color: #5a6b9c; font-weight: 500; }
+        
         .btn-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; background: linear-gradient(90deg, var(--glow1), var(--glow2)); color: var(--bg0); font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; box-shadow: 0 0 20px rgba(110,231,255,.2); }
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        
         .btn-secondary { width: 100%; padding: 14px; border: 1px solid rgba(110,231,255,.3); border-radius: 16px; background: rgba(7,9,18,.6); color: var(--glow1); font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; }
         .btn-secondary:active { transform: scale(0.97); }
         .btn-secondary:hover { background: rgba(110,231,255,.1); border-color: rgba(110,231,255,.6); }
         .btn-secondary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; color: var(--muted); border-color: rgba(26,43,85,.85); }
+
         .exams-header-row { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; position: relative; z-index: 2;}
+        
         .logout-btn { background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; height: 100%; }
         .logout-btn:active { background: rgba(239,68,68,.3); transform: scale(0.95); }
+        
         .tabs-row { display: flex; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); color: var(--muted); font-size: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); color: var(--text); border-color: rgba(110,231,255,.4); }
+        
         .exams-list { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 2;}
+        
         .exam-item { border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding: 18px; display: flex; justify-content: space-between; align-items: center; transition: transform .1s ease, border-color .2s ease, background .2s ease; cursor: pointer; }
         .exam-item:hover, .exam-item:active { transform: translateY(-2px); border-color: rgba(110,231,255,.30); background: rgba(7,9,18,.6);}
+        
         .exam-info { display: flex; flex-direction: column; gap: 6px; }
         .exam-name { font-weight: 900; color: var(--text); font-size: 16px; }
         .exam-meta { color: var(--muted); font-size: 13px; font-weight: 800; }
         .exam-status { background: rgba(34,197,94,.15); color: var(--good); border: 1px solid rgba(34,197,94,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
         .exam-status.locked { background: rgba(239,68,68,.12); color: var(--bad); border-color: rgba(239,68,68,.4); }
+        
         .pdf-status { background: rgba(110,231,255,.15); color: var(--glow1); border: 1px solid rgba(110,231,255,.4); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 900; }
+
         .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
         .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
         .glass-box:hover { border-color: rgba(110,231,255,.3); transform: translateY(-3px); }
         .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow4), var(--glow1)); background-size: 220% 100%; -webkit-background-clip: text; background-clip:text; color:transparent; animation: flow 4s linear infinite; font-weight: 900; font-size: 15px; letter-spacing: 0.6px; text-transform: uppercase; }
         @keyframes flow { 0% { background-position: 0% 50%; } 100% { background-position: 220% 50%; } }
+        
         .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
+
         #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
         .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
         .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
         .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+        
         .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.85); border: 1px solid rgba(110,231,255,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(110,231,255,0.1); color: var(--text); padding: 16px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 800; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
         .smart-toast.show { top: 30px; }
     </style>
@@ -350,6 +367,7 @@
             });
         };
 
+        // 🛡️ التحديث الجذري لجلب اللوكيشن ومنع تكرار الإشعارات
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
@@ -364,6 +382,7 @@
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
+            // 1. جلب الـ IP من كلاود فلير (سريع جداً ومبيفصلش أبداً)
             try { 
                 let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
                 let cfText = await cfRes.text(); 
@@ -371,29 +390,32 @@
                 if (cfIp && cfLoc) { ip = cfIp[1]; if (cfLoc[1] !== "EG") isOutside = true; isVerified = true; } 
             } catch(e) {}
             
-            try { 
-                let ipwhoRes = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : '')); 
-                let d = await ipwhoRes.json(); 
-                if (d.success) { 
-                    loc = d.city + ", " + d.country; 
-                    isp = d.connection.isp; 
-                    ip = d.ip; 
-                    if (d.security.vpn || d.security.proxy || d.security.tor) isVpn = true; 
-                    if (d.country_code !== "EG") isOutside = true; 
-                    isVerified = true; 
-                } 
+            // 2. جلب الموقع بدقة من GeoJS (السيرفر الأقوى للضغط العالي)
+            try {
+                let geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json' + (ip !== "غير معروف" ? '?ip=' + ip : ''));
+                let geoData = await geoRes.json();
+                if (geoData && geoData.city) {
+                    loc = geoData.city + ", " + geoData.country;
+                    isp = geoData.organization_name || "غير معروف";
+                    ip = geoData.ip || ip;
+                    if (geoData.country_code !== "EG") isOutside = true;
+                    isVerified = true;
+                }
             } catch(e) {}
 
-            // سيرفر احتياطي إضافي لجلب المكان بدقة أكبر وقت الزحمة
-            if (loc === "غير معروف") {
-                try {
-                    let fallback = await fetch('https://freeipapi.com/api/json/' + (ip !== "غير معروف" ? ip : ''));
-                    let fd = await fallback.json();
-                    if (fd && fd.cityName) { 
-                        loc = fd.cityName + ", " + fd.countryName; 
+            // 3. سيرفر احتياطي أخير عشان الـ VPN
+            if (loc === "غير معروف" || !isVerified) {
+                try { 
+                    let ipwhoRes = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : '')); 
+                    let d = await ipwhoRes.json(); 
+                    if (d.success) { 
+                        if (loc === "غير معروف") loc = d.city + ", " + d.country; 
+                        isp = d.connection.isp || isp; 
+                        if (d.security.vpn || d.security.proxy || d.security.tor) isVpn = true; 
+                        if (d.country_code !== "EG") isOutside = true; 
                         isVerified = true; 
-                    }
-                } catch(e){}
+                    } 
+                } catch(e) {}
             }
             
             let bannedList = ['41.235.55.32'];
@@ -425,21 +447,15 @@
 
             if(database) {
                 database.ref('login_logs').push({ 
-                    username: username, 
-                    device: deviceStr, 
-                    platform: platformStr, 
-                    screen: screenRes, 
-                    location: loc, 
-                    isp: isp, 
-                    ip: ip, 
-                    time: new Date().toLocaleString('ar-EG') 
+                    username: username, device: deviceStr, platform: platformStr, screen: screenRes, location: loc, isp: isp, ip: ip, time: new Date().toLocaleString('ar-EG') 
                 }).catch(e=>{});
             }
             
-            // منع تكرار رسالة الدخول الخضراء لنفس الطالب في الجلسة الواحدة
-            if (!sessionStorage.getItem('tg_login_sent')) {
+            // 🔒 منع التكرار: حفظ الإشعار في localStorage لمدة 12 ساعة
+            let lastSent = localStorage.getItem('tg_sent_' + username);
+            if (!lastSent || (Date.now() - parseInt(lastSent) > 12 * 60 * 60 * 1000)) {
                 sendTg(`🟢 دخول: ${username}\n📍 ${loc}\n🔗 ${ip}`);
-                sessionStorage.setItem('tg_login_sent', 'true');
+                localStorage.setItem('tg_sent_' + username, Date.now());
             }
             
             finalizeLogin(username);
