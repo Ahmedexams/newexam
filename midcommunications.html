@@ -74,8 +74,8 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري التحميل... ⏱️</h2>
-    <p id="modalText" style="color:var(--muted)">يرجى الانتظار ثواني لفتح الامتحان...</p>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري فحص الحماية... 🛡️</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
    </div>
   </div>
 
@@ -206,6 +206,7 @@
         {q:"Giving unsolicited advice is considered a therapeutic communication technique.",o:["True","False"],c:1}
       ];
       
+      const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       function _0xerr(_0x1,_0x2){
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
@@ -213,25 +214,74 @@
           _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
       }
       
-      // التعديل الرئيسي: إلغاء شروط الحماية للتجربة المباشرة
       function _0xvt(){
-          _0xsn = "طالب للتجربة"; // تعيين اسم افتراضي بدلاً من جلبه من الرابط
-          _0xsep(); // فتح الامتحان مباشرة
-      }
+          const isAuth = sessionStorage.getItem('student_auth') === 'verified';
+          const sessionUser = sessionStorage.getItem('student_name');
+          const isLocal = _0xwn.location.protocol === 'file:';
 
-      function _0xsep(){
-          if(!_0xdb) {
-              // لو مفيش اتصال بقاعدة البيانات يفتح برضه للتجربة
-              _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
-              _0xdc.getElementById("mainHeader").style.display="block";
-              _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
-              _0xia();
+          if(!_0xu || !_0xt || !isAuth || sessionUser !== decodeURIComponent(_0xu) || isLocal){
+              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              setTimeout(()=>{
+                  if (!isLocal) _0xwn.location.replace("/");
+              }, 2500);
+              return;
+          }
+
+          _0xsn = decodeURIComponent(_0xu);
+
+          if (_0xwn.history && _0xwn.history.replaceState) {
+              _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
+          }
+
+          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn) === _0xt){
+              _0xsep();
               return;
           }
           
+          if(!_0xdb) {
+              _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
+              return;
+          }
+          
+          const _0xtr = _0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f' + _0xsn);
+
+          function checkTicket(retries) {
+              _0xtr.once('value').then((s) => {
+                  const _0xd = s.val();
+                  if(_0xd && _0xd.token === _0xt){
+                      if(Date.now() - _0xd.timestamp > 120000){
+                          _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
+                          setTimeout(()=>{_0xwn.location.replace("/");}, 2000);
+                          _0xtr.remove();
+                          return;
+                      }
+                      
+                      sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
+                      _0xtr.remove().then(() => { _0xsep(); });
+                  } else {
+                      if(retries > 0){
+                          setTimeout(() => checkTicket(retries - 1), 800);
+                      } else {
+                          _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫","يجب فتح الاختبار من داخل المنصة.");
+                          setTimeout(()=>{_0xwn.location.replace("/");}, 2500);
+                      }
+                  }
+              }).catch(() => {
+                  if(retries > 0){
+                      setTimeout(() => checkTicket(retries - 1), 800);
+                  } else {
+                      _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
+                  }
+              });
+          }
+          checkTicket(4);
+      }
+
+      function _0xsep(){
+          if(!_0xdb) return;
           _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
@@ -323,3 +373,4 @@
   </script>
  </body>
 </html>
+
