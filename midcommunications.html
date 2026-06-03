@@ -281,7 +281,7 @@
           if(!_0xdb) return;
           _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
@@ -294,9 +294,9 @@
 
       function _0xia(){
           _0xeq=_0xAQ;
-          let savedState = sessionStorage.getItem('comm_exam_state_' + _0xsn);
-          if(savedState){
-              _0xst = JSON.parse(savedState);
+          const _0xsv = sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x65\x5f'+_0xsn);
+          if(_0xsv){
+              _0xst = JSON.parse(_0xsv);
           } else {
               _0xst={a:0,s:0,l:Array(_0xeq.length).fill(!1),so:Array(_0xeq.length).fill(null)};
           }
@@ -309,14 +309,13 @@
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             let savedKey = sessionStorage.getItem('comm_exam_key_' + _0xsn);
-             if(savedKey) {
-                 _0xstR = _0xdb.ref('communication_students/' + savedKey);
-                 _0xstR.update({score:_0xst.s});
+             const _0xsk = sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x6b\x65\x79\x5f'+_0xsn);
+             if(_0xsk) {
+                 _0xstR = _0xdb.ref('communication_students/' + _0xsk);
              } else {
                  _0xstR=_0xdb.ref('communication_students').push();
                  _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:_0xst.s});
-                 sessionStorage.setItem('comm_exam_key_' + _0xsn, _0xstR.key);
+                 sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x6b\x65\x79\x5f'+_0xsn, _0xstR.key);
              }
           } catch(e) {}
       }
@@ -362,8 +361,7 @@
                           _0xstst("\u274C \u0625\u062c\u0627\u0628\u0629 \u062e\u0627\u0637\u0626\u0629");
                       }
                       
-                      sessionStorage.setItem('comm_exam_state_' + _0xsn, JSON.stringify(_0xst));
-                      
+                      sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x65\x5f'+_0xsn, JSON.stringify(_0xst));
                       if(_0xstR)try{_0xstR.update({score:_0xst.s});}catch(e){}
                       _0xod.querySelectorAll(".\x6f\x70\x74").forEach(o=>o.classList.add("\x6c\x6f\x63\x6b\x65\x64"));
                       _0xuhd();
