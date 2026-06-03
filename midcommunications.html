@@ -129,13 +129,11 @@
   (function(){
       const _0xdc=document,_0xwn=window;
       
-      // طبقات الحماية والأمان المتقدمة المماثلة لملف المجتمع
       _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
       _0xdc.onkeydown=e=>{if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85))return!1};
       _0xdc.addEventListener('\x63\x6f\x70\x79',e=>e.preventDefault());
       _0xdc.addEventListener('\x64\x72\x61\x67\x73\x74\x61\x72\x74',e=>e.preventDefault());
       
-      // فخ تجميد أدوات المطورين المتكرر
       setInterval(function(){debugger;},150);
       
       _0xdc.addEventListener('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',function(){
@@ -216,6 +214,7 @@
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
+      
       function _0xerr(_0x1,_0x2){
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
@@ -224,67 +223,76 @@
       }
       
       function _0xvt(){
-          const isAuth = sessionStorage.getItem('student_auth') === 'verified';
-          const sessionUser = sessionStorage.getItem('student_name');
           const isLocal = _0xwn.location.protocol === 'file:';
-
-          if(!_0xu || !_0xt || !isAuth || sessionUser !== decodeURIComponent(_0xu) || isLocal){
+          if(isLocal){
               _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
-              setTimeout(()=>{
-                  if (!isLocal) _0xwn.location.replace("/");
-              }, 2500);
               return;
           }
 
-          _0xsn = decodeURIComponent(_0xu);
+          // قراءة البيانات المحفوظة للتحقق من وجود ريفريش نشط
+          let savedUser = sessionStorage.getItem('student_name');
+          let savedToken = savedUser ? sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f' + savedUser) : null;
+          let isAuth = sessionStorage.getItem('student_auth') === 'verified';
 
-          if (_0xwn.history && _0xwn.history.replaceState) {
-              _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
-          }
+          // الحالة الأولى: دخول أول مرة (الرابط يحتوي على التوكن والاسم)
+          if(_0xu && _0xt){
+              _0xsn = decodeURIComponent(_0xu);
+              
+              sessionStorage.setItem('student_name', _0xsn);
+              sessionStorage.setItem('student_auth', 'verified');
+              
+              if (_0xwn.history && _0xwn.history.replaceState) {
+                  _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
+              }
 
-          // الـ sessionStorage هنا بيسمح للطالب بالدخول مجدداً لو عمل ريفريش دون أن يطرده السيرفر
-          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn) === _0xt){
-              _0xsep();
-              return;
-          }
-          
-          if(!_0xdb) {
-              _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
-              return;
-          }
-          
-          const _0xtr = _0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f' + _0xsn);
+              if(!_0xdb) {
+                  _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
+                  return;
+              }
+              
+              const _0xtr = _0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f' + _0xsn);
 
-          function checkTicket(retries) {
-              _0xtr.once('value').then((s) => {
-                  const _0xd = s.val();
-                  if(_0xd && _0xd.token === _0xt){
-                      if(Date.now() - _0xd.timestamp > 120000){
-                          _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
-                          setTimeout(()=>{_0xwn.location.replace("/");}, 2000);
-                          _0xtr.remove();
-                          return;
+              function checkTicket(retries) {
+                  _0xtr.once('value').then((s) => {
+                      const _0xd = s.val();
+                      if(_0xd && _0xd.token === _0xt){
+                          if(Date.now() - _0xd.timestamp > 120000){
+                              _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
+                              setTimeout(()=>{_0xwn.location.replace("/");}, 2000);
+                              _0xtr.remove();
+                              return;
+                          }
+                          
+                          sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
+                          _0xtr.remove().then(() => { _0xsep(); });
+                      } else {
+                          if(retries > 0){
+                              setTimeout(() => checkTicket(retries - 1), 800);
+                          } else {
+                              _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫","يجب فتح الاختبار من داخل المنصة.");
+                              setTimeout(()=>{_0xwn.location.replace("/");}, 2500);
+                          }
                       }
-                      
-                      sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
-                      _0xtr.remove().then(() => { _0xsep(); });
-                  } else {
+                  }).catch(() => {
                       if(retries > 0){
                           setTimeout(() => checkTicket(retries - 1), 800);
                       } else {
-                          _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫","يجب فتح الاختبار من داخل المنصة.");
-                          setTimeout(()=>{_0xwn.location.replace("/");}, 2500);
+                          _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
                       }
-                  }
-              }).catch(() => {
-                  if(retries > 0){
-                      setTimeout(() => checkTicket(retries - 1), 800);
-                  } else {
-                      _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
-                  }
-              });
+                  });
+              }
+              checkTicket(4);
+          } 
+          // الحالة الثانية: الطالب قام بعمل Refresh (الرابط فارغ لكن الجلسة مخزنة مسبقاً)
+          else if(savedUser && savedToken && isAuth) {
+              _0xsn = savedUser;
+              _0xsep(); 
+          } 
+          // الحالة الثالثة: محاولة دخول مباشر بدون رابط وبدون تسجيل مسبق
+          else {
+              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
           }
-          checkTicket(4);
       }
 
       function _0xsep(){
@@ -304,7 +312,7 @@
 
       function _0xia(){
           _0xeq=_0xAQ;
-          // تصفير مصفوفة الإجابات والدرجات تماماً في الـ UI عند البداية أو إعادة التحميل
+          // تصفير مصفوفة الإجابات والدرجة تماماً في الواجهة
           _0xst={a:0,s:0,l:Array(_0xeq.length).fill(!1),so:Array(_0xeq.length).fill(null)};
           _0xdc.getElementById("total").textContent=_0xeq.length;
           _0xrnd();
@@ -315,7 +323,7 @@
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             // إجبار النظام على فتح سجل نقاط جديد يبدأ من الصفر (0) في الداتابيز عند عمل ريفريش، لضمان تصفير النتيجة هناك أيضاً
+             // تصفير وإنشاء سجل نقاط جديد تماماً في قاعدة البيانات فور الـ Refresh يبدأ من 0
              _0xstR = _0xdb.ref('communication_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
