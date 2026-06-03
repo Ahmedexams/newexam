@@ -7,25 +7,19 @@
     <meta name="theme-color" content="#070912">
     <title>منصة الاختبارات</title>
     
+    <!-- ========================================== -->
+    <!-- 🛑 نظام الحماية المبكر (المخفف والمستقر) 🛑 -->
+    <!-- ========================================== -->
     <script>
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
         var currentProtocol = window.location.protocol;
-        var currentHost = window.location.hostname;
-        var allowedDomain = 'am-nu.vercel.app';
         
-        // 1. قفل النطاق (Domain Lock) لمنع تشغيل الكود على أي استضافة أخرى
-        if (currentHost && currentHost !== allowedDomain && currentHost !== 'localhost' && currentHost !== '127.0.0.1') {
-            document.documentElement.innerHTML = "<head><title>نسخة غير مصرح بها</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>نسخة مسروقة أو غير مصرح بها 🚫<br>يرجى زيارة الرابط الرسمي للمنصة.</h2></body>";
-            window.stop();
-        }
-
-        // 2. منع الفتح من الملفات المحلية والتطبيقات المضمنة داخل بيئات التطوير
-        if (currentProtocol === 'file:' || currentProtocol === 'content:' || userAgent.indexOf("wv") > -1 || userAgent.indexOf("IDE") > -1 || userAgent.indexOf("FBAN") > -1) {
-            document.documentElement.innerHTML = "<head><title>خطأ في المتصفح</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>عذراً، لا يمكن فتح المنصة من هنا.<br>يرجى نسخ الرابط وفتحه في متصفح أساسي (مثل Chrome أو Safari). 🚫</h2></body>";
+        // 1. منع الفتح من الملفات المحلية (Acode وغيرها) فقط، والسماح لأي متصفح ويب حقيقي
+        if (currentProtocol === 'file:' || currentProtocol === 'content:') {
+            document.documentElement.innerHTML = "<head><title>خطأ</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%; line-height:1.6;'>عذراً، لا يمكن تشغيل المنصة كملف محلي.<br>يرجى فتح الرابط الرسمي عبر الإنترنت. 🚫</h2></body>";
             window.stop();
         }
         
-        // 3. التحقق من حالة الحظر قبل تحميل الواجهات
+        // 2. التحقق من حالة الحظر قبل تحميل الواجهات
         if (localStorage.getItem('is_hacker_banned') === 'true') {
             document.documentElement.innerHTML = "<head><title>محظور</title><meta name='viewport' content='width=device-width, initial-scale=1.0'></head><body style='background:#070912; color:#ef4444; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;'><h2 style='border:2px solid #ef4444; padding:20px; border-radius:15px; background:#0b1020; text-align:center; width:85%;'>تم حظر هذا الجهاز لانتهاك سياسات الأمان. 🚫</h2></body>";
             window.stop();
@@ -513,7 +507,7 @@
             const timeNow = new Date().toLocaleString('ar-EG');
             database.ref('login_logs').push({ username: username, device_id: deviceId, device: device, platform: platform, screen: screen, location: loc, isp: isp, ip: ip, time: timeNow }).catch(e=>{});
             fetch(`https://api.telegram.org/bot8925620594:AAG45Wd8gS62MI_JAeSPm50aSkLLTxzWW0g/sendMessage`, {
-                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}` })
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: "8446500978", text: `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n🔖 كود (ID): ${deviceId}\n📱 الجهاز: ${device}\n🖥 نظام التشغيل: ${platform}\n📐 دقة الشاشة: ${screen}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}` })
             }).catch(e=>{});
         }
 
@@ -714,7 +708,6 @@
         setInterval(function() {
             if (!window.isAlerting) {
                 let _0x_ct = performance.now();
-                // تم رفع الحد لـ 1000ms لمنع الحظر التلقائي الخاطئ على الموبايل
                 if (_0x_ct - _0x_lt > 1000) { _0x_trap('Console / Debugger Freeze'); }
                 _0x_lt = performance.now();
                 (function() { return false; }['constructor']('debugger')());
@@ -728,4 +721,3 @@
     </script>
 </body>
 </html>
-
