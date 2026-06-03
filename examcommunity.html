@@ -47,8 +47,10 @@
     .opt.locked{cursor:not-allowed; opacity:.95}
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
-    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 30px rgba(110,231,255,.1); width: 90%; max-width: 400px; }
+    
+    /* الستارة السوداء الافتراضية - ستكون ظاهرة دائمًا في البداية */
+    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
@@ -73,12 +75,12 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">جاري التحقق...</h2>
-    <p id="modalText" style="color:var(--muted)">يرجى الانتظار...</p>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري فحص الحماية... 🛡️</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
    </div>
   </div>
 
-  <header>
+  <header id="mainHeader" style="display: none;">
    <div class="headin">
     <div class="brand">
      <div class="back-btn" onclick="window.location.replace('/')">
@@ -252,50 +254,69 @@
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
-      function _0xerr(_0x1,_0x2){_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;_0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;_0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";}
+      function _0xerr(_0x1,_0x2){
+          _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
+          _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
+          _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;
+          _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
+      }
       
       function _0xvt(){
-          if(!_0xu||!_0xt){
-              _0xerr(" Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
-              setTimeout(()=>{_0xwn.location.replace("/");},2000);
+          const isAuth = sessionStorage.getItem('student_auth') === 'verified';
+          const sessionUser = sessionStorage.getItem('student_name');
+          const isLocal = _0xwn.location.protocol === 'file:'; // منع الفتح من ملف محلي أو IDE
+
+          if(!_0xu || !_0xt || !isAuth || sessionUser !== decodeURIComponent(_0xu) || isLocal){
+              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              setTimeout(()=>{
+                  if (!isLocal) _0xwn.location.replace("/");
+              }, 2500);
               return;
           }
-          _0xsn=decodeURIComponent(_0xu);
-          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn)===_0xt){
+
+          _0xsn = decodeURIComponent(_0xu);
+
+          if (_0xwn.history && _0xwn.history.replaceState) {
+              _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
+          }
+
+          if(sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn) === _0xt){
               _0xsep();
               return;
           }
+          
           if(!_0xdb) {
               _0xerr("خطأ في الاتصال ⚠️","يرجى إيقاف مانع الإعلانات أو الـ VPN.");
               return;
           }
           
-          const _0xtr=_0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f'+_0xsn);
+          const _0xtr = _0xdb.ref('\x61\x63\x74\x69\x76\x65\x5f\x74\x69\x63\x6b\x65\x74\x73\x2f' + _0xsn);
 
           function checkTicket(retries) {
-              _0xtr.once('value').then((s)=>{
-                  const _0xd=s.val();
-                  if(_0xd && _0xd.token===_0xt){
-                      if(Date.now()-_0xd.timestamp>120000){
+              _0xtr.once('value').then((s) => {
+                  const _0xd = s.val();
+                  if(_0xd && _0xd.token === _0xt){
+                      if(Date.now() - _0xd.timestamp > 120000){
                           _0xerr("انتهت صلاحية الجلسة ⏱️","يرجى العودة للمنصة وتسجيل الدخول.");
-                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                          setTimeout(()=>{_0xwn.location.replace("/");}, 2000);
                           _0xtr.remove();
                           return;
                       }
+                      
                       sessionStorage.setItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f'+_0xsn, _0xt);
-                      _0xtr.remove().then(()=>{_0xsep();});
-                  }else{
+                      _0xtr.remove().then(() => { _0xsep(); });
+                  } else {
                       if(retries > 0){
                           setTimeout(() => checkTicket(retries - 1), 800);
-                      }else{
-                          _0xerr("Please Login First 🚫","جاري تحويلك لصفحه تسجيل الدخول.");
-                          setTimeout(()=>{_0xwn.location.replace("/");},2000);
+                      } else {
+                          _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫","يجب فتح الاختبار من داخل المنصة.");
+                          setTimeout(()=>{_0xwn.location.replace("/");}, 2500);
                       }
                   }
-              }).catch(()=>{
+              }).catch(() => {
                   if(retries > 0){
                       setTimeout(() => checkTicket(retries - 1), 800);
-                  }else{
+                  } else {
                       _0xerr("خطأ في الشبكة 🌐","تأكد من جودة الإنترنت وحاول مجدداً.");
                   }
               });
@@ -305,11 +326,13 @@
 
       function _0xsep(){
           if(!_0xdb) return;
-          _0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x75\x73').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('\x72\x65\x73\x65\x61\x72\x63\x68\x5f\x73\x65\x74\x74\x69\x6e\x67\x73\x2f\x65\x78\x61\x6d\x5f\x73\x74\x61\x74\x73').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
+                  // إخفاء الستارة السوداء وإظهار الامتحان فقط بعد نجاح التحقق!
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
+                  _0xdc.getElementById("mainHeader").style.display="block";
                   _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
                   _0xia();
                   if(!_0xini){_0xini=!0;_0xiss();}
@@ -338,4 +361,3 @@
   </script>
  </body>
 </html>
-
