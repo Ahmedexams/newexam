@@ -277,9 +277,9 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // 💡 استرجاع البيانات المحفوظة أوتوماتيك للطالب أول ما يفتح الموقع
-            const savedUser = localStorage.getItem('saved_username');
-            const savedPass = localStorage.getItem('saved_password');
+            // غيرنا الأسماء لـ v2 عشان يتجاهل الحسابات القديمة
+            const savedUser = localStorage.getItem('saved_username_v2');
+            const savedPass = localStorage.getItem('saved_password_v2');
             if(savedUser && savedPass) {
                 const uInput = document.getElementById('username');
                 const pInput = document.getElementById('password');
@@ -315,7 +315,8 @@
         function generateAccount() {
             const btn = document.getElementById('genBtn');
             
-            if(localStorage.getItem('account_generated') === 'true') {
+            // التأكد من المتغير الجديد v2
+            if(localStorage.getItem('account_generated_v2') === 'true') {
                 alert("⚠️ لقد قمت بإنشاء حساب بالفعل! يرجى استخدامه للدخول أو التواصل مع الإدارة.");
                 return;
             }
@@ -341,11 +342,10 @@
             database.ref('credentials/' + username).set({
                 password: password
             }).then(() => {
-                localStorage.setItem('account_generated', 'true'); 
-                
-                // 💡 حفظ اليوزر والباسورد عشان يفضلوا موجودين للمرات الجاية
-                localStorage.setItem('saved_username', username);
-                localStorage.setItem('saved_password', password);
+                // حفظ بالأسماء الجديدة v2
+                localStorage.setItem('account_generated_v2', 'true'); 
+                localStorage.setItem('saved_username_v2', username);
+                localStorage.setItem('saved_password_v2', password);
                 
                 const credentialsText = `اسم المستخدم: ${username}\nكلمة المرور: ${password}`;
                 try {
@@ -535,9 +535,9 @@
             database.ref('credentials/' + usernameInput).once('value').then((snapshot) => {
                 const userData = snapshot.val();
                 if (userData && String(userData.password) === passwordInput) {
-                    // لو الباسورد صح، نحفظه عشان لو مسحه أو حاجة
-                    localStorage.setItem('saved_username', usernameInput);
-                    localStorage.setItem('saved_password', passwordInput);
+                    // التحديث هنا لـ v2
+                    localStorage.setItem('saved_username_v2', usernameInput);
+                    localStorage.setItem('saved_password_v2', passwordInput);
                     
                     verifyConnectionAndLogin(usernameInput);
                 } else { 
@@ -676,7 +676,18 @@
                 alert('عذراً، هذا الاختبار مغلق حالياً 🔒');
             } else {
                 if (!database) return;
-                const studentName = sessionStorage.getItem('student_name') || 'student_' + Math.floor(Math.random() * 1000);
+                
+                const isAuth = sessionStorage.getItem('student_auth') === 'verified';
+                const studentName = sessionStorage.getItem('student_name');
+                
+                if (!isAuth || !studentName) {
+                    alert("يبدو أن الجلسة غير صالحة، يرجى تسجيل الدخول من جديد.");
+                    handleLogout();
+                    return;
+                }
+
+                showSmartAlert('جاري تأمين الجلسة وفتح الاختبار... ⏳');
+
                 const secureToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
                 
                 database.ref('active_tickets/' + studentName).set({
@@ -706,11 +717,21 @@
             sessionStorage.removeItem('student_auth');
             sessionStorage.removeItem('student_name');
             sessionStorage.removeItem('login_time');
+            
+            let keysToRemove = [];
+            for(let i = 0; i < sessionStorage.length; i++) {
+                let key = sessionStorage.key(i);
+                if(key && key.startsWith('exam_session_')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(k => sessionStorage.removeItem(k));
+
             clearTimeout(logoutTimer); 
             
-            // 💡 التعديل هنا: لما الطالب يعمل تسجيل خروج، نرجع نحطله بياناته المحفوظة تاني عشان ميتعبش 
-            const savedUser = localStorage.getItem('saved_username');
-            const savedPass = localStorage.getItem('saved_password');
+            // قراءة البيانات من v2
+            const savedUser = localStorage.getItem('saved_username_v2');
+            const savedPass = localStorage.getItem('saved_password_v2');
             if(savedUser && savedPass) {
                 document.getElementById('username').value = savedUser;
                 document.getElementById('password').value = savedPass;
@@ -758,10 +779,12 @@
         document.onkeydown = e => {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { return false; }
         };
-        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('copy', e => {
+            if (!localStorage.getItem('account_generated_v2')) e.preventDefault();
+        });
         setInterval(() => {
             (function() { return false; }['constructor']('debugger')());
-        }, 100);
+        }, 150);
 
     </script>
 </body>
