@@ -3,6 +3,9 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Online Exam - Communication</title>
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
@@ -49,7 +52,8 @@
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
     #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(110,231,255,0.1); width: 90%; max-width: 400px; }
+    .modal.error-modal { box-shadow: 0 0 40px rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); }
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
@@ -57,7 +61,8 @@
     @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); } }
     .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow4), var(--glow2)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
     .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
-    .retry-btn { margin-top: 15px; background: var(--stroke); color: #fff; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; display: none; }
+    .retry-btn { margin-top: 15px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; display: none; font-size: 14px; transition: 0.2s;}
+    .retry-btn:active { transform: scale(0.95); }
   </style>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -76,8 +81,8 @@
   <div id="overlay">
    <div class="modal" id="modalContent">
     <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري فحص الحماية... 🛡️</h2>
-    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
-    <button id="retryBtn" class="retry-btn" onclick="window.location.reload()">تحديث الصفحة 🔄</button>
+    <p id="modalText" style="color:var(--muted); margin-bottom: 20px;">يرجى الانتظار لحين تأكيد الجلسة...</p>
+    <button id="retryBtn" class="retry-btn" onclick="window.location.reload(true)">تحديث الصفحة 🔄</button>
    </div>
   </div>
 
@@ -128,6 +133,16 @@
   <div class="toast" id="toast"></div>
 
   <script>
+  // رادار الأخطاء: لالتقاط أي خطأ في الكود وعرضه فوراً بدلاً من التعليق
+  window.onerror = function(msg, url, lineNo) {
+      document.getElementById("modalContent").classList.add("error-modal");
+      document.getElementById("modalTitle").innerText = "خطأ برمجي ⚠️";
+      document.getElementById("modalTitle").style.color = "var(--bad)";
+      document.getElementById("modalText").innerText = msg + " (سطر: " + lineNo + ")";
+      document.getElementById("retryBtn").style.display = "inline-block";
+      return false;
+  };
+
   (function(){
       // منع الخصائص اللي ممكن تساعد في الغش
       document.addEventListener('contextmenu', e => e.preventDefault());
@@ -135,19 +150,18 @@
       document.addEventListener('copy', e => e.preventDefault());
       document.addEventListener('dragstart', e => e.preventDefault());
       
-      // إزالة التوكن من الرابط عشان الطالب ميقدرش ينسخه
       document.addEventListener('DOMContentLoaded', function(){
           if (window.history && window.history.replaceState) {
               window.history.replaceState(null, '', window.location.pathname);
           }
       });
 
-      // دوال التحكم في رسائل المودال (التحميل الذكي)
       function updateStatus(msg) {
           document.getElementById("modalText").innerText = msg;
       }
       
       function showError(title, msg) {
+          document.getElementById("modalContent").classList.add("error-modal");
           document.getElementById("modalTitle").innerText = title;
           document.getElementById("modalTitle").style.color = "var(--bad)";
           document.getElementById("modalText").innerText = msg;
@@ -155,9 +169,12 @@
           document.getElementById("overlay").style.display = "flex";
       }
 
-      // إعداد قاعدة البيانات
+      function safeGet(key) { try { return sessionStorage.getItem(key); } catch(e) { return null; } }
+      function safeSet(key, val) { try { sessionStorage.setItem(key, val); } catch(e) {} }
+
       let db = null;
       try {
+          updateStatus("جاري تهيئة خوادم الحماية...");
           const firebaseConfig = {
               apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
               authDomain: "ahmedexams-3e267.firebaseapp.com",
@@ -170,7 +187,6 @@
           firebase.initializeApp(firebaseConfig);
           db = firebase.database();
 
-          // تسجيل الطالب كزائر نشط للامتحان
           const sessionRef = db.ref('active_exam_visitors/communication_exam').push();
           db.ref('.info/connected').on('value', (snap) => {
               if (snap.val() === true) {
@@ -182,10 +198,7 @@
           showError("خطأ تهيئة ⚠️", "تعذر الاتصال بخوادم الحماية.");
       }
 
-      // لوحة تحكم المراقبة السرية
-      let tapCount = 0;
-      let tapTimer;
-      let adminListener = null;
+      let tapCount = 0, tapTimer, adminListener = null;
       window.handleSecretTap = function() {
           tapCount++;
           clearTimeout(tapTimer);
@@ -267,83 +280,64 @@
         {q:"Which of the following is NOT a recommended strategy for clients with speech and language deficits?",o:["Use long complex conversations","Allow extra time for delays in processing","Encourage the client to practice speech","Praise communication efforts"],c:0}
       ];
       
-      // نظام الحماية والتحقق من التذكرة
-      function verifyAndLoad() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const uParam = urlParams.get('u');
-          const tParam = urlParams.get('t');
+      async function verifyAndLoad() {
+          try {
+              updateStatus("1. جاري قراءة التذكرة والروابط...");
+              const urlParams = new URLSearchParams(window.location.search);
+              const uParam = urlParams.get('u');
+              const tParam = urlParams.get('t');
 
-          let savedUser = sessionStorage.getItem('student_name');
-          let savedToken = savedUser ? sessionStorage.getItem('exam_session_' + savedUser) : null;
-          let isAuth = sessionStorage.getItem('student_auth') === 'verified';
+              let savedUser = safeGet('student_name');
+              let savedToken = savedUser ? safeGet('exam_session_' + savedUser) : null;
+              let isAuth = safeGet('student_auth') === 'verified';
 
-          // حالة 1: الطالب جاي من المنصة بالرابط وفيه بيانات التذكرة
-          if(uParam && tParam) {
-              studentName = decodeURIComponent(uParam);
-              sessionStorage.setItem('student_name', studentName);
-              sessionStorage.setItem('student_auth', 'verified');
+              if(uParam && tParam) {
+                  studentName = decodeURIComponent(uParam);
+                  safeSet('student_name', studentName);
+                  safeSet('student_auth', 'verified');
 
-              if(!db) {
-                  showError("خطأ في الاتصال ⚠️", "يرجى إيقاف مانع الإعلانات أو الـ VPN.");
-                  return;
-              }
-              
-              updateStatus("جاري الاتصال بالسيرفر والتحقق من التذكرة...");
-              const ticketRef = db.ref('active_tickets/' + studentName);
-              
-              // نظام حماية ضد التعليق المستمر (Timeout)
-              let isResolved = false;
-              let failSafeTimeout = setTimeout(() => {
-                  if(!isResolved) {
-                      showError("تأخر استجابة السيرفر ⏳", "فشل الاتصال بقاعدة البيانات، يرجى تحديث الصفحة.");
-                  }
-              }, 8000);
-
-              ticketRef.once('value').then((snap) => {
-                  isResolved = true;
-                  clearTimeout(failSafeTimeout);
+                  if(!db) throw new Error("قاعدة البيانات غير متصلة");
+                  
+                  updateStatus("2. جاري التحقق من التذكرة في السيرفر...");
+                  
+                  // ربط الاتصال بـ Timeout عشان لو علق
+                  const ticketPromise = db.ref('active_tickets/' + studentName).once('value');
+                  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("تأخر استجابة السيرفر")), 8000));
+                  
+                  const snap = await Promise.race([ticketPromise, timeoutPromise]);
                   const data = snap.val();
                   
                   if(data && data.token === tParam) {
-                      // لو التذكرة سليمة بس فات عليها دقيقتين
                       if(Date.now() - data.timestamp > 120000) {
                           showError("انتهت صلاحية الجلسة ⏱️", "يرجى العودة للمنصة الرئيسية والدخول مجدداً.");
-                          ticketRef.remove();
-                          setTimeout(() => { window.location.replace("/"); }, 2500);
+                          db.ref('active_tickets/' + studentName).remove();
                           return;
                       }
                       
-                      // الدخول ناجح
-                      updateStatus("تم تأكيد الجلسة، جاري تحميل الأسئلة...");
-                      sessionStorage.setItem('exam_session_' + studentName, tParam);
-                      
-                      // مسح التذكرة وبدء الامتحان حتى لو المسح فشل
-                      ticketRef.remove().then(() => { loadExamSettings(); }).catch(() => { loadExamSettings(); });
+                      updateStatus("3. تم تأكيد التذكرة، جاري تحميل الأسئلة...");
+                      safeSet('exam_session_' + studentName, tParam);
+                      db.ref('active_tickets/' + studentName).remove(); // مسح التذكرة
+                      loadExamSettings();
                   } else {
                       showError("رابط غير صالح أو مستخدم 🚫", "يجب فتح الاختبار من داخل المنصة فقط.");
-                      setTimeout(() => { window.location.replace("/"); }, 2500);
                   }
-              }).catch((err) => {
-                  isResolved = true;
-                  clearTimeout(failSafeTimeout);
-                  showError("خطأ في الشبكة 🌐", err.message || "تأكد من جودة الإنترنت.");
-              });
-          } 
-          // حالة 2: الطالب عامل تحديث للصفحة والجلسة محفوظة
-          else if(savedUser && savedToken && isAuth) {
-              studentName = savedUser;
-              loadExamSettings(); 
-          } 
-          // حالة 3: دخول مباشر بدون إذن
-          else {
-              showError("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
-              setTimeout(() => { window.location.replace("/"); }, 2500);
+              } 
+              else if(savedUser && savedToken && isAuth) {
+                  studentName = savedUser;
+                  updateStatus("جاري استعادة الجلسة السابقة...");
+                  loadExamSettings(); 
+              } 
+              else {
+                  showError("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              }
+          } catch (error) {
+              showError("حدث عطل أثناء الفحص ⚠️", error.message);
           }
       }
 
       function loadExamSettings() {
           if(!db) return;
-          updateStatus("جاري فحص حالة الامتحان...");
+          updateStatus("4. جاري فحص حالة الامتحان (مفتوح/مغلق)...");
           db.ref('communication_settings/exam_status').once('value').then((s) => {
               if(s.val() === 'closed'){
                   showError("الامتحان مغلق 🔒", "تم إغلاق هذا الامتحان من قِبل الإدارة.");
@@ -351,7 +345,7 @@
                   startExamUI();
               }
           }).catch((err) => {
-              // لو مقدرش يقرأ الإعدادات لأي سبب يدخله الامتحان عادي عشان ميعلقش
+              // الدخول للامتحان حتى لو فشل قراءة الإعدادات
               startExamUI();
           });
       }
@@ -464,10 +458,11 @@
           updateHUD();
       }
       
-      // تشغيل التحقق بمجرد تحميل الصفحة
+      // تشغيل الكود فوراً
       verifyAndLoad();
       
   })();
   </script>
  </body>
 </html>
+
