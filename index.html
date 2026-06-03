@@ -580,7 +580,7 @@
                 if (data) {
                     Object.values(data).forEach((pdf) => {
                         if(pdf && pdf.name) {
-                            cont.innerHTML += `<div class="exam-item" onclick="openPdfModal('${pdf.url}')"><div class="exam-info"><span class="exam-name">${pdf.name}</span><span class="exam-meta">${pdf.size || 'ملف'}</span></div><div class="pdf-status">فتح 📖</div></div>`;
+                            cont.innerHTML += `<div class="exam-item" onclick="openPdfModal('${pdf.url}')"><div class="exam-info"><span class="exam-name">${pdf.name}</span><span class="exam-meta">${pdf.size || 'ملف قابل للقراءة '}</span></div><div class="pdf-status">فتح 📖</div></div>`;
                         }
                     });
                 }
