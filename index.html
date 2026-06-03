@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://get.geojs.io https://ipwho.is https://freeipapi.com https://ipapi.co https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipapi.co https://ipwho.is https://get.geojs.io https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
     <meta http-equiv="X-Frame-Options" content="DENY">
 
     <title>منصة الاختبارات</title>
@@ -148,7 +148,7 @@
 
     <script>
     (function() {
-        // 1. Anti-Debugging and Console Protection
+        // 1. Anti-Debugging
         document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
         document.onkeydown = function(e) {
             if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) { 
@@ -180,21 +180,12 @@
             p: atob("YWhtZWRleGFtcy0zZTI2Nw==")
         };
         const firebaseConfig = { 
-            apiKey: fbKeys.k, 
-            authDomain: fbKeys.d, 
-            databaseURL: fbKeys.u, 
-            projectId: fbKeys.p, 
-            storageBucket: "ahmedexams-3e267.firebasestorage.app", 
-            messagingSenderId: "151411096023", 
-            appId: "1:151411096023:web:fcabb7c60c6e433b1bf392" 
+            apiKey: fbKeys.k, authDomain: fbKeys.d, databaseURL: fbKeys.u, projectId: fbKeys.p, 
+            storageBucket: "ahmedexams-3e267.firebasestorage.app", messagingSenderId: "151411096023", appId: "1:151411096023:web:fcabb7c60c6e433b1bf392" 
         };
 
         const tgKeys = {
-            p1: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA=="),
-            p2: atob("ODkyNTYyMDU5NDo="),
-            p3: atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc="),
-            p4: atob("L3NlbmRNZXNzYWdl"),
-            cid: atob("ODQ0NjUwMDk3OA==")
+            p1: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA=="), p2: atob("ODkyNTYyMDU5NDo="), p3: atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc="), p4: atob("L3NlbmRNZXNzYWdl"), cid: atob("ODQ0NjUwMDk3OA==")
         };
         const getTeleUrl = () => tgKeys.p1 + tgKeys.p2 + tgKeys.p3 + tgKeys.p4;
 
@@ -367,7 +358,7 @@
             });
         };
 
-        // 🛡️ التحديث الجذري: إرجاع الشكل القديم للتفاصيل وتفعيل منع التكرار بالسيرفر
+        // 🛡️ التحديث: شلال السيرفرات لضمان عدم ظهور "غير معروف" وتنسيق الجهاز كما طلبت
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
@@ -376,53 +367,78 @@
             try { 
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
-                if (res.device.vendor && res.device.model) {
+                
+                // تنسيق الجهاز ونظام التشغيل بدقة
+                if (res.os.name && res.browser.name) {
+                    deviceStr = res.os.name + " (" + res.browser.name + ")";
+                } else if (res.device.vendor && res.device.model) {
                     deviceStr = res.device.vendor + " " + res.device.model;
                 } else if (res.os.name) {
-                    deviceStr = res.os.name + " (" + (res.browser.name || "") + ")";
-                } 
+                    deviceStr = res.os.name;
+                }
             } catch(e) {}
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
-            // 1. الأساس: Cloudflare (سريع جداً ومستحيل يتم حظره بمانع الإعلانات)
+            // 1. الاعتماد الأول: Cloudflare لجلب الـ IP الثابت
             try { 
                 let cfRes = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
                 let cfText = await cfRes.text(); 
-                let cfIp = cfText.match(/ip=([^\n]+)/), cfLoc = cfText.match(/loc=([^\n]+)/); 
+                let cfIp = cfText.match(/ip=([^\n]+)/); 
                 if (cfIp) ip = cfIp[1]; 
-                if (cfLoc) { 
-                    if (cfLoc[1] === "EG") { loc = "مصر 🇪🇬"; isVerified = true; } 
-                    else { isOutside = true; loc = cfLoc[1]; }
-                } 
             } catch(e) {}
-            
-            // 2. محاولة جلب الموقع بدقة (GeoJS) بدون مسح كلمة مصر لو فشل
-            if (ip !== "غير معروف") {
+
+            // 2. المحاولة الأولى: ipwho.is (ممتاز في كشف شبكات المحمول والـ VPN)
+            try {
+                let r1 = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : ''));
+                let d1 = await r1.json();
+                if (d1.success) {
+                    loc = (d1.city ? d1.city + ", " : "") + d1.country;
+                    isp = d1.connection.isp || "غير معروف";
+                    if (d1.security.vpn || d1.security.tor) isVpn = true; // تم إزالة proxy/hosting لتجنب حظر موبايل داتا
+                    if (d1.country_code !== "EG") isOutside = true;
+                    isVerified = true;
+                }
+            } catch(e) {}
+
+            // 3. المحاولة الثانية: ipapi.co (لو الأول فشل أو جاب معلومات ناقصة)
+            if (!isVerified || loc === "غير معروف" || !loc.includes("Egypt")) {
                 try {
-                    let geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json?ip=' + ip);
-                    let geoData = await geoRes.json();
-                    if (geoData && geoData.country) {
-                        loc = (geoData.city ? geoData.city + ", " : "") + geoData.country;
-                        isp = geoData.organization_name || isp;
-                        if (geoData.country_code !== "EG") isOutside = true;
+                    let r2 = await fetch('https://ipapi.co/' + (ip !== "غير معروف" ? ip + '/' : '') + 'json/');
+                    let d2 = await r2.json();
+                    if (!d2.error && d2.city) {
+                        loc = d2.city + ", " + d2.country_name;
+                        isp = d2.org || isp;
+                        if (d2.country_code !== "EG") isOutside = true;
                         isVerified = true;
                     }
                 } catch(e) {}
             }
-            
-            // 3. سيرفر احتياطي أخير عشان يكتشف الـ VPN بدقة
-            if (loc === "غير معروف" || loc === "مصر 🇪🇬" || !isVerified) {
+
+            // 4. المحاولة الثالثة: GeoJS (لو التاني فشل)
+            if (!isVerified || loc === "غير معروف") {
+                try {
+                    let r3 = await fetch('https://get.geojs.io/v1/ip/geo.json' + (ip !== "غير معروف" ? '?ip=' + ip : ''));
+                    let d3 = await r3.json();
+                    if (d3 && d3.country) {
+                        loc = (d3.city ? d3.city + ", " : "") + d3.country;
+                        isp = d3.organization_name || isp;
+                        if (d3.country_code !== "EG") isOutside = true;
+                        isVerified = true;
+                    }
+                } catch(e) {}
+            }
+
+            // 5. الملاذ الأخير: Cloudflare (عشان يضمن إن الطالب في مصر حتى لو كل السيرفرات التانية مقفولة بمانع إعلانات)
+            if (!isVerified) {
                 try { 
-                    let ipwhoRes = await fetch('https://ipwho.is/' + (ip !== "غير معروف" ? ip : '')); 
-                    let d = await ipwhoRes.json(); 
-                    if (d.success) { 
-                        loc = d.city + ", " + d.country; 
-                        isp = d.connection.isp || isp; 
-                        if (d.security.vpn || d.security.proxy || d.security.tor || d.security.hosting) isVpn = true; 
-                        if (d.country_code !== "EG") isOutside = true; 
-                        isVerified = true; 
-                    } 
+                    let cf = await fetch('https://1.1.1.1/cdn-cgi/trace'); 
+                    let txt = await cf.text(); 
+                    let cLoc = (txt.match(/loc=([^\n]+)/) || [])[1];
+                    if (cLoc) {
+                        if (cLoc === "EG") { loc = "مصر 🇪🇬"; isVerified = true; }
+                        else { loc = cLoc; isOutside = true; }
+                    }
                 } catch(e) {}
             }
             
@@ -435,55 +451,39 @@
             }
 
             const sendTg = (txt) => fetch(getTeleUrl(), { 
-                method: "POST", 
-                headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ chat_id: tgKeys.cid, text: txt }) 
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: txt }) 
             }).catch(e=>{});
 
             const timeNow = new Date().toLocaleString('ar-EG');
 
-            // 🛑 حظر نهائي
+            // حظر الايبهات
             if (bannedList.includes(ip)) { 
                 showError(btn,'تم حظر جهازك من المنصة 🚫'); 
-                const msg = `🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-                sendTg(msg); 
+                sendTg(`🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`); 
                 btn.disabled = false; 
                 return; 
             }
-
-            // ⚠️ محاولة دخول مرفوضة (VPN أو بره مصر)
+            
+            // حظر الـ VPN وخارج مصر
             if (isVpn || isOutside || !isVerified) { 
                 showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫'); 
-                let blockReason = isVpn ? "VPN / Proxy مستخدم" : (isOutside ? "الآي بي خارج مصر" : "إخفاء الآي بي (مانع تتبع)");
-                const msg = `⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-                sendTg(msg); 
+                let blockReason = isVpn ? "VPN مستخدم" : (isOutside ? "الآي بي خارج مصر" : "فشل التحقق من الشبكة");
+                sendTg(`⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`); 
                 btn.disabled = false; 
                 return; 
             }
 
-            // 🟢 الدخول الناجح (الشكل القديم بالتفصيل)
+            // 🟢 الرسالة التفصيلية الشيك
             const successMsg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📐 دقة الشاشة: ${screenRes}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
 
             if(database) {
                 database.ref('login_logs').push({ 
                     username: username, device: deviceStr, platform: platformStr, screen: screenRes, location: loc, isp: isp, ip: ip, time: timeNow 
                 }).catch(e=>{});
-                
-                // الاعتماد على السيرفر لمنع تكرار الإشعار الأخضر لنفس الطالب (كل 4 ساعات)
-                let tgRef = database.ref('student_status/' + username + '/tg_last_sent');
-                tgRef.once('value').then((snap) => {
-                    let lastSent = snap.val();
-                    let now = Date.now();
-                    if (!lastSent || (now - parseInt(lastSent) > 4 * 60 * 60 * 1000)) {
-                        sendTg(successMsg);
-                        tgRef.set(now);
-                    }
-                }).catch(() => {
-                    sendTg(successMsg); // لو السيرفر فيه مشكلة هيبعت عادي
-                });
-            } else {
-                sendTg(successMsg);
-            }
+            } 
+            
+            // إرسال الإشعار في كل مرة يتم فيها الدخول
+            sendTg(successMsg);
             
             finalizeLogin(username);
         }
@@ -687,3 +687,4 @@
     </script>
 </body>
 </html>
+
