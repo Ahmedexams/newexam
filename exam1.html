@@ -50,7 +50,6 @@
     
     #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
-    .countdown-timer { font-size: 32px; font-weight: bold; font-family: monospace; color: var(--glow2); margin-top: 15px; display: none;}
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
@@ -75,9 +74,8 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please Waiting 🛡️</h2>
-    <p id="modalText" style="color:var(--muted)">>
-    <div id="countdownTimer" class="countdown-timer">00:00:00</div>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري فحص الحماية... 🛡️</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
    </div>
   </div>
 
@@ -129,13 +127,6 @@
 
   <script>
   (function(){
-      // ==========================================
-      // إعدادات الجدولة (تعديل حسب رغبتك)
-      // ==========================================
-      // حط هنا وقت الامتحان بالملي ثانية. لو مش عاوز جدولة من الكود خليها 0
-      // مثلاً: 1781258400000 
-      const EXAM_SCHEDULED_TIME = 0; 
-      
       const _0xdc=document,_0xwn=window;
       
       _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
@@ -151,18 +142,11 @@
       });
       
       let _0xdb=null;
-      let serverTimeOffset = 0;
-      let scheduledTimerInterval = null;
 
       try{
           const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
-
-          // حساب فرق وقت السيرفر لمنع تلاعب الطالب بوقت جهازه
-          _0xdb.ref(".info/serverTimeOffset").on("value", function(snap) {
-              serverTimeOffset = snap.val() || 0;
-          });
 
           const sessionRef = _0xdb.ref('active_exam_visitors/internal_medicine_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
@@ -351,49 +335,11 @@
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       
-      function _0xerr(_0x1,_0x2, showTimer = false){
+      function _0xerr(_0x1,_0x2){
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;
           _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
-          
-          if(showTimer) {
-              _0xdc.getElementById("countdownTimer").style.display = "block";
-          } else {
-              _0xdc.getElementById("countdownTimer").style.display = "none";
-          }
-      }
-      
-      function getTrueServerTime() {
-          return Date.now() + serverTimeOffset;
-      }
-      
-      function checkScheduledTime() {
-          if (EXAM_SCHEDULED_TIME === 0) return true; // لو مش مجدول، كمل عادي
-          const now = getTrueServerTime();
-          const timeLeft = EXAM_SCHEDULED_TIME - now;
-          
-          if (timeLeft <= 0) {
-              if (scheduledTimerInterval) clearInterval(scheduledTimerInterval);
-              return true;
-          } else {
-              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-              const timerStr = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-              
-              _0xerr("الامتحان مجدول ⏱️", "لم يحن موعد فتح الامتحان بعد. سيتم الفتح تلقائياً.", true);
-              _0xdc.getElementById("countdownTimer").innerText = timerStr;
-              
-              if (!scheduledTimerInterval) {
-                  scheduledTimerInterval = setInterval(function() {
-                      if (checkScheduledTime()) {
-                          _0xsep(); // إعادة محاولة الفتح لما الوقت ييجي
-                      }
-                  }, 1000);
-              }
-              return false;
-          }
       }
 
       function _0xvt(){
@@ -466,18 +412,14 @@
       }
 
       function _0xsep(){
-          // التحقق من جدولة الوقت قبل فحص حالة الفايربيز
-          if (!checkScheduledTime()) return;
-          
           if(!_0xdb) return;
           _0xdb.ref('internal_medicine_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
                   _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
-                  if(scheduledTimerInterval) clearInterval(scheduledTimerInterval);
                   _0xia();
                   if(!_0xini){_0xini=!0;_0xiss();}
               }
@@ -560,3 +502,4 @@
   </script>
  </body>
 </html>
+
