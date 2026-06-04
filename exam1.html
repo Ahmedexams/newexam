@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Online Exam - Communication</title>
+  <title>Online Exam - Internal Medicine</title>
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
@@ -48,8 +48,9 @@
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
-    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
+    .countdown-timer { font-size: 32px; font-weight: bold; font-family: monospace; color: var(--glow2); margin-top: 15px; display: none;}
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
@@ -75,7 +76,8 @@
   <div id="overlay">
    <div class="modal" id="modalContent">
     <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please Waiting 🛡️</h2>
-    <p id="modalText" style="color:var(--muted)"></p>
+    <p id="modalText" style="color:var(--muted)">/p>
+    <div id="countdownTimer" class="countdown-timer">00:00:00</div>
    </div>
   </div>
 
@@ -99,9 +101,9 @@
         </svg>
      </div>
      <div>
-      <h1 style="margin-bottom: 4px;">Communication Exam</h1>
+      <h1 style="margin-bottom: 4px;">Internal Medicine</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-       
+        Nursing Question Bank Exam
       </p>
      </div>
     </div>
@@ -127,6 +129,13 @@
 
   <script>
   (function(){
+      // ==========================================
+      // إعدادات الجدولة (تعديل حسب رغبتك)
+      // ==========================================
+      // حط هنا وقت الامتحان بالملي ثانية. لو مش عاوز جدولة من الكود خليها 0
+      // مثلاً: 1781258400000 
+      const EXAM_SCHEDULED_TIME = 0; 
+      
       const _0xdc=document,_0xwn=window;
       
       _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
@@ -142,12 +151,20 @@
       });
       
       let _0xdb=null;
+      let serverTimeOffset = 0;
+      let scheduledTimerInterval = null;
+
       try{
           const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/communication_exam').push();
+          // حساب فرق وقت السيرفر لمنع تلاعب الطالب بوقت جهازه
+          _0xdb.ref(".info/serverTimeOffset").on("value", function(snap) {
+              serverTimeOffset = snap.val() || 0;
+          });
+
+          const sessionRef = _0xdb.ref('active_exam_visitors/internal_medicine_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -171,7 +188,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/communication_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/internal_medicine_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -184,139 +201,201 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/communication_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/internal_medicine_exam').off('value', adminListener);
           }
       };
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
       const _0xAQ=[
-      {q:"The following is an essential element of the communication process:",o:["Sender, message, channel, receiver, and feedback","Sender, channel, emotions, and memory","Words, gestures, expressions","Verbal, nonverbal, written, and electronic messages"],c:0},
-      {q:"Verbal communication includes the following:",o:["Facial expressions","Tone of voice","Body language","Spoken words"],c:3},
-      {q:"During communication, nonverbal cue is most likely to convey empathy to a patient is:",o:["Maintaining eye contact and a relaxed posture","Standing with crossed arms and a serious expression","Looking at the clock while the patient speaks","Sitting far from the patient and avoiding eye contact"],c:0},
-      {q:"The primary goal of therapeutic communication in nursing is:",o:["To solve all the patient's problems","To build trust and support emotional well-being","To obtain patient consent for treatment","To teach the patient about their medical condition"],c:1},
-      {q:"Which of the following is a common barrier to effective communication in nursing?",o:["Active listening","Use of medical terminology","Maintaining eye contact","Asking clarifying questions"],c:1},
-      {q:"Culturally competent communication involves:",o:["Adopting the same approach for all patients","Ignoring cultural differences to focus on clinical tasks","Respecting and addressing cultural beliefs and practices","Prioritizing the nurse's preferences over the patient's preference"],c:2},
-      {q:"Which conflict management style involves finding a win-win solution for all parties?",o:["Avoidance","Compromise","Collaboration","Competition"],c:2},
-      {q:"Nurse can convey active listening by:",o:["Repeating what the patient says","Fully concentrating on the patient's words and emotions","Interrupting to ask questions","Nodding without understanding"],c:1},
-      {q:"When addressing a patient, how should a nurse begin?",o:["By using their first name only","By introducing herself and asking the patient name","By immediately stating the medical issue","By using their title only"],c:1},
-      {q:"Which form of communication is the nurse using with the patient during the admission assessment?",o:["Small group","Interpersonal","Intrapersonal","Public"],c:1},
-      {q:"What is the best practice when using a phone in a healthcare setting?",o:["Speak loudly so others can hear","Step away to a private area to avoid disturbing others","Keep the conversation brief but loud","Use speakerphone for convenience"],c:1},
-      {q:"What often leads to escalation of conflict in healthcare teams?",o:["Timely resolution of disagreements","Effective collaboration","Poor communication and lack of respect","Clear protocols and processes"],c:2},
-      {q:"The best approach for a nurse when explaining a complex procedure to a patient with cognitive impairment, is:",o:["Use short, simple statements, repeat key points, and check frequently for understanding","Use medical terminology to help the patient feel informed and respected","Explain the entire procedure in detail first, then ask if the patient has any questions","Focus solely on gaining consent without going into specifics"],c:0},
-      {q:"A patient who is visually impaired needs instructions on post-discharge care. Which method should the nurse use to communicate most effectively?",o:["Speaking loudly","Providing written instructions","Verbal, clear explaining and tactile methods","Asking patient to review the instructions independently"],c:2},
-      {q:"Which of the following includes all body languages:",o:["Proxemics","Kinesics","Genuineness","Coping"],c:1},
-      {q:"Your open self includes truths about you that",o:["Others wish they didn't know.","Others and you know.","No one know.","You keep hidden but that others know it"],c:1},
-      {q:"A nurse is changing dressing over an abdominal wound. Which level of space should maintained?",o:["Public","Intimate","Social","Personal"],c:1},
-      {q:"______ is an important part of presenting a positive image to one's boss, clients and profession",o:["Communication ethics","Silence","Reassurance","Hearing"],c:0},
-      {q:"A physical connection you make when interviewing with someone can leave a powerful impression:",o:["Shaking hands","Appearance","Apology","Thinking"],c:0},
-      {q:"Which stage of relationship establishes the relationship between the nurse and the patient?",o:["Preinteraction","Orientation","Examining","Working"],c:1},
-      {q:"A patient states, 'I think that I am dying.' The nurse responds, 'You believe that you are dying?' Which interviewing approach did the nurse use?",o:["Focusing","Reflecting","Validating","Restatement"],c:3},
-      {q:"A patient appears tearful and is quiet and withdrawn. The nurse says, 'You seem very sad today.' Which interviewing approach did the nurse use?",o:["Examining","Reflecting","Clarifying","Orienting"],c:1},
-      {q:"A hospital manager organizes a group of nurses to evaluate outcome of a new intervention. Which type of group has been organized?",o:["Command","Task","Functional","Self help"],c:1},
-      {q:"Any collection of individuals working together for the same purpose is known as a(n):",o:["Club.","Group.","Meeting.","Organization"],c:1},
-      {q:"Which of the following are example of nontherapeutic communication?",o:["A nurse attempts to be an active listener","A nurse continuously advice the patient","A nurse is trying to be empathetic","A nurse is trying to accept the patient feeling"],c:1},
-      {q:"During the working phase of the helping relationship nursing roles is primarily:",o:["Educator and counselor","Provider of care","Leader and manager","Researcher"],c:0},
-      {q:"Reasons to make a change include:",o:["Solve problems","Increase staff suffering","Increase workload","Decrease productivity"],c:0},
-      {q:"Which would be an expected behavioral response during the unfreezing phase of change?",o:["Anger","Withdrawal and acceptance","Open acceptance","Active collaboration"],c:0},
-      {q:"An important factor to consider when implementing a planned change:",o:["Suddenly","Gradually","Arbitrarily","Sporadically"],c:1},
-      {q:"The way in which individuals perceive their ability to carry out significant roles refers to:",o:["Identity","Self-esteem stressors","Role performance","Role overload"],c:2},
-      {q:"Four quadrant system of self-awareness used to help people better understand their relationship with self and others, refers to:",o:["Johari Window","Self-esteem","Role performance","Self-image"],c:0},
-      {q:"... is the act of purposefully choosing to engage in unfamiliar activities and noting one's reaction to them:",o:["Introspection","Self-sharing","Enlarging one's experience","Role play"],c:2},
-      {q:"... it's include tone of voice, volume of speech, stream of talk, vocal Prompts, laughing, crying:",o:["Paralanguage","Proxemics","Touch","Body movement"],c:0},
-      {q:"Different religion, body language, gender roles and personal thoughts is considered:",o:["Physical barrier","Emotional barrier","Culture barrier","Listening barrier"],c:2},
-      {q:"Type of groups are consciously created by the organization with the intent to accomplish its objective?",o:["Command group","Formal group","Functional group","Task group"],c:1},
-      {q:"Stage of the group formation which members work effectively and efficiently towards achieving the goals.",o:["Joining","Norming","Performing","Adjourning"],c:2},
-      {q:"Conflict management style is characterized by moderate levels of assertiveness and cooperativeness. It is useful when parties are not able to reach an ultimate resolution to their conflict",o:["Competitive style","Collaborating style","Avoiding style","Compromising style"],c:3},
-      {q:"When a nurse expected to attend two different meetings at the same time it is an example of?",o:["Inter role conflict","Inter person conflict","Inter sender conflict","Intergroup conflict"],c:0},
-      {q:"when sending an email to a colleague, a nurse should:",o:["Use informal language and emojis","Ensure the message is concise and professional","Avoid proofreading for errors","Discuss confidential patient information in detail"],c:1},
-      {q:"Which of the following is a common cause of resistance to change?",o:["A clear and compelling vision","Fear of the unknown or uncertainty","Engagement of all stakeholders","Provision of adequate training and resources"],c:1},
-      {q:"What is the first stage of group development?",o:["Storming","Forming","Norming","Performing"],c:1},
-      {q:"Which stage of group development is characterized by conflict and disagreement?",o:["Forming","Performing","Norming","Storming"],c:3},
-      {q:"Which factor improves group effectiveness?",o:["Clear goals","Lack of feedback","Inflexible leadership","Suppression of opinions"],c:0},
-      {q:"Which of the following influences self-concept development?",o:["Life experiences","Strict routines","Avoidance of feedback","Isolation from others"],c:0},
-      {q:"Self-awareness helps nurses to:",o:["Avoid emotional connections with patients","Recognize and manage their own emotions","Focus only on the clinical aspects of care","Prioritize their needs over patients' needs"],c:1},
-      {q:"What occurs during the termination phase?",o:["Goals are evaluated and the relationship ends","New goals are set for the patient","The nurse begins the assessment process","Trust is established"],c:0},
-      {q:"Which type of question promotes patient expression in the helping relationship?",o:["Closed-ended","Open-ended","Leading questions","Multiple-choice questions"],c:1},
-      {q:"Which of the following is a barrier to the helping relationship?",o:["Cultural competence","Lack of active listening","Establishing clear boundaries","Maintaining confidentiality"],c:1},
-      {q:"Maintaining professional boundaries ensures that the relationship remains:",o:["Therapeutic and patient-centered","Social and personal","Focused on the nurse’s needs","Emotionally dependent"],c:0},
-      {q:"Which conflict management style involves prioritizing relationships over personal goals?",o:["Avoiding","Accommodating","Competing","Collaborating"],c:1},
-      {q:"What are the stages of group formation?",o:["Forming, Storming, Norming, performing, Adjourning","Storming, Norming, performing","Forming, Norming, Adjourning","Norming, performing, Adjourning"],c:0},
-      {q:"Type of groups are consciously created by the organization with the intent to accomplish its objective?",o:["Command group","Formal group","Functional group","Task group"],c:1},
-      {q:"stage of the group formation which members work effectively and efficiently towards achieving the goals.",o:["Joining","Norming","Performing","Adjourning"],c:2},
-      {q:"Which form of communication is the nurse using with the patient during the admission assessment.",o:["Small group","Interpersonal","Intrapersonal","Public"],c:1},
-      {q:"A non verbal messages that add to modify verbal message:",o:["Contractor","Complementing","Accounting","Substituting"],c:1},
-      {q:"It conveys absence of over control or under control during communication with others.",o:["Feedback","Appropriateness","Efficiency","Flexibility"],c:3},
-      {q:"It is an active tool in communication techniques, Sometimes simulates talking:",o:["Silence","Paraphrasing","Restatement","Conclusion"],c:0},
-      {q:"Which stage of an interview establishes the contract between the nurse and the patient?",o:["Preinteraction","Orientation","Examining","Working"],c:1},
-      {q:"A patient states, 'I think that I am dying.' The nurse responds, 'You believe that you are dying?' Which interviewing approach did the nurse use?",o:["Focusing","Reflecting","Validating","Restatement"],c:3},
-      {q:"A patient appears tearful and is quiet and withdrawn. The nurse says, 'You seem very sad today.' Which interviewing approach did the nurse use?",o:["Focusing","Reflecting","Validating","Restatement"],c:1},
-      {q:"Self-awareness helps people identify gaps in their management skills.",o:["True","False"],c:0},
-      {q:"Self-concept affects the ability to function and greatly influences health status.",o:["True","False"],c:0},
-      {q:"One's personal identity begins to develop during childhood.",o:["True","False"],c:0},
-      {q:"People who feel bad about themselves more likely to have the confidence.",o:["True","False"],c:1},
-      {q:"High self-esteem decrease person confidence in himself",o:["True","False"],c:1},
-      {q:"Helping relation helps people to take action & solve their problem.",o:["True","False"],c:0},
-      {q:"Non-Verbal communication is more accurate than verbal communication.",o:["True","False"],c:0},
-      {q:"People with low self- esteem denial one's self pleasure.",o:["True","False"],c:0},
-      {q:"Formal groups are groups that develop spontaneously with no specific aim.",o:["True","False"],c:1},
-      {q:"Successful communication helps patient to express his feeling.",o:["True","False"],c:0},
-      {q:"Which form of communication is used between two persons?",o:["Small group","Interpersonal","Group","Intrapersonal"],c:1},
-      {q:"Which of the following are example of nontherapeutic communication?",o:["A nurse attempts to be an active listener","A nurse continuously interrupt the patient.","A nurse is trying to be empathetic","A nurse is trying to accept the patient feeling"],c:1},
-      {q:"Which one of these is a form of verbal communication?",o:["Shaking hand","Talking professionally","Nodding head","Eye contact"],c:1},
-      {q:"Communication process include:",o:["Sender, receiver, message only","Message and feedback only","Sender and receiver only","Sender, receiver, message, feedback, context"],c:3},
-      {q:"Communication skills that mean providing a review of the more important information discussed, is:",o:["Reflecting","Restating","Summarizing","Paraphrasing"],c:2},
-      {q:"Which is a therapeutic communication technique?",o:["Active listening","Challenging","Advising","Disagreeing"],c:0},
-      {q:"Which of the following is a barrier to communication?",o:["Active listening","Therapeutic silence","Noise","Professional language"],c:2},
-      {q:"Which stage of the nurse-client relationship establishes the relationship between the nurse and the patient?",o:["Preinteraction","Orientation","Examining","Working"],c:1},
-      {q:"Which phase of the nurse - client relationship provides the nurse with the opportunity to solve problems of the patient?",o:["Preinteraction","Orientation","Examining","Working"],c:3},
-      {q:"A patient appears tearful and is quiet and withdrawn. The nurse says, 'You seem very sad today.' Which communication technique did the nurse use?",o:["Examining","Reflecting","Clarifying","Orienting"],c:1},
-      {q:"A nursing student talk with herself to give herself positive messages regarding the exam. This is an example of what level of communication?",o:["Public","Intrapersonal","Interpersonal","Group"],c:1},
-      {q:"During communication with the client, nurse should consider the following:",o:["Concentrate on the feelings of the client.","Ignore cultural and social variations","Having unclear purpose for interview","Ignore the non-verbal cues of the client"],c:0},
-      {q:"Any collection of individuals working together for the same purpose is known as a(n):",o:["Club.","Group.","Meeting.","Organization"],c:1},
-      {q:"What is the characteristics of relationship of the nurse with the patient:",o:["Goal directed","Focus on nurses' needs","Unlimited time","Finished at any time"],c:0},
-      {q:"Your open self includes information about you that",o:["Others only know.","Others and you know.","No one should ever know.","You only know"],c:1},
-      {q:"Enlarging one's experience is important for :",o:["Enhance self-awareness","Stress management","Conflict resolution","Improve self esteem"],c:0},
-      {q:"A nurse is changing a client's dressing over an abdominal wound. Which level of space should maintained?",o:["Public","Intimate","Social","Personal"],c:1},
-      {q:"A Nurse manager organizes a group of nurses to evaluate new procedure provided by a variety of departments. Which type of group has been organized?",o:["Command","Task","Functional","Self help"],c:1},
-      {q:"The nurse asks the patient, 'How do you feel about yourself?' The nurse is assessing the patient's:",o:["Identity","Body image.","Self-esteem","Role performance."],c:2},
-      {q:"Four quadrant system of self-awareness used to help people better understand their relationship with self and others, refers to:",o:["Johari Window","Self-esteem","Role performance","Self-image"],c:0},
-      {q:"People with high self – esteem are characteristics by",o:["Helpless and worthless.","Self-criticism.","Always sad and depressed.","Able to accept and learn from their own mistakes."],c:3},
-      {q:"Nonverbal communication is less important than verbal communication in healthcare settings.",o:["True","False"],c:1},
-      {q:"Communication is most effective when the nurse speaks more than the patient.",o:["True","False"],c:1},
-      {q:"Intrapersonal conflict arise between a nurse and a client.",o:["True","False"],c:1},
-      {q:"Self-concept refers to how others perceive an individual.",o:["True","False"],c:1},
-      {q:"Increase trust between client and the nurse, decrease the resistance.",o:["True","False"],c:1},
-      {q:"Using an overly loud or harsh tone can create a positive atmosphere in communication.",o:["True","False"],c:1},
-      {q:"The person may respond better to gradual shaping of behavior.",o:["True","False"],c:0},
-      {q:"Change is natural social process of individuals groups, and society.",o:["True","False"],c:0},
-      {q:"In formal groups, roles are always pre-determined and assigned to members.",o:["True","False"],c:0},
-      {q:"All teams are groups but not all groups are teams.",o:["True","False"],c:0},
-      {q:"Interrupting a patient while they are speaking demonstrates good communication skills.",o:["True","False"],c:1},
-      {q:"Emotional intelligence eliminates anxiety and avoid mood swings.",o:["True","False"],c:0},
-      {q:"Crossing your arms during a conversation shows openness and willingness to engage.",o:["True","False"],c:1},
-      {q:"People who have a loud voice appear to be brash and overbearing.",o:["True","False"],c:0},
-      {q:"A compliment can be sarcastic.",o:["True","False"],c:0},
-      {q:"A firm handshake made with direct eye contact sets the stage for a positive encounter.",o:["True","False"],c:0},
-      {q:"In conversation, speak in a high voice, with uncontrolled gestures.",o:["True","False"],c:1},
-      {q:"Grooming such as combing the hair should always be done in the privacy of rest-rooms.",o:["True","False"],c:0},
-      {q:"Offering a handshake is always appropriate, regardless of the patient’s culture.",o:["True","False"],c:1},
-      {q:"A non-verbal behavior may contradict verbal message.",o:["True","False"],c:0},
-      {q:"Non-Verbal communication is more accurate than verbal communication.",o:["True","False"],c:0},
-      {q:"People with low self- esteem denial one's self pleasure.",o:["True","False"],c:0},
-      {q:"Formal groups are groups that develop spontaneously with no specific aim.",o:["True","False"],c:1},
-      {q:"Successful communication helps patient to express his feeling.",o:["True","False"],c:0}
+        {q:"Most common cause of hyperthyroidism is:",o:["Thyroiditis","Graves' disease","Toxic adenoma","Iodine deficiency"],c:1},
+        {q:"Which antibody is characteristic of Graves' disease?",o:["Anti-TPO","Anti-thyroglobulin","TSH receptor antibody","ANA"],c:2},
+        {q:"Typical lab finding in hyperthyroidism:",o:["↑TSH, ↑T4","↓TSH, ↑T4","↑TSH, ↓T4","↓TSH, ↓T4"],c:1},
+        {q:"Drug of choice in first trimester pregnancy:",o:["Methimazole","Propranolol","Propylthiouracil","Radioiodine"],c:2},
+        {q:"Which symptom is common in hyperthyroidism?",o:["Weight gain","Cold intolerance","Constipation","Heat intolerance"],c:3},
+        {q:"Eye signs (exophthalmos) are seen in:",o:["Toxic multinodular goiter","Graves' disease","Thyroiditis","Adenoma"],c:1},
+        {q:"Investigation to differentiate causes of hyperthyroidism:",o:["ECG","Radioactive iodine uptake","CBC","Urine analysis"],c:1},
+        {q:"High uptake on scan suggests:",o:["Thyroiditis","Exogenous hormone","Graves' disease","Drug effect"],c:2},
+        {q:"Which feature suggests Graves specifically?",o:["Pretibial myxedema","Hair loss","Tachycardia","Anxiety"],c:0},
+        {q:"Best initial test:",o:["T3","TSH","T4","Scan"],c:1},
+        {q:"Common cardiac complication:",o:["Heart block","Atrial fibrillation","MI","Asystole"],c:1},
+        {q:"Which hormone is more active?",o:["T4","T3","rT3","Calcitonin"],c:1},
+        {q:"Goiter bruit suggests:",o:["Cancer","Graves","Thyroiditis","Hypothyroid"],c:1},
+        {q:"Cause of secondary hyperthyroidism:",o:["Pituitary adenoma","Iodine deficiency","Autoimmune","Drugs"],c:0},
+        {q:"Which symptom improves with beta blockers?",o:["Exophthalmos","Tremor","Goiter size","Hormone level"],c:1},
+        {q:"Best monitoring test during therapy:",o:["TSH & Free T4","X-ray","Urine test","ECG"],c:0},
+        {q:"Classic skin finding:",o:["Dry skin","Warm moist skin","Pale skin","Cyanosis"],c:1},
+        {q:"Which hormone is deficient in Type 1 diabetes?",o:["Glucagon","Insulin","Cortisol","Thyroxine"],c:1},
+        {q:"The main cause of Type 1 diabetes is:",o:["Insulin resistance","Autoimmune destruction of β-cells","Obesity","Viral hepatitis"],c:1},
+        {q:"The typical age group for Type 1 diabetes is:",o:["Infants","Children and adolescents","Adults > 60","Pregnant women"],c:1},
+        {q:"Type 2 diabetes is mainly caused by:",o:["Autoimmunity","Viral infection","Insulin resistance","Pancreatic cancer"],c:2},
+        {q:"Normal fasting blood glucose is:",o:["< 70 mg/dL","< 100 mg/dL","< 140 mg/dL","< 200 mg/dL"],c:1},
+        {q:"Diagnostic HbA1c for diabetes is ≥:",o:["5%","5.5%","6%","6.5%"],c:3},
+        {q:"First-line treatment in Type 2 diabetes:",o:["Insulin","Metformin","Glipalamides","Sitagliptin"],c:1},
+        {q:"Foot ulcer is due to:",o:["Retinopathy","Neuropathy","Nephropathy","Hepatopathy"],c:1},
+        {q:"Which complication is acute?",o:["Retinopathy","Neuropathy","DKA","Nephropathy"],c:2},
+        {q:"DKA is most common in:",o:["Type 1","Type 2","Gestational","MODY"],c:0},
+        {q:"Main symptom of DKA:",o:["Weight gain","Polyuria","Kussmaul breathing","Hypertension"],c:2},
+        {q:"Diabetic retinopathy affects:",o:["Heart","Kidneys","Eyes","Brain"],c:2},
+        {q:"HHS occurs mainly in:",o:["Type 1","Type 2","Pregnancy","Children"],c:1},
+        {q:"The best test for long-term control:",o:["FBS","RBS","HbA1c","OGTT"],c:2},
+        {q:"Insulin that acts fastest:",o:["Regular","NPH","Lispro","Glargine"],c:2},
+        {q:"Long-acting insulin:",o:["Regular","Lispro","Glargine","Aspart"],c:2},
+        {q:"Metformin should be avoided in:",o:["Obesity","Renal failure","PCOS","Type 2 diabetes"],c:1},
+        {q:"Major side effect of metformin:",o:["Hypoglycemia","Lactic acidosis","Weight gain","Edema"],c:1},
+        {q:"Classic triad of diabetes:",o:["Polyuria, polydipsia, polyphagia","Fever, vomiting, diarrhea","Headache, fatigue, cough","Jaundice, pruritus, bleeding"],c:0},
+        {q:"Oral drugs cannot be used in:",o:["Type 2","Pre-diabetes","Type 1","Obesity"],c:2},
+        {q:"Complication of poorly controlled diabetes:",o:["Hypertension","Neuropathy","Arthritis","Asthma"],c:1},
+        {q:"Diabetes increases risk of:",o:["Alzheimer","Cardiovascular disease","Cancer","Asthma"],c:1},
+        {q:"Insulin is secreted by:",o:["Alpha cells","Beta cells","Delta cells","PP cells"],c:1},
+        {q:"Target HbA1c in most patients:",o:["<8%","<7%","<9%","<10%"],c:1},
+        {q:"Main metabolic problem in Type 1 diabetes:",o:["Insulin resistance","Lack of insulin","Excess cortisol","Excess estrogen"],c:1},
+        {q:"Classical sign in long-standing diabetes:",o:["Blue eyes","Cataract","Hair loss","Skin rash"],c:1},
+        {q:"Best diet advice for diabetics:",o:["High sugar","Low carbohydrate","High fat","High salt"],c:1},
+        {q:"Test used in emergency to measure glucose:",o:["HbA1c","Fasting glucose","Random glucose","OGTT"],c:2},
+        {q:"Diabetes increases infection risk due to:",o:["High WBC count","Low immunity","High RBC count","High iron"],c:1},
+        {q:"Most important lifestyle modification:",o:["Sleep more","Avoid exercise","Weight loss","High salt diet"],c:2},
+        {q:"Gestational diabetes is diagnosed during:",o:["First trimester","Second/Third trimester","Postpartum","Before pregnancy"],c:1},
+        {q:"Hypoglycemia is defined as glucose less than:",o:["100 mg/dL","70 mg/dL","140 mg/dL","110 mg/dL"],c:1},
+        {q:"Glucagon is produced by:",o:["Alpha cells","Beta cells","Delta cells","F cells"],c:0},
+        {q:"Which insulin cannot be mixed with others?",o:["Regular","NPH","Glargine","Lispro"],c:2},
+        {q:"Which antibody is most specific for SLE?",o:["ANA","Anti-dsDNA","Anti-Smith (Anti-Sm)","RF"],c:2},
+        {q:"The most common manifestation of SLE is:",o:["Renal involvement","Skin rash","Arthritis","Serositis"],c:2},
+        {q:"Butterfly rash typically affects:",o:["Forehead","Cheeks and nasal bridge","Chin","Neck"],c:1},
+        {q:"Drug-induced lupus is most associated with:",o:["Hydralazine","Prednisolone","Methotrexate","Paracetamol"],c:0},
+        {q:"Antibody most associated with Drug-induced lupus:",o:["Anti-dsDNA","Anti-Sm","Anti-histone","Anti-SSA"],c:2},
+        {q:"Lupus nephritis is best diagnosed by:",o:["MRI","CT","Renal biopsy","Ultrasound"],c:2},
+        {q:"Photosensitivity in SLE is triggered by:",o:["Infrared light","UV light","Blue light","Red light"],c:1},
+        {q:"First-line treatment for mild SLE:",o:["Cyclophosphamide","Hydroxychloroquine","Rituximab","Belimumab"],c:1},
+        {q:"Which lab finding suggests disease flare?",o:["↑ Complement","↓ Complement","Normal ESR","High platelets"],c:1},
+        {q:"Common pulmonary feature in SLE:",o:["COPD","Pneumothorax","Pleuritis","Lung cancer"],c:2},
+        {q:"SLE patients commonly have:",o:["Hypercalcemia","Hyponatremia","Hematuria","High potassium"],c:2},
+        {q:"Which test is most sensitive for SLE?",o:["ANA","Anti-dsDNA","Anti-Sm","RF"],c:0},
+        {q:"Which skin lesion is specific for SLE?",o:["Psoriasis","Discoid rash","Vitiligo","Eczema"],c:1},
+        {q:"Which anticoagulant is used in antiphospholipid syndrome?",o:["Aspirin only","Warfarin","Clopidogrel","Ticagrelor"],c:1},
+        {q:"Antiphospholipid syndrome is associated with:",o:["Bleeding","Thrombosis","Hemophilia","Leukemia"],c:1},
+        {q:"Which lab test is commonly positive in SLE but not specific?",o:["ANA","Anti-Sm","Anti-dsDNA","Anti-SSA"],c:0},
+        {q:"The classic finding in urine of a patient with active lupus nephritis is:",o:["Glucose","RBC casts","Ketones","Ammonium crystals"],c:1},
+        {q:"Chronic steroid use in SLE commonly leads to:",o:["Hypoglycemia","Weight loss","Osteoporosis","Hyperkalemia"],c:2},
+        {q:"What is liver cirrhosis?",o:["Acute inflammation","Chronic fibrosis with nodules","Fat accumulation only","Viral infection"],c:1},
+        {q:"Most common cause of cirrhosis worldwide:",o:["Alcohol","Hepatitis B & C","Drugs","Autoimmune"],c:1},
+        {q:"In Egypt, the most common cause:",o:["Alcohol","Hepatitis C","NAFLD","Drugs"],c:1},
+        {q:"Portal hypertension leads to:",o:["Jaundice","Ascites","Fever","Vomiting"],c:1},
+        {q:"Most common complication of cirrhosis:",o:["Ascites","Cancer","Shock","Renal failure"],c:0},
+        {q:"Diagnostic gold standard:",o:["Ultrasound","CT scan","Liver biopsy","Blood test"],c:2},
+        {q:"PT/INR in cirrhosis:",o:["Decreased","Normal","Increased","Zero"],c:2},
+        {q:"Jaundice occurs due to:",o:["Albumin","Bilirubin","Platelets","Sodium"],c:1},
+        {q:"First-line imaging:",o:["MRI","CT","Ultrasound","X-ray"],c:2},
+        {q:"Varices are dilated:",o:["Arteries","Veins","Capillaries","Lymphatics"],c:1},
+        {q:"Most dangerous complication:",o:["Ascites","Variceal bleeding","Fatigue","Fever"],c:1},
+        {q:"Hepatorenal syndrome affects:",o:["Brain","Kidney","Heart","Lung"],c:1},
+        {q:"Splenomegaly occurs due to:",o:["Infection","Portal hypertension","Trauma","Cancer"],c:1},
+        {q:"Platelets in cirrhosis:",o:["Increased","Normal","Decreased","Zero"],c:2},
+        {q:"Most common cancer complication in cirrhosis:",o:["Lung cancer","Hepatocellular carcinoma","Colon cancer","Brain tumor"],c:1},
+        {q:"Risk factor for cirrhosis:",o:["Smoking","Alcohol","Exercise","Water"],c:1},
+        {q:"Best treatment for end-stage cirrhosis:",o:["Drugs","Diet","Liver transplant","Exercise"],c:2},
+        {q:"Cirrhosis is:",o:["Reversible","Partially reversible","Irreversible","Acute"],c:2},
+        {q:"Acute renal failure is now commonly termed:",o:["CKD","ESRD","AKI","GN"],c:2},
+        {q:"AKI is characterized by:",o:["Gradual loss of kidney function","Sudden decline in renal function","Only proteinuria","Only hematuria"],c:1},
+        {q:"The most sensitive indicator of AKI:",o:["Hemoglobin","Serum creatinine","Platelets","Sodium"],c:1},
+        {q:"Pre-renal AKI is caused by:",o:["Tubular necrosis","Decreased renal perfusion","Kidney stones","Glomerulonephritis"],c:1},
+        {q:"Example of pre-renal cause:",o:["Dehydration","ATN","Tumor","UTI"],c:0},
+        {q:"Intrinsic renal AKI includes:",o:["Obstruction","ATN","Dehydration","Hypotension"],c:1},
+        {q:"Post-renal AKI is due to:",o:["Infection","Obstruction of urine flow","Hypovolemia","Diabetes"],c:1},
+        {q:"Most common intrinsic cause:",o:["ATN","GN","Interstitial nephritis","Vasculitis"],c:0},
+        {q:"ATN mainly affects:",o:["Glomeruli","Tubules","Ureter","Bladder"],c:1},
+        {q:"Anuria means:",o:["No urine","Excess urine","Blood in urine","Protein in urine"],c:0},
+        {q:"Common symptom:",o:["Polyuria","Edema","Weight loss","Hair loss"],c:1},
+        {q:"AKI is diagnosed mainly by:",o:["ECG","Serum creatinine rise","X-ray","MRI"],c:1},
+        {q:"BUN increases in:",o:["AKI","Only CKD","Liver failure only","None"],c:0},
+        {q:"Most dangerous complication:",o:["Hypokalemia","Hyperkalemia","Hyponatremia","Hypocalcemia"],c:1},
+        {q:"Hyperkalemia can cause:",o:["Seizures","Arrhythmia","Fever","Pain"],c:1},
+        {q:"Metabolic acidosis occurs due to:",o:["Increased acid excretion","Decreased acid excretion","Increased bicarbonate","None"],c:1},
+        {q:"First step in AKI management:",o:["Dialysis","Identify cause","Surgery","Transplant"],c:1},
+        {q:"Fluid therapy is important in:",o:["Pre-renal AKI","Post-renal","ATN only","None"],c:0},
+        {q:"Most common cause of AKI in hospital:",o:["ATN","Stones","Cancer","TB"],c:0},
+        {q:"Uremia causes:",o:["Confusion","Clarity","Strength","Vision"],c:0},
+        {q:"Phosphate level in AKI:",o:["Low","High","Normal","Zero"],c:1},
+        {q:"Calcium level in AKI:",o:["High","Low","Normal","None"],c:1},
+        {q:"Dialysis indication includes:",o:["Mild AKI","Severe hyperkalemia","Normal labs","Mild edema"],c:1},
+        {q:"Drug causing AKI:",o:["Paracetamol","NSAIDs","Vitamins","Insulin"],c:1},
+        {q:"AKI increases risk of:",o:["Mortality","Growth","Strength","Vision"],c:0},
+        {q:"Urinary obstruction example:",o:["Prostate enlargement","Dehydration","ATN","GN"],c:0},
+        {q:"Prolonged hypotension leads to:",o:["ATN","GN","Stones","Infection"],c:0},
+        {q:"Nephrotoxic drugs cause:",o:["Intrinsic AKI","Pre-renal","Post-renal","None"],c:0},
+        {q:"AKI in ICU commonly due to:",o:["Sepsis","Diet","Exercise","Sleep"],c:0},
+        {q:"Prevention includes:",o:["Hydration","Dehydration","Drugs","None"],c:0},
+        {q:"Sepsis causes AKI via:",o:["Hypoperfusion","Obstruction","Tumor","Stone"],c:0},
+        {q:"Rhabdomyolysis causes AKI by:",o:["Myoglobin release","Hemoglobin","Glucose","Lipid"],c:0},
+        {q:"Thyroid storm is a:",o:["Chronic state.","Life threatening condition.","Hypothyroid state.","Normal state."],c:1},
+        {q:"The emergency treatment of asthma is:",o:["Inhaled corticosteroid.","Oral corticosteroid.","Short acting beta 2 agonist.","Long-acting beta 2 agonist."],c:2},
+        {q:"The characteristic symptom of Grave's disease is:",o:["Constipation.","Bradycardia.","Exophthalmos.","Weight gain."],c:2},
+        {q:"Which of the following is a symptom of hypothyroidism?",o:["Weight loss.","Intolerance to cold.","Tachycardia.","Diarrhea."],c:1},
+        {q:"Clinical manifestations of diabetes mellitus include all the following EXCEPT:",o:["Polyuria.","Weight gain.","Polydipsia.","Polyphagia."],c:1},
+        {q:"One of the acute complications of DM is:",o:["Diabetic ketoacidosis.","Retinopathy.","Nephropathy.","Neuropathy."],c:0},
+        {q:"Peptic ulcer is:",o:["Inflammation of the lung.","Erosion of the gastrointestinal mucosa.","Infection of the urinary tract.","Obstruction of the bile duct."],c:1},
+        {q:"One of the following symptoms of hyperthyroidism improved by beta blocker:",o:["Diarrhea.","Hormone level.","Tremors.","Exophthalmos."],c:2},
+        {q:"The main cause of type 1 DM is:",o:["Decreased blood glucose level.","Lack of insulin.","Obesity.","Old age."],c:1},
+        {q:"Which clinical manifestation is characteristic of COPD?",o:["Decreased chest size","Slow breathing (bradypnea)","Barrel-shaped chest","Absence of wheezing"],c:2},
+        {q:"The primary mechanism of inhaled corticosteroids in asthma management is:",o:["Reducing airway inflammation","Stimulating mucus production","Bronchodilation by relaxing smooth muscles","Blocking histamine receptors"],c:0},
+        {q:"Which of the following is a major risk factor for COPD?",o:["Exposure to tobacco smoke","Regular exercise","Low salt intake","High protein diet"],c:0},
+        {q:"Which of the following is a common complication of COPD?",o:["Peptic ulcer","Liver failure","Kidney stones","Respiratory failure"],c:3},
+        {q:"Leukotriene modifiers such as Singular help in asthma by:",o:["Suppressing cough reflex","Reducing inflammation and leukotriene activity","Causing immediate bronchodilation","Increasing oxygen transport"],c:1},
+        {q:"Which class of drugs reduces gastric acid secretion by blocking histamine receptors?",o:["Antibiotics","Histamine H2 receptor antagonists","Antacids","Anticholinergics"],c:1},
+        {q:"The effect of hypothyroidism on menstruation:",o:["Increase estrogen level.","Menorrhagia.","No effect.","Increase ovulation."],c:1},
+        {q:"Diabetic retinopathy affects:",o:["Eyes.","Kidney.","Heart.","Brain."],c:0},
+        {q:"In hyperthyroidism, the sleeping pulse rate is usually:",o:["Less than 100 b/min.","More than 100 b/min.","Less than 60 b/min.","More than 60 b/min."],c:1},
+        {q:"Complication of liver cirrhosis includes:",o:["Ascites and portal hypertension.","Normal liver enzymes.","Decreased heart rate.","Increased appetite."],c:0},
+        {q:"Which of the following is an intrinsic cause of Acute Kidney Injury?",o:["Dehydration.","Acute Tubular Necrosis (ATN).","Prostate enlargement.","Ureteral calculi."],c:1}
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       
-      function _0xerr(_0x1,_0x2){
+      function _0xerr(_0x1,_0x2, showTimer = false){
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;
           _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
+          
+          if(showTimer) {
+              _0xdc.getElementById("countdownTimer").style.display = "block";
+          } else {
+              _0xdc.getElementById("countdownTimer").style.display = "none";
+          }
       }
       
+      function getTrueServerTime() {
+          return Date.now() + serverTimeOffset;
+      }
+      
+      function checkScheduledTime() {
+          if (EXAM_SCHEDULED_TIME === 0) return true; // لو مش مجدول، كمل عادي
+          const now = getTrueServerTime();
+          const timeLeft = EXAM_SCHEDULED_TIME - now;
+          
+          if (timeLeft <= 0) {
+              if (scheduledTimerInterval) clearInterval(scheduledTimerInterval);
+              return true;
+          } else {
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              const timerStr = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+              
+              _0xerr("الامتحان مجدول ⏱️", "لم يحن موعد فتح الامتحان بعد. سيتم الفتح تلقائياً.", true);
+              _0xdc.getElementById("countdownTimer").innerText = timerStr;
+              
+              if (!scheduledTimerInterval) {
+                  scheduledTimerInterval = setInterval(function() {
+                      if (checkScheduledTime()) {
+                          _0xsep(); // إعادة محاولة الفتح لما الوقت ييجي
+                      }
+                  }, 1000);
+              }
+              return false;
+          }
+      }
+
       function _0xvt(){
           const isLocal = _0xwn.location.protocol === 'file:';
           if(isLocal){
@@ -387,14 +466,18 @@
       }
 
       function _0xsep(){
+          // التحقق من جدولة الوقت قبل فحص حالة الفايربيز
+          if (!checkScheduledTime()) return;
+          
           if(!_0xdb) return;
-          _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('internal_medicine_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
                   _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
+                  if(scheduledTimerInterval) clearInterval(scheduledTimerInterval);
                   _0xia();
                   if(!_0xini){_0xini=!0;_0xiss();}
               }
@@ -408,12 +491,12 @@
           _0xrnd();
       }
       
-      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0stst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
       
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             _0xstR = _0xdb.ref('communication_students').push();
+             _0xstR = _0xdb.ref('internal_medicine_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
@@ -477,4 +560,3 @@
   </script>
  </body>
 </html>
-
