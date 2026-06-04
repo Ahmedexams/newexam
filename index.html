@@ -160,16 +160,6 @@
             console.log("%c🛑 منطقة محظورة!", "color: red; font-size: 30px; font-weight: bold;"); 
         }, 1000);
         
-        // الخيار النووي: مسح الصفحة فوراً عند فتح أدوات المطور
-        setInterval(function() {
-            var start = new Date().getTime();
-            debugger;
-            var end = new Date().getTime();
-            if (end - start > 100) {
-                document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background:#070912;color:#ef4444;font-size:24px;font-weight:bold;text-align:center;padding:20px;direction:rtl;'>🛑 تم اكتشاف محاولة غش!<br><br>تم إغلاق المنصة بالكامل.</div>";
-            }
-        }, 500);
-
         let devtools = function() {};
         devtools.toString = function() {
             if(window.location.hostname !== 'localhost') {
