@@ -3,9 +3,8 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Online Exam - Communication</title>
-  <style>
-    :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
+  <title>Online Exam - Gerontological Nursing</title>
+"ot{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
     body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; -webkit-user-select:none; }
     header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
@@ -74,8 +73,8 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please Waiting 🛡️</h2>
-    <p id="modalText" style="color:var(--muted)"></p>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">....Please waiting 🌀</h2>
+    <p id="modalText" style="color:var(--muted)"></>
    </div>
   </div>
 
@@ -99,9 +98,9 @@
         </svg>
      </div>
      <div>
-      <h1 style="margin-bottom: 4px;">Communication Exam</h1>
+      <h1 style="margin-bottom: 4px;">Gerontological Nursing</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-      
+        Nursing Exam
       </p>
      </div>
     </div>
@@ -147,7 +146,7 @@
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/communication_exam').push();
+          const sessionRef = _0xdb.ref('active_exam_visitors/gerontological_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -171,7 +170,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/communication_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/gerontological_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -184,33 +183,91 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/communication_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/gerontological_exam').off('value', adminListener);
           }
       };
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
       const _0xAQ=[
-        {q:"Which conflict management style involves a high concern for self and a low concern for others?",o:["Avoiding","Accommodating","Competing","Compromising"],c:2},
-        {q:"Non-verbal behaviors such as posture and facial expression can contradict spoken words.",o:["True","False"],c:0},
-        {q:"Open-ended questions encourage patients to express their thoughts and feelings more freely.",o:["False","True"],c:1},
-        {q:"Clarifying helps to ensure the nurse correctly understands the patient's message.",o:["False","True"],c:1},
-        {q:"What is the most constructive approach to handling interpersonal conflict among nurses?",o:["Avoid the conflict to maintain harmony","Ignore it unless it affects patient care","Report immediately to upper management","Address the conflict directly using open communication and active listening"],c:3},
-        {q:"Resistance to change in healthcare is often due to:",o:["Desire to leave the profession","Nurses' inability to learn new skills","Lack of interest in improvement","Fear of the unknown and lack of communication"],c:3},
-        {q:"Minimal verbal encouragements like 'go on' or 'I see' support the flow of conversation.",o:["False","True"],c:1},
-        {q:"Therapeutic communication discourages the use of silence during conversations with patients.",o:["False","True"],c:0},
-        {q:"Therapeutic touch should be used with every patient as part of effective communication.",o:["True","False"],c:1},
-        {q:"Reflecting is a technique where the nurse repeats part of the patient's statement to encourage elaboration.",o:["False","True"],c:1},
-        {q:"Summarizing at the end of a conversation helps reinforce key points and ensure understanding.",o:["True","False"],c:0},
-        {q:"One of the most important aspects of developing trust in a nurse-patient relationship is:",o:["Being busy and efficient","Speaking casually like a friend","Telling patients not to worry","Keeping promises and maintaining confidentiality"],c:3},
-        {q:"The termination phase of the nurse-patient relationship includes:",o:["Establishing goals and setting boundaries","Starting treatment interventions","Reviewing progress and preparing for discharge or transfer","Avoiding emotional closure"],c:2},
-        {q:"Which of the following is an example of non-therapeutic communication?",o:["It's okay to feel overwhelmed sometimes","Why did you do that?","I'm here to listen to you","Tell me more about how you're feeling today"],c:1},
-        {q:"In the working phase of the nurse-patient relationship, the nurse primarily:",o:["Explains hospital policies","Observes the patient without interaction","Ends the professional relationship","Implements care plans and helps patients achieve goals"],c:3},
-        {q:"Which is the first step in conflict resolution?",o:["Identify the source of the conflict","Assign blame","Report to manager","Choose a punishment"],c:0},
-        {q:"A nurse maintaining appropriate professional boundaries is practicing:",o:["Passive care","Overinvolvement","Therapeutic communication","Personal disclosure"],c:2},
-        {q:"A nurse manager wants to implement a new documentation system. To reduce resistance, the best strategy is:",o:["Involve staff in planning and provide training","Enforce the change immediately","Avoid discussing it with staff","Criticize the old system publicly"],c:0},
-        {q:"Using a calm and steady tone of voice is a part of effective communication with anxious patients.",o:["True","False"],c:0},
-        {q:"Giving unsolicited advice is considered a therapeutic communication technique.",o:["True","False"],c:1}
+        {q:"A 70-year-old patient complains of difficulty hearing high-pitched sounds and understanding conversation in a noisy room. The nurse identifies this as:",o:["Sensory hearing loss","Presbycusis","Otitis media","Tinnitus"],c:1},
+        {q:"Elderly are at high risk for dehydration due to:",o:["Decrease thirst sensation","Inadequate fluid intake","Medication side effects","All of the above"],c:3},
+        {q:"Chronological age is your age based on:",o:["The passage of time","Functional performance","Health status","Social roles"],c:0},
+        {q:"Which of the following is a key feature of delirium?",o:["Irreversible brain damage","Reversible cognitive impairment","Permanent memory loss","Slow onset over years"],c:1},
+        {q:"Unfavorable attitude toward the elderly is referred to as:",o:["Racism","Ageism","Sexism","Ethnocentrism"],c:1},
+        {q:"Dementia is defined as:",o:["Sudden temporary confusion","Chronic progressive cognitive decline","Normal part of aging","Acute infection of the brain"],c:1},
+        {q:"Which statement regarding diets and nutritional status of older people is correct?",o:["Older people need more calories than younger adults","Older people generally have a lower energy intake than younger adults","Nutritional needs do not change with age","Older people should avoid all fats"],c:1},
+        {q:"What is the most appropriate intervention for an Alzheimer's patient who walks outside the home continuously?",o:["Restrain the patient to a chair","Provide a safe enclosed space for walking","Give sedative medications","Lock the patient in a room"],c:1},
+        {q:"An elderly patient with Alzheimer's becomes agitated and aggressive during morning care. The best nursing intervention is:",o:["Call for security immediately","Remain calm and talk quietly to the client","Shout at the patient to stop","Leave the room and don't return"],c:1},
+        {q:"A 90-year-old patient with dementia used her toothbrush to comb her hair. This is:",o:["Amnesia","Aphasia","Apraxia","Agnosia"],c:2},
+        {q:"Improving muscle strength and reducing the risk of falls may be a potential benefit of:",o:["Vitamin D","Vitamin C","Iron","Zinc"],c:0},
+        {q:"The nursing priority in the management of delirium is:",o:["Teaching the family about dementia","Environmental orientation and safety","Starting long-term psychotherapy","Encouraging heavy exercise"],c:1},
+        {q:"A 75-year-old patient developed sudden confusion disorientation and fluctuating consciousness after surgery. The most likely diagnosis is:",o:["Dementia","Delirium","Depression","Alzheimer's"],c:1},
+        {q:"Social changes that increase in the community and threaten the security and well-being of the elderly include:",o:["High mobility of families","Decreased family size","Urbanization","All of the above"],c:3},
+        {q:"Gastrointestinal problems in the elderly include the following EXCEPT:",o:["Constipation","Periodontal disease","Heartburn","Dysuria"],c:3},
+        {q:"When giving an IM injection to an elderly person the nurse should remember the elderly have:",o:["Thicker skin than younger adults","Increased muscle mass","Less subcutaneous tissue and muscle mass","Increased blood flow to muscles"],c:2},
+        {q:"Most elderly complain that food does not taste the same as before. This is due to:",o:["Increase in saliva","Decrease of taste buds","Better sense of smell","Improved digestion"],c:1},
+        {q:"What is the most common cause of delirium in hospitalized elderly patients?",o:["Old age","Infection","Lack of sleep","Poor diet"],c:1},
+        {q:"A patient with delirium is most likely to exhibit:",o:["Clear and stable consciousness","Hallucinations and altered consciousness","Long-term memory loss only","Excellent focus and attention"],c:1},
+        {q:"When a patient cannot remember facts and fills the gaps with imaginary information they are experiencing:",o:["Aphasia","Agnosia","Confabulation","Amnesia"],c:2},
+        {q:"Factors affecting the aging process are the following EXCEPT:",o:["Heredity / Genetics","Life style","Nutrition","Home health services"],c:3},
+        {q:"Normal changes affecting the cardiovascular system include the following EXCEPT:",o:["Thickening of heart walls","Increased stiffness of arteries","Increase efficiency of venous valve","Thickening of heart valves"],c:2},
+        {q:"Which of the following should be encouraged to reduce the risk of constipation in the elderly?",o:["Bed rest","Low fiber diet","Good fluid intake and regular exercise","Laxatives every day"],c:2},
+        {q:"The mental and physical deterioration associated with aging is called:",o:["Senility","Maturity","Adolescence","Puberty"],c:0},
+        {q:"Which cognitive domain is most affected in the early stages of Alzheimer's disease?",o:["Language","Memory","Motor skills","Vision"],c:1},
+        {q:"The goal of healthcare for the elderly is to:",o:["Make them completely dependent on others","Maximize their ability to remain independent and functional","Cure all aging changes","Keep them in the hospital permanently"],c:1},
+        {q:"In a 24-hour assessment a nurse documents Aphasia for an Alzheimer's patient. This indicates:",o:["The client is unable to walk","The client is having difficulty in forming words","The client cannot recognize his son","The client is unable to swallow"],c:1},
+        {q:"Alzheimer's disease progresses rapidly within days.",o:["True","False"],c:1},
+        {q:"Delirium is always irreversible.",o:["True","False"],c:1},
+        {q:"Delirium has a sudden onset.",o:["True","False"],c:0},
+        {q:"Elderly persons are frail senile unhealthy and unhappy.",o:["True","False"],c:1},
+        {q:"Alzheimer's disease is reversible.",o:["True","False"],c:1},
+        {q:"Aging is a highly individualized process that affects each person in a unique way.",o:["True","False"],c:0},
+        {q:"Geriatric health care can help in postponing changes associated with the aging process.",o:["True","False"],c:0},
+        {q:"Clarifying the reality is essential in the intervention of a delirious patient.",o:["True","False"],c:0},
+        {q:"Delirium symptoms are stable throughout the day.",o:["True","False"],c:1},
+        {q:"Retrograde amnesia is loss of memory for recent events.",o:["True","False"],c:1},
+        {q:"Anxiety and low self-esteem are common social changes among the elderly.",o:["True","False"],c:0},
+        {q:"Presbyopia is progressive loss of hearing.",o:["True","False"],c:1},
+        {q:"Adults aged 75 to 84 years are classified as old-old.",o:["True","False"],c:1},
+        {q:"Old age has been considered as a stage of life when capacities and opportunities expand.",o:["True","False"],c:1},
+        {q:"Normal changes that affecting the urinary system of older adult:",o:["Urinary infections","Reduce bladder capacity","Urinary incontinence","None of them"],c:1},
+        {q:"Which characteristic best differentiates delirium from Alzheimer's disease?",o:["Disorientation to time","Memory impairment","Presence of hallucinations","Acute onset and fluctuating course"],c:3},
+        {q:"Which of the following consider a negative attitude from community toward older adults?",o:["Ageism","Aged","Aging","Aging process"],c:0},
+        {q:"A 78-year-old hospitalized patient suddenly becomes confused disoriented and restless at night. The symptoms appeared within 24 hours and fluctuate throughout the day. What is the most likely diagnosis?",o:["Delirium","Vascular dementia","Major depression","Alzheimer's disease"],c:0},
+        {q:"Factors that influences the aging process are the following except:",o:["Genetic factors","Environmental conditions","Home health services","Nutritional factors"],c:2},
+        {q:"The nurse assessing the older population needs to have a basic understanding of which of the following?",o:["The economic status of the area","The difference between normal and abnormal for the older age group","The signs of cardiac disease","The signs of sexual dysfunction"],c:1},
+        {q:"The nurse is assessing an elderly client. When performing the assessment the nurse should consider that one normal aging change is:",o:["Atherosclerosis","Incontinence","Diminished reflexes","Hypertension"],c:2},
+        {q:"Which intervention is most effective in reducing drug misuse in geriatric patients?",o:["Encouraging self medication","Maintain a schedule of taking medication associated with daily activities","Maintain bed rest","Encourage intake of all vitamins"],c:1},
+        {q:"A gerontological nurse who assigned to care for elderly clients in a geriatric home noticed that most of the elderly clients complain that food does not taste the same as before. They experience this problem because of:",o:["Decrease of taste buds","Decrease sense of smell","Diminish in gastric secretion","Altered enzymes secretion"],c:0},
+        {q:"Which of the following will the nurse use when communicating with a client who has a cognitive impairment?",o:["Complete explanations with multiple details","Picture or gestures instead of words","Stimulating words and phrases to capture the client's attention","Short words and simple sentences"],c:3},
+        {q:"An elderly client with Alzheimer's disease becomes agitated and combative when a nurse approaches to help with morning care. The most appropriate nursing intervention in this situation would be to:",o:["Tell the client family that it is time to get dressed","Obtain assistance to restrain the client for safety","Remain calm and talk quietly to the client","Call the doctor and request an order for sedation"],c:2},
+        {q:"Female patient has 90 years old diagnosed as dementia used her toothbrush to comb her hair. She is manifesting:",o:["Apraxia","Aphasia","Agnosia","Amnesia"],c:0},
+        {q:"On a 24 hour assessment the nurse documents that a client diagnosed with Alzheimer's disease presents with aphasia. Which of the following refere to aphasia?",o:["The client is sad and has no ability to experience pleasure","The client is extremely emaciated and appears to be wasting away","The client is having difficulty in forming words","The client is no longer able to speak"],c:2},
+        {q:"Which of the following is a realistic short term goal to be accomplished in 2 to 3 days for a client with delirium?",o:["Explain the experience of having delirium","Resume a normal sleep wake cycle","Regain orientation to time and place","Establish normal bowel and bladder function"],c:2},
+        {q:"A patient with delirium experiences visual hallucinations. What is the priority intervention?",o:["Orient the patient to reality","Administer prescribed sedatives","Allow the hallucinations to subside on their own","Ensure the environment is safe and free of hazards"],c:3},
+        {q:"The primary goal of nursing care in the first 24-72 hours after an acute ischemic stroke is to:",o:["Begin early rehabilitation","Maintain cerebral perfusion and prevent complications","Administer anticoagulants immediately","Restrict all oral fluids"],c:1},
+        {q:"Why should a depressed post stroke patient receive early psychological intervention?",o:["Depression is a transient post stroke symptom","Depression can delay functional recovery and rehab engagement","Depression has no impact on stroke prognosis","Antidepressants are contraindicated post stroke"],c:1},
+        {q:"During the rehabilitation phase which nursing goal is most important?",o:["Regain full mobility within 2 weeks","Prevent all emotional outbursts","Achieve normal speech","Restore independence and prevent secondary complications"],c:3},
+        {q:"A patient post stroke is on NPO status pending swallow evaluation. The nurse finds a family member attempting to give the patient water. The nurse's best action is:",o:["Allow a small sip for comfort","Remove all fluids from the room","Explain that swallowing must be assessed before oral intake","Notify the physician immediately"],c:2},
+        {q:"The deposition of lipids within the cornea of elderly cause changes known as:",o:["Ectropion of eyelids","Arcus Senilis","Diminished reflexes","Sunken of the eye"],c:1},
+        {q:"Factors affecting elderly assessment include:",o:["Atypical symptoms","Polypharmacy","Living conditions","All of them"],c:3},
+        {q:"In assessing the elderly client it is important for the nurse to recognize:",o:["The financial status of the client","The job the client held prior to aging","All components of wellbeing including physical mental emotional and social function","The clients ability to perform ADLS"],c:2},
+        {q:"Reproductive normal changes in elderly women include:",o:["Ovulation ceases and drop in estrogen levels","Uterus prolapse","Vaginal infection","None of them"],c:0},
+        {q:"A 65 year old patient in good health has asked the nurse about what steps can be taken to build muscle mass. What information should be provided to the patient?",o:["Exercise can slow the loss of muscle mass","Increasing protein and fat intake will increase muscle mass","There is little that can be done to reduce the loss of muscle mass associated with aging","Avoid any physical activity"],c:0},
+        {q:"The nurse is administering IM injection to an elderly. The nurse should remember that an elderly has:",o:["Less subcutaneous tissue and muscle mass than a younger client","More subcutaneous tissue and less muscle mass than a younger client","Less subcutaneous tissue and more muscle mass than a younger client","More subcutaneous tissue and muscle mass than a younger client"],c:0},
+        {q:"Cardiovascular system changes among older adults include all of them Except:",o:["Stiffer of blood vessels","Stiffer of heart muscles","Orthostatic hypertension","Heart murmurs"],c:2},
+        {q:"Basic principles of older care are:",o:["Elevating self care limitation","Eliminating multidisciplinary approach","Physical mental and social independence","Providing services when demands cannot be met dependently"],c:2},
+        {q:"Elderly people high risk for dehydration due to increase thirst sensation.",o:["True","False"],c:1},
+        {q:"Presbycosis is trouble focusing on near objects.",o:["True","False"],c:1},
+        {q:"Aging process in humans is natural universal avoidable and progressive process.",o:["True","False"],c:1},
+        {q:"Anxiety and low self-esteem are common social changes among older adults.",o:["True","False"],c:0},
+        {q:"Aging changes is one of the factor affecting elderly assessment.",o:["True","False"],c:0},
+        {q:"Thrombolytic therapy can be safely given within 6 hours of onset for all types of stroke.",o:["True","False"],c:1},
+        {q:"A patient with delirium typically has a fluctuating level of awareness throughout the day.",o:["True","False"],c:0},
+        {q:"The nurse should avoid passive range of motion exercises for the affected limb in the first 24 hours after stroke.",o:["True","False"],c:1},
+        {q:"Skin breakdown risk increases on the paralyzed side due to loss of sensation and immobility.",o:["True","False"],c:0},
+        {q:"Cognitive impairment may interfere with the patient's ability to follow rehabilitation exercises requiring caregiver training.",o:["True","False"],c:0}
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
@@ -229,12 +286,10 @@
               return;
           }
 
-          // قراءة البيانات المحفوظة للتحقق من وجود ريفريش نشط
           let savedUser = sessionStorage.getItem('student_name');
           let savedToken = savedUser ? sessionStorage.getItem('\x65\x78\x61\x6d\x5f\x73\x65\x73\x73\x69\x6f\x6e\x5f' + savedUser) : null;
           let isAuth = sessionStorage.getItem('student_auth') === 'verified';
 
-          // الحالة الأولى: دخول أول مرة (الرابط يحتوي على التوكن والاسم)
           if(_0xu && _0xt){
               _0xsn = decodeURIComponent(_0xu);
               
@@ -283,12 +338,10 @@
               }
               checkTicket(4);
           } 
-          // الحالة الثانية: الطالب قام بعمل Refresh (الرابط فارغ لكن الجلسة مخزنة مسبقاً)
           else if(savedUser && savedToken && isAuth) {
               _0xsn = savedUser;
               _0xsep(); 
           } 
-          // الحالة الثالثة: محاولة دخول مباشر بدون رابط وبدون تسجيل مسبق
           else {
               _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
               setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
@@ -297,7 +350,7 @@
 
       function _0xsep(){
           if(!_0xdb) return;
-          _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('gerontological_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
@@ -312,19 +365,17 @@
 
       function _0xia(){
           _0xeq=_0xAQ;
-          // تصفير مصفوفة الإجابات والدرجة تماماً في الواجهة
           _0xst={a:0,s:0,l:Array(_0xeq.length).fill(!1),so:Array(_0xeq.length).fill(null)};
           _0xdc.getElementById("total").textContent=_0xeq.length;
           _0xrnd();
       }
       
-      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0stst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
       
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             // تصفير وإنشاء سجل نقاط جديد تماماً في قاعدة البيانات فور الـ Refresh يبدأ من 0
-             _0xstR = _0xdb.ref('communication_students').push();
+             _0xstR = _0xdb.ref('gerontological_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
