@@ -146,7 +146,8 @@
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/English_student').push();
+          // مسار المراقبين للغة الإنجليزية (تم التعديل)
+          const sessionRef = _0xdb.ref('active_exam_visitors/English_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -170,7 +171,8 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/English_student').on('value', (snapshot) => {
+              // عداد المراقبين للغة الإنجليزية
+              adminListener = _0xdb.ref('active_exam_visitors/English_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -183,7 +185,7 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/English_student').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/English_exam').off('value', adminListener);
           }
       };
 
@@ -427,17 +429,27 @@
 
       function _0xsep(){
           if(!_0xdb) return;
+          
+          // حل مشكلة التهنيج لو المسار ده مش موجود أصلاً في الداتابيز
           _0xdb.ref('English_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
-                  _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
-                  _0xdc.getElementById("mainHeader").style.display="block";
-                  _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
-                  _0xia();
-                  if(!_0xini){_0xini=!0;_0xiss();}
+                  openExamUI();
               }
+          }, (err) => {
+              // لو المسار مش موجود أو مرفوض، افتح الامتحان مباشرة عشان ميعلقش
+              console.warn("إعدادات الامتحان غير موجودة، سيتم الفتح التلقائي.");
+              openExamUI();
           });
+      }
+
+      function openExamUI() {
+          _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
+          _0xdc.getElementById("mainHeader").style.display="block";
+          _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
+          _0xia();
+          if(!_0xini){_0xini=!0;_0xiss();}
       }
 
       function _0xia(){
@@ -452,7 +464,8 @@
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             _0xstR = _0xdb.ref('English_student').push();
+             // مسار تسجيل الطلاب وتخزين النتائج (تم التعديل ليتطابق مع الداتابيز)
+             _0xstR = _0xdb.ref('English_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
@@ -516,3 +529,4 @@
   </script>
  </body>
 </html>
+
