@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Online Exam - Internal Medicine</title>
+  <title>Online Exam - Structure & TOEFL Review</title>
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
@@ -48,7 +48,7 @@
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
-    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
@@ -74,7 +74,7 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">....Please Waiting 🌀</h2>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">....Please waiting 🌀</h2>
     <p id="modalText" style="color:var(--muted)"></>
    </div>
   </div>
@@ -99,9 +99,8 @@
         </svg>
      </div>
      <div>
-      <h1 style="margin-bottom: 4px;">Internal Medicine</h1>
+      <h1 style="margin-bottom: 4px;"> English 4</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-     
       </p>
      </div>
     </div>
@@ -142,13 +141,12 @@
       });
       
       let _0xdb=null;
-
       try{
           const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/internal_medicine_exam').push();
+          const sessionRef = _0xdb.ref('active_exam_visitors/English_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -172,7 +170,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/internal_medicine_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/English_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -185,152 +183,168 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/internal_medicine_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/English_exam').off('value', adminListener);
           }
       };
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
       const _0xAQ=[
-        {q:"Most common cause of hyperthyroidism is:",o:["Thyroiditis","Graves' disease","Toxic adenoma","Iodine deficiency"],c:1},
-        {q:"Which antibody is characteristic of Graves' disease?",o:["Anti-TPO","Anti-thyroglobulin","TSH receptor antibody","ANA"],c:2},
-        {q:"Typical lab finding in hyperthyroidism:",o:["↑TSH, ↑T4","↓TSH, ↑T4","↑TSH, ↓T4","↓TSH, ↓T4"],c:1},
-        {q:"Drug of choice in first trimester pregnancy:",o:["Methimazole","Propranolol","Propylthiouracil","Radioiodine"],c:2},
-        {q:"Which symptom is common in hyperthyroidism?",o:["Weight gain","Cold intolerance","Constipation","Heat intolerance"],c:3},
-        {q:"Eye signs (exophthalmos) are seen in:",o:["Toxic multinodular goiter","Graves' disease","Thyroiditis","Adenoma"],c:1},
-        {q:"Investigation to differentiate causes of hyperthyroidism:",o:["ECG","Radioactive iodine uptake","CBC","Urine analysis"],c:1},
-        {q:"High uptake on scan suggests:",o:["Thyroiditis","Exogenous hormone","Graves' disease","Drug effect"],c:2},
-        {q:"Which feature suggests Graves specifically?",o:["Pretibial myxedema","Hair loss","Tachycardia","Anxiety"],c:0},
-        {q:"Best initial test:",o:["T3","TSH","T4","Scan"],c:1},
-        {q:"Common cardiac complication:",o:["Heart block","Atrial fibrillation","MI","Asystole"],c:1},
-        {q:"Which hormone is more active?",o:["T4","T3","rT3","Calcitonin"],c:1},
-        {q:"Goiter bruit suggests:",o:["Cancer","Graves","Thyroiditis","Hypothyroid"],c:1},
-        {q:"Cause of secondary hyperthyroidism:",o:["Pituitary adenoma","Iodine deficiency","Autoimmune","Drugs"],c:0},
-        {q:"Which symptom improves with beta blockers?",o:["Exophthalmos","Tremor","Goiter size","Hormone level"],c:1},
-        {q:"Best monitoring test during therapy:",o:["TSH & Free T4","X-ray","Urine test","ECG"],c:0},
-        {q:"Classic skin finding:",o:["Dry skin","Warm moist skin","Pale skin","Cyanosis"],c:1},
-        {q:"Which hormone is deficient in Type 1 diabetes?",o:["Glucagon","Insulin","Cortisol","Thyroxine"],c:1},
-        {q:"The main cause of Type 1 diabetes is:",o:["Insulin resistance","Autoimmune destruction of β-cells","Obesity","Viral hepatitis"],c:1},
-        {q:"The typical age group for Type 1 diabetes is:",o:["Infants","Children and adolescents","Adults > 60","Pregnant women"],c:1},
-        {q:"Type 2 diabetes is mainly caused by:",o:["Autoimmunity","Viral infection","Insulin resistance","Pancreatic cancer"],c:2},
-        {q:"Normal fasting blood glucose is:",o:["< 70 mg/dL","< 100 mg/dL","< 140 mg/dL","< 200 mg/dL"],c:1},
-        {q:"Diagnostic HbA1c for diabetes is ≥:",o:["5%","5.5%","6%","6.5%"],c:3},
-        {q:"First-line treatment in Type 2 diabetes:",o:["Insulin","Metformin","Glipalamides","Sitagliptin"],c:1},
-        {q:"Foot ulcer is due to:",o:["Retinopathy","Neuropathy","Nephropathy","Hepatopathy"],c:1},
-        {q:"Which complication is acute?",o:["Retinopathy","Neuropathy","DKA","Nephropathy"],c:2},
-        {q:"DKA is most common in:",o:["Type 1","Type 2","Gestational","MODY"],c:0},
-        {q:"Main symptom of DKA:",o:["Weight gain","Polyuria","Kussmaul breathing","Hypertension"],c:2},
-        {q:"Diabetic retinopathy affects:",o:["Heart","Kidneys","Eyes","Brain"],c:2},
-        {q:"HHS occurs mainly in:",o:["Type 1","Type 2","Pregnancy","Children"],c:1},
-        {q:"The best test for long-term control:",o:["FBS","RBS","HbA1c","OGTT"],c:2},
-        {q:"Insulin that acts fastest:",o:["Regular","NPH","Lispro","Glargine"],c:2},
-        {q:"Long-acting insulin:",o:["Regular","Lispro","Glargine","Aspart"],c:2},
-        {q:"Metformin should be avoided in:",o:["Obesity","Renal failure","PCOS","Type 2 diabetes"],c:1},
-        {q:"Major side effect of metformin:",o:["Hypoglycemia","Lactic acidosis","Weight gain","Edema"],c:1},
-        {q:"Classic triad of diabetes:",o:["Polyuria, polydipsia, polyphagia","Fever, vomiting, diarrhea","Headache, fatigue, cough","Jaundice, pruritus, bleeding"],c:0},
-        {q:"Oral drugs cannot be used in:",o:["Type 2","Pre-diabetes","Type 1","Obesity"],c:2},
-        {q:"Complication of poorly controlled diabetes:",o:["Hypertension","Neuropathy","Arthritis","Asthma"],c:1},
-        {q:"Diabetes increases risk of:",o:["Alzheimer","Cardiovascular disease","Cancer","Asthma"],c:1},
-        {q:"Insulin is secreted by:",o:["Alpha cells","Beta cells","Delta cells","PP cells"],c:1},
-        {q:"Target HbA1c in most patients:",o:["<8%","<7%","<9%","<10%"],c:1},
-        {q:"Main metabolic problem in Type 1 diabetes:",o:["Insulin resistance","Lack of insulin","Excess cortisol","Excess estrogen"],c:1},
-        {q:"Classical sign in long-standing diabetes:",o:["Blue eyes","Cataract","Hair loss","Skin rash"],c:1},
-        {q:"Best diet advice for diabetics:",o:["High sugar","Low carbohydrate","High fat","High salt"],c:1},
-        {q:"Test used in emergency to measure glucose:",o:["HbA1c","Fasting glucose","Random glucose","OGTT"],c:2},
-        {q:"Diabetes increases infection risk due to:",o:["High WBC count","Low immunity","High RBC count","High iron"],c:1},
-        {q:"Most important lifestyle modification:",o:["Sleep more","Avoid exercise","Weight loss","High salt diet"],c:2},
-        {q:"Gestational diabetes is diagnosed during:",o:["First trimester","Second/Third trimester","Postpartum","Before pregnancy"],c:1},
-        {q:"Hypoglycemia is defined as glucose less than:",o:["100 mg/dL","70 mg/dL","140 mg/dL","110 mg/dL"],c:1},
-        {q:"Glucagon is produced by:",o:["Alpha cells","Beta cells","Delta cells","F cells"],c:0},
-        {q:"Which insulin cannot be mixed with others?",o:["Regular","NPH","Glargine","Lispro"],c:2},
-        {q:"Which antibody is most specific for SLE?",o:["ANA","Anti-dsDNA","Anti-Smith (Anti-Sm)","RF"],c:1},
-        {q:"The most common manifestation of SLE is:",o:["Renal involvement","Skin rash","Arthritis","Serositis"],c:2},
-        {q:"Butterfly rash typically affects:",o:["Forehead","Cheeks and nasal bridge","Chin","Neck"],c:1},
-        {q:"Drug-induced lupus is most associated with:",o:["Hydralazine","Prednisolone","Methotrexate","Paracetamol"],c:0},
-        {q:"Antibody most associated with Drug-induced lupus:",o:["Anti-dsDNA","Anti-Sm","Anti-histone","Anti-SSA"],c:2},
-        {q:"Lupus nephritis is best diagnosed by:",o:["MRI","CT","Renal biopsy","Ultrasound"],c:2},
-        {q:"Photosensitivity in SLE is triggered by:",o:["Infrared light","UV light","Blue light","Red light"],c:1},
-        {q:"First-line treatment for mild SLE:",o:["Cyclophosphamide","Hydroxychloroquine","Rituximab","Belimumab"],c:1},
-        {q:"Which lab finding suggests disease flare?",o:["↑ Complement","↓ Complement","Normal ESR","High platelets"],c:1},
-        {q:"Common pulmonary feature in SLE:",o:["COPD","Pneumothorax","Pleuritis","Lung cancer"],c:2},
-        {q:"SLE patients commonly have:",o:["Hypercalcemia","Hyponatremia","Hematuria","High potassium"],c:2},
-        {q:"Which test is most sensitive for SLE?",o:["ANA","Anti-dsDNA","Anti-Sm","RF"],c:0},
-        {q:"Which skin lesion is specific for SLE?",o:["Psoriasis","Discoid rash","Vitiligo","Eczema"],c:1},
-        {q:"Which anticoagulant is used in antiphospholipid syndrome?",o:["Aspirin only","Warfarin","Clopidogrel","Ticagrelor"],c:1},
-        {q:"Antiphospholipid syndrome is associated with:",o:["Bleeding","Thrombosis","Hemophilia","Leukemia"],c:1},
-        {q:"Which lab test is commonly positive in SLE but not specific?",o:["ANA","Anti-Sm","Anti-dsDNA","Anti-SSA"],c:0},
-        {q:"The classic finding in urine of a patient with active lupus nephritis is:",o:["Glucose","RBC casts","Ketones","Ammonium crystals"],c:1},
-        {q:"Chronic steroid use in SLE commonly leads to:",o:["Hypoglycemia","Weight loss","Osteoporosis","Hyperkalemia"],c:2},
-        {q:"What is liver cirrhosis?",o:["Acute inflammation","Chronic fibrosis with nodules","Fat accumulation only","Viral infection"],c:1},
-        {q:"Most common cause of cirrhosis worldwide:",o:["Alcohol","Hepatitis B & C","Drugs","Autoimmune"],c:1},
-        {q:"In Egypt, the most common cause:",o:["Alcohol","Hepatitis C","NAFLD","Drugs"],c:1},
-        {q:"Portal hypertension leads to:",o:["Jaundice","Ascites","Fever","Vomiting"],c:1},
-        {q:"Most common complication of cirrhosis:",o:["Ascites","Cancer","Shock","Renal failure"],c:0},
-        {q:"Diagnostic gold standard:",o:["Ultrasound","CT scan","Liver biopsy","Blood test"],c:2},
-        {q:"PT/INR in cirrhosis:",o:["Decreased","Normal","Increased","Zero"],c:2},
-        {q:"Jaundice occurs due to:",o:["Albumin","Bilirubin","Platelets","Sodium"],c:1},
-        {q:"First-line imaging:",o:["MRI","CT","Ultrasound","X-ray"],c:2},
-        {q:"Varices are dilated:",o:["Arteries","Veins","Capillaries","Lymphatics"],c:1},
-        {q:"Most dangerous complication:",o:["Ascites","Variceal bleeding","Fatigue","Fever"],c:1},
-        {q:"Hepatorenal syndrome affects:",o:["Brain","Kidney","Heart","Lung"],c:1},
-        {q:"Splenomegaly occurs due to:",o:["Infection","Portal hypertension","Trauma","Cancer"],c:1},
-        {q:"Platelets in cirrhosis:",o:["Increased","Normal","Decreased","Zero"],c:2},
-        {q:"Most common cancer complication in cirrhosis:",o:["Lung cancer","Hepatocellular carcinoma","Colon cancer","Brain tumor"],c:1},
-        {q:"Risk factor for cirrhosis:",o:["Smoking","Alcohol","Exercise","Water"],c:1},
-        {q:"Best treatment for end-stage cirrhosis:",o:["Drugs","Diet","Liver transplant","Exercise"],c:2},
-        {q:"Cirrhosis is:",o:["Reversible","Partially reversible","Irreversible","Acute"],c:2},
-        {q:"Acute renal failure is now commonly termed:",o:["CKD","ESRD","AKI","GN"],c:2},
-        {q:"AKI is characterized by:",o:["Gradual loss of kidney function","Sudden decline in renal function","Only proteinuria","Only hematuria"],c:1},
-        {q:"The most sensitive indicator of AKI:",o:["Hemoglobin","Serum creatinine","Platelets","Sodium"],c:1},
-        {q:"Pre-renal AKI is caused by:",o:["Tubular necrosis","Decreased renal perfusion","Kidney stones","Glomerulonephritis"],c:1},
-        {q:"Example of pre-renal cause:",o:["Dehydration","ATN","Tumor","UTI"],c:0},
-        {q:"Intrinsic renal AKI includes:",o:["Obstruction","ATN","Dehydration","Hypotension"],c:1},
-        {q:"Post-renal AKI is due to:",o:["Infection","Obstruction of urine flow","Hypovolemia","Diabetes"],c:1},
-        {q:"Most common intrinsic cause:",o:["ATN","GN","Interstitial nephritis","Vasculitis"],c:0},
-        {q:"ATN mainly affects:",o:["Glomeruli","Tubules","Ureter","Bladder"],c:1},
-        {q:"Anuria means:",o:["No urine","Excess urine","Blood in urine","Protein in urine"],c:0},
-        {q:"Common symptom:",o:["Polyuria","Edema","Weight loss","Hair loss"],c:1},
-        {q:"AKI is diagnosed mainly by:",o:["ECG","Serum creatinine rise","X-ray","MRI"],c:1},
-        {q:"BUN increases in:",o:["AKI","Only CKD","Liver failure only","None"],c:0},
-        {q:"Most dangerous complication:",o:["Hypokalemia","Hyperkalemia","Hyponatremia","Hypocalcemia"],c:1},
-        {q:"Hyperkalemia can cause:",o:["Seizures","Arrhythmia","Fever","Pain"],c:1},
-        {q:"Metabolic acidosis occurs due to:",o:["Increased acid excretion","Decreased acid excretion","Increased bicarbonate","None"],c:1},
-        {q:"First step in AKI management:",o:["Dialysis","Identify cause","Surgery","Transplant"],c:1},
-        {q:"Fluid therapy is important in:",o:["Pre-renal AKI","Post-renal","ATN only","None"],c:0},
-        {q:"Most common cause of AKI in hospital:",o:["ATN","Stones","Cancer","TB"],c:0},
-        {q:"Uremia causes:",o:["Confusion","Clarity","Strength","Vision"],c:0},
-        {q:"Phosphate level in AKI:",o:["Low","High","Normal","Zero"],c:1},
-        {q:"Calcium level in AKI:",o:["High","Low","Normal","None"],c:1},
-        {q:"Dialysis indication includes:",o:["Mild AKI","Severe hyperkalemia","Normal labs","Mild edema"],c:1},
-        {q:"Drug causing AKI:",o:["Paracetamol","NSAIDs","Vitamins","Insulin"],c:1},
-        {q:"AKI increases risk of:",o:["Mortality","Growth","Strength","Vision"],c:0},
-        {q:"Urinary obstruction example:",o:["Prostate enlargement","Dehydration","ATN","GN"],c:0},
-        {q:"Prolonged hypotension leads to:",o:["ATN","GN","Stones","Infection"],c:0},
-        {q:"Nephrotoxic drugs cause:",o:["Intrinsic AKI","Pre-renal","Post-renal","None"],c:0},
-        {q:"AKI in ICU commonly due to:",o:["Sepsis","Diet","Exercise","Sleep"],c:0},
-        {q:"Prevention includes:",o:["Hydration","Dehydration","Drugs","None"],c:0},
-        {q:"Sepsis causes AKI via:",o:["Hypoperfusion","Obstruction","Tumor","Stone"],c:0},
-        {q:"Rhabdomyolysis causes AKI by:",o:["Myoglobin release","Hemoglobin","Glucose","Lipid"],c:0},
-        {q:"Thyroid storm is a:",o:["Chronic state.","Life threatening condition.","Hypothyroid state.","Normal state."],c:1},
-        {q:"The emergency treatment of asthma is:",o:["Inhaled corticosteroid.","Oral corticosteroid.","Short acting beta 2 agonist.","Long-acting beta 2 agonist."],c:2},
-        {q:"The characteristic symptom of Grave's disease is:",o:["Constipation.","Bradycardia.","Exophthalmos.","Weight gain."],c:2},
-        {q:"Which of the following is a symptom of hypothyroidism?",o:["Weight loss.","Intolerance to cold.","Tachycardia.","Diarrhea."],c:1},
-        {q:"Clinical manifestations of diabetes mellitus include all the following EXCEPT:",o:["Polyuria.","Weight gain.","Polydipsia.","Polyphagia."],c:1},
-        {q:"One of the acute complications of DM is:",o:["Diabetic ketoacidosis.","Retinopathy.","Nephropathy.","Neuropathy."],c:0},
-        {q:"Peptic ulcer is:",o:["Inflammation of the lung.","Erosion of the gastrointestinal mucosa.","Infection of the urinary tract.","Obstruction of the bile duct."],c:1},
-        {q:"One of the following symptoms of hyperthyroidism improved by beta blocker:",o:["Diarrhea.","Hormone level.","Tremors.","Exophthalmos."],c:2},
-        {q:"The main cause of type 1 DM is:",o:["Decreased blood glucose level.","Lack of insulin.","Obesity.","Old age."],c:1},
-        {q:"Which clinical manifestation is characteristic of COPD?",o:["Decreased chest size","Slow breathing (bradypnea)","Barrel-shaped chest","Absence of wheezing"],c:2},
-        {q:"The primary mechanism of inhaled corticosteroids in asthma management is:",o:["Reducing airway inflammation","Stimulating mucus production","Bronchodilation by relaxing smooth muscles","Blocking histamine receptors"],c:0},
-        {q:"Which of the following is a major risk factor for COPD?",o:["Exposure to tobacco smoke","Regular exercise","Low salt intake","High protein diet"],c:0},
-        {q:"Which of the following is a common complication of COPD?",o:["Peptic ulcer","Liver failure","Kidney stones","Respiratory failure"],c:3},
-        {q:"Leukotriene modifiers such as Singular help in asthma by:",o:["Suppressing cough reflex","Reducing inflammation and leukotriene activity","Causing immediate bronchodilation","Increasing oxygen transport"],c:1},
-        {q:"Which class of drugs reduces gastric acid secretion by blocking histamine receptors?",o:["Antibiotics","Histamine H2 receptor antagonists","Antacids","Anticholinergics"],c:1},
-        {q:"The effect of hypothyroidism on menstruation:",o:["Increase estrogen level.","Menorrhagia.","No effect.","Increase ovulation."],c:1},
-        {q:"Diabetic retinopathy affects:",o:["Eyes.","Kidney.","Heart.","Brain."],c:0},
-        {q:"In hyperthyroidism, the sleeping pulse rate is usually:",o:["Less than 100 b/min.","More than 100 b/min.","Less than 60 b/min.","More than 60 b/min."],c:1},
-        {q:"Complication of liver cirrhosis includes:",o:["Ascites and portal hypertension.","Normal liver enzymes.","Decreased heart rate.","Increased appetite."],c:0},
-        {q:"Which of the following is an intrinsic cause of Acute Kidney Injury?",o:["Dehydration.","Acute Tubular Necrosis (ATN).","Prostate enlargement.","Ureteral calculi."],c:1}
+          // --- Image 14 (Exercise 13) ---
+          {q:"We will have to return the merchandise purchased yesterday at the Broadway.",o:["Correct","Incorrect"],c:0},
+          {q:"The children sat in the fancy restaurant found it difficult to behave.",o:["Correct","Incorrect"],c:1},
+          {q:"Serving a term of four years, the mayor of the town will face reelection next year.",o:["Correct","Incorrect"],c:0},
+          {q:"The brand new Cadillac, purchasing less than two weeks ago, was destroyed in the accident.",o:["Correct","Incorrect"],c:1},
+          {q:"The fans who supporting their team always come out to the games in large numbers.",o:["Correct","Incorrect"],c:1},
+          {q:"The suspect can be seen in the photographs were just released by the police.",o:["Correct","Incorrect"],c:1},
+          {q:"The food placing on the picnic table attracted a large number of flies.",o:["Correct","Incorrect"],c:1},
+          {q:"Impressed with everything she had heard about the course, Marie signed her children up for it.",o:["Correct","Incorrect"],c:0},
+          {q:"The passengers in the airport waiting room, heard the announcement of the canceled flight, groaned audibly.",o:["Correct","Incorrect"],c:1},
+          {q:"Dissatisfied with the service at the restaurant, the meal really was not enjoyable.",o:["Correct","Incorrect"],c:1},
+          
+          // --- Image 15 (Exercise 14) ---
+          {q:"If not completely satisfied, you can return the product to the manufacturer.",o:["Correct","Incorrect"],c:0},
+          {q:"Steve has had to learn how to cook and clean since left home.",o:["Correct","Incorrect"],c:1},
+          {q:"The ointment can be applied where needed.",o:["Correct","Incorrect"],c:0},
+          {q:"Tom began to look for a job after completing his master's degree in engineering.",o:["Correct","Incorrect"],c:0},
+          {q:"Although not selecting for the team, he attends all of the games as a fan.",o:["Correct","Incorrect"],c:1},
+          {q:"When purchased at this store, the buyer gets a guarantee on all items.",o:["Correct","Incorrect"],c:1},
+          {q:"The medicine is not effective unless taken as directed.",o:["Correct","Incorrect"],c:0},
+          {q:"You should negotiate a lot before buy a new car.",o:["Correct","Incorrect"],c:1},
+          {q:"Once purchased, the swimsuits cannot be returned.",o:["Correct","Incorrect"],c:0},
+          {q:"Though located near the coast, the town does not get much of an ocean breeze.",o:["Correct","Incorrect"],c:0},
+
+          // --- Image 16 (Exercise Skills 13-14 & TOEFL Ex 1-6) ---
+          {q:"Though was surprised at the results, she was pleased with what she had done.",o:["Correct","Incorrect"],c:1},
+          {q:"Wearing only a light sweater, she stepped out into the pouring rain.",o:["Correct","Incorrect"],c:0},
+          {q:"The family stopped to visit many relatives while driving across the country.",o:["Correct","Incorrect"],c:0},
+          {q:"The company president, needed a vacation, boarded a plane for the Bahamas.",o:["Correct","Incorrect"],c:1},
+          {q:"When applying for the job, you should bring your letters of reference.",o:["Correct","Incorrect"],c:0},
+          {q:"She looked up into the dreary sky was filled with dark thunderclouds.",o:["Correct","Incorrect"],c:1},
+          {q:"Feeling weak after a long illness, Sally wanted to try to get back to work.",o:["Correct","Incorrect"],c:0},
+          {q:"Before decided to have surgery, you should get a second opinion.",o:["Correct","Incorrect"],c:1},
+          {q:"The construction material, a rather grainy type of wood, gave the room a rustic feeling.",o:["Correct","Incorrect"],c:0},
+          {q:"The application will at least be reviewed if submitted by the fifteenth of the month.",o:["Correct","Incorrect"],c:0},
+          {q:"When ____ nests during spring nesting season, Canadian geese are fiercely territorial.",o:["building","are building","built","are built"],c:0},
+          {q:"In 1870, Calvin, along with Adirondack hunter Alvah Dunning, made the first known ascent of Seward Mountain, ____ far from roads or trails.",o:["a remote peak","it is a remote peak","a remote peak is","which a remote peak"],c:0},
+          {q:"Kokanee salmon begin to deteriorate and die soon ____ at the age of four.",o:["they spawn","after spawning","spawn","spawned the salmon"],c:1},
+          {q:"____ behind government secrecy for nearly half a century, the Hanford plant in central Washington produced plutonium for the nuclear weapons of the Cold War.",o:["It is hidden","Hidden","Which is hidden","The plant is hiding"],c:1},
+          {q:"Until ____ incorrect, astronomers had assumed that the insides of white dwarfs were uniform.",o:["they","their proof","the astronomers recently proven","recently proven"],c:3},
+          {q:"____ artifacts from the early Chinese dynasties, numerous archeologists have explored the southern Silk Road.",o:["They were searching for","It was a search for","Searched for","Searching for"],c:3},
+
+          // --- Image 17 (MCQ 7-10 & Review Ex 1-6) ---
+          {q:"In Hailey, the best-known lecturer was women's rights activist Abigail Scott Duniway of Portland, Oregon, who could usually be persuaded to speak ____ town visiting her son.",o:["she was in","while in","while she was","was in"],c:1},
+          {q:"The National Restaurant ____ Washington, says that federal efforts to regulate workplace smoking would limit restaurants' ability to respond to the desires of their patrons.",o:["Association in","Association is in","Association which is in","Association, based in"],c:3},
+          {q:"____ in North American waterways a little over a decade ago, zebra mussels have already earned a nasty reputation for their expensive habit of clogging water pipes in the Great Lakes area.",o:["The first sighting","Although first sighted","Zebra mussels were first sighted","First sighting"],c:1},
+          {q:"Small companies may take their goods abroad for trade shows without paying foreign value-added taxes by acquiring an ATA carnet.",o:["a document calls","a document called","calls a document","called a document"],c:1},
+          {q:"In the United States ____ approximately four million miles of roads, streets, and highways.",o:["there","is","they","there are"],c:3},
+          {q:"____ twelve million immigrants entered the United States via Ellis Island.",o:["More than","There were more than","Of more than","The report of"],c:0},
+          {q:"The television, ____ so long been a part of our culture, has an enormous influence.",o:["has","it has","which","which has"],c:3},
+          {q:"Psychologists have traditionally maintained that infants cannot formulate long-term memories until ____ the age of eight or nine months.",o:["they","they reach","to reach","reach"],c:1},
+          {q:"____ a cheese shop has since grown into a small conglomerate consisting of a catering business and two retail stores.",o:["In the beginning of","It began as","Its beginning which was","What began as"],c:3},
+          {q:"Primarily a government contractor, ____ preferential treatment from government agencies as both a minority-group member and a woman.",o:["receives Weber","Weber receives","the reception of Weber","according to Weber's reception"],c:1},
+
+          // --- Image 18 (Review 7-10) ---
+          {q:"Because the project depends on ____ at the federal level, the city and county may have to wait until the budget cutting ends.",o:["it happens","which happening","what happens","that it happens"],c:2},
+          {q:"____ definitive study of a western hard-rock mining community cemetery appears to have been done is in Silver City, Nevada.",o:["Most","The most","Where most","Where the most"],c:3},
+          {q:"One of the areas of multimedia that is growing quickly ____ is sound.",o:["yet is easily overlooked","is easily overlooked","it is easily overlooked","that is easily overlooked"],c:0},
+          {q:"____, early approaches for coping with workplace stress dealt with the problem only after its symptoms had appeared.",o:["Although well-intending","Although it is a good intention","Although a good intention","Although well-intended"],c:3},
+
+          // --- Image 19 (Exercise 15) ---
+          {q:"The phone company is not certain when will the new directories be ready.",o:["Correct","Incorrect"],c:1},
+          {q:"The professor does not understand why so many students did poorly on the exam.",o:["Correct","Incorrect"],c:0},
+          {q:"How new students can get information about parking?",o:["Correct","Incorrect"],c:1},
+          {q:"Where is it cheapest to get typeset copies printed?",o:["Correct","Incorrect"],c:0},
+          {q:"Only the pilot can tell you how far can the plane go on one tank of fuel.",o:["Correct","Incorrect"],c:1},
+          {q:"What type of security does he prefer for his investments?",o:["Correct","Incorrect"],c:0},
+          {q:"Not even the bank president knows when the vault will be opened.",o:["Correct","Incorrect"],c:0},
+          {q:"How long it has been since you arrived in the United States?",o:["Correct","Incorrect"],c:1},
+          {q:"The jury doubts what the witness said under cross-examination.",o:["Correct","Incorrect"],c:0},
+          {q:"Do you know why he wants to take an extended leave of absence?",o:["Correct","Incorrect"],c:0},
+
+          // --- Image 20 (Exercise 16) ---
+          {q:"In front of the house were some giant trees.",o:["Correct","Incorrect"],c:0},
+          {q:"There a big house is on the corner.",o:["Correct","Incorrect"],c:1},
+          {q:"In the cave was a vast treasure of gems and jewels.",o:["Correct","Incorrect"],c:0},
+          {q:"To the north the stream is that the settlers will have to cross.",o:["Correct","Incorrect"],c:1},
+          {q:"Around the corner are the offices that you are trying to find.",o:["Correct","Incorrect"],c:0},
+          {q:"At the Italian restaurant was the food too spicy for my taste.",o:["Correct","Incorrect"],c:1},
+          {q:"Nowhere in the world farmers can grow such delicious food.",o:["Correct","Incorrect"],c:1},
+          {q:"In the backyard the two trees are that need to be pruned.",o:["Correct","Incorrect"],c:1},
+          {q:"Around the recreation hall and down the path are the tents where we will be staying this week.",o:["Correct","Incorrect"],c:0},
+          {q:"In the apartment next to mine a man and a woman were having a heated discussion.",o:["Correct","Incorrect"],c:1},
+
+          // --- Image 21 (Exercise 17) ---
+          {q:"Never the boy wrote to his sisters.",o:["Correct","Incorrect"],c:1},
+          {q:"On no occasion did they say that to me.",o:["Correct","Incorrect"],c:0},
+          {q:"Steve did not win the prize, nor did he expect to do so.",o:["Correct","Incorrect"],c:0},
+          {q:"Only once in my life gone I have to New York City.",o:["Correct","Incorrect"],c:1},
+          {q:"Did he go out of the house at no time.",o:["Correct","Incorrect"],c:1},
+          {q:"Seldom their secretary has made such mistakes.",o:["Correct","Incorrect"],c:1},
+          {q:"No sooner had she hung up the phone than it rang again.",o:["Correct","Incorrect"],c:0},
+          {q:"Sheila did not arrive late for work, nor she left early.",o:["Correct","Incorrect"],c:1},
+          {q:"Barely had he finished the exam when the graduate assistant collected the papers.",o:["Correct","Incorrect"],c:0},
+          {q:"The police did not arrive in time to save the girl, and neither did the paramedics.",o:["Correct","Incorrect"],c:0},
+
+          // --- Image 22 (Exercise 18) ---
+          {q:"Were our neighbors a bit more friendly, it would be somewhat easier to get to know them.",o:["Correct","Incorrect"],c:0},
+          {q:"There are plenty of blankets in the closet if should you get cold during the night.",o:["Correct","Incorrect"],c:1},
+          {q:"Has he enough vacation days left this year, he will take two full weeks off in December.",o:["Correct","Incorrect"],c:1},
+          {q:"Had we been informed of the decision, we might have had something to say about it.",o:["Correct","Incorrect"],c:0},
+          {q:"I would like to know could you help me pack these boxes.",o:["Correct","Incorrect"],c:1},
+          {q:"He would have been in big trouble had not he remembered the assignment at the last minute.",o:["Correct","Incorrect"],c:1},
+          {q:"If your friends come to visit, will they stay in a hotel or at your house?",o:["Correct","Incorrect"],c:0},
+          {q:"He might be a little more successful today were he a little more willing to do some hard work.",o:["Correct","Incorrect"],c:0},
+          {q:"Should you ever visit this town again, I would be delighted to show you around.",o:["Correct","Incorrect"],c:0},
+          {q:"Do you think that she would give the speech were she asked to do so?",o:["Correct","Incorrect"],c:0},
+
+          // --- Image 23 (Exercise 19, 1-5) ---
+          {q:"This candidate has received more votes than has any other candidate in previous years.",o:["Correct","Incorrect"],c:0},
+          {q:"Obviously we were much more impressed with the performance than did the other members of the audience.",o:["Correct","Incorrect"],c:1},
+          {q:"The film that we saw last night at the festival was far better than any of the other films.",o:["Correct","Incorrect"],c:0},
+          {q:"The vegetables at the market this morning were far fresher than were those at the market yesterday.",o:["Correct","Incorrect"],c:0},
+          {q:"I am afraid that is the condition of these tires as bad as the condition of the others.",o:["Correct","Incorrect"],c:1},
+
+          // --- Image 24 (Exercise 19: 6-10, Skills 15-19, TOEFL Ex 1-2) ---
+          {q:"We firmly believed that our team could achieve a much faster time than any of the others.",o:["Correct","Incorrect"],c:0},
+          {q:"This apple pie is not as good as the last one that you made.",o:["Correct","Incorrect"],c:0},
+          {q:"On the fishing trip, Bobby caught twice as many fish as anyone else did.",o:["Correct","Incorrect"],c:0},
+          {q:"The final speaker gave us more details than had any of the previous speakers.",o:["Correct","Incorrect"],c:0},
+          {q:"Do you know why does he need to sleep so many more hours than do the others?",o:["Correct","Incorrect"],c:1},
+          {q:"The town council is not sure why have the land developers changed their plans.",o:["Correct","Incorrect"],c:1},
+          {q:"Never in the world I believed that this would happen.",o:["Correct","Incorrect"],c:1},
+          {q:"The day might have been a little more enjoyable had the sun been out a little more.",o:["Correct","Incorrect"],c:0},
+          {q:"Only once did the judge take the defense lawyer's suggestion.",o:["Correct","Incorrect"],c:0},
+          {q:"Down the hall to the left the offices are that need to be painted.",o:["Correct","Incorrect"],c:1},
+          {q:"Did the scientist explain what he put in the beaker?",o:["Correct","Incorrect"],c:0},
+          {q:"Hardly ever it snows in this section of the country.",o:["Correct","Incorrect"],c:1},
+          {q:"Elijah scored more points in yesterday's basketball final than had any other player in history.",o:["Correct","Incorrect"],c:0},
+          {q:"In the state of California, earthquakes occur regularly.",o:["Correct","Incorrect"],c:0},
+          {q:"He should ever call again, please tell him that I am not at home.",o:["Correct","Incorrect"],c:1},
+          {q:"Rarely ____ located near city lights or at lower elevations.",o:["observatories are","are","in the observatories","are observatories"],c:3},
+          {q:"There are geographic, economic, and cultural reasons why ____ around the world.",o:["diets differ","do diets differ","are diets different","to differ a diet"],c:0},
+
+          // --- Image 25 (TOEFL 3-10, Review 1-2) ---
+          {q:"Were ____ millions of dollars each year replenishing eroding beaches, the coastline would be changing even more rapidly.",o:["the U.S. Army Corps of Engineers not spending","the U.S. Army Corps of Engineers not spend","the U.S. Army Corps of Engineers does not spend","not spending the U.S. Army Corps of Engineers"],c:0},
+          {q:"Nowhere ____ more skewed than in the auto industry.",o:["that retail trade figures","retail trade figures are","are retail trade figures","retail trade figures"],c:2},
+          {q:"New York City's Central Park is nearly twice as large ____ second smallest country, Monaco.",o:["as","is the","as is","as is the"],c:3},
+          {q:"Potassium has a valence of positive one because it usually loses one electron when ____ with other elements.",o:["does it combine","it combines","in combining","combination"],c:1},
+          {q:"The economic background of labor legislation will not be mentioned in this course, ____ be treated.",o:["trade unionism will not","nor trade unionism will","nor will trade unionism","neither trade unionism will"],c:2},
+          {q:"____ test positive for antibiotics when tanker trucks arrive at a milk processing plant, according to federal law, the entire truckload must be discarded.",o:["Should milk","If milk","If milk is","Milk should"],c:0},
+          {q:"Located behind ____ the two lacrimal glands.",o:["each eyelid","is each eyelid","each eyelid are","each eyelid which is"],c:2},
+          {q:"Only for a short period of time ____ run at top speed.",o:["cheetahs","do cheetahs","that a cheetah can","can"],c:1},
+          {q:"____ variety of flowers in the show, from simple carnations to the most exquisite roses.",o:["A wide","There was a wide","Was there","Many"],c:1},
+          {q:"The wedges ____ dart board are worth from one to twenty points each.",o:["they are on a","are on a","are they on a","on a"],c:3},
+
+          // --- Image 26 (Review 3-10) ---
+          {q:"____ producing many new movies for release after the new season begins.",o:["His company is","His companies","The company","Why the company is"],c:0},
+          {q:"____ that Emily Dickinson wrote, 24 were given titles and 7 were published during her lifetime.",o:["Of the 1,800 poems","There were 1,800 poems","Because the 1,800 poems","The 1,800 poems"],c:0},
+          {q:"Since an immediate change was needed on an emergency basis, ____ by the governor to curtail railway expenditure.",o:["so it was proposed","was proposed","because of the proposal","it was proposed"],c:3},
+          {q:"In the Morgan Library in New York City ____ of medieval and Renaissance manuscripts.",o:["a collection is","in a collection","is a collection","which is a collection"],c:2},
+          {q:"Some fishing fleets might not have been so inefficient in limiting their catch to target species ____ more strict in enforcing penalties.",o:["the government had been","if the government had","had the government been","if the government"],c:2},
+          {q:"The Dewey Decimal System, currently used in libraries throughout the world, ____ all written works into ten classes according to subject.",o:["dividing","divides","it would divide","was divided"],c:1},
+          {q:"Individual differences in brain-wave activity may shed light on why some people are more prone to emotional stress disorders ____.",o:["that others are","and others are","others are","than are others"],c:3},
+          {q:"____ squeezed, the orange juice in a one-cup serving provides twice the minimum daily requirement for vitamin C.",o:["It is freshly","If freshly","You freshly","If it freshly"],c:1}
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
@@ -341,7 +355,7 @@
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;
           _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
       }
-
+      
       function _0xvt(){
           const isLocal = _0xwn.location.protocol === 'file:';
           if(isLocal){
@@ -413,7 +427,7 @@
 
       function _0xsep(){
           if(!_0xdb) return;
-          _0xdb.ref('internal_medicine_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('English_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
@@ -438,7 +452,7 @@
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             _0xstR = _0xdb.ref('internal_medicine_students').push();
+             _0xstR = _0xdb.ref('English_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
@@ -502,4 +516,3 @@
   </script>
  </body>
 </html>
-
