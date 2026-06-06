@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Online Exam - Communication</title>
+  <title>Online Exam - بنك الباطنة 2026</title>
   <style>
     :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
     *{box-sizing:border-box}
@@ -48,8 +48,9 @@
     .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
     .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
     
-    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
+    .countdown-timer { font-size: 32px; font-weight: bold; font-family: monospace; color: var(--glow2); margin-top: 15px; display: none;}
     
     #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
     .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
@@ -74,8 +75,9 @@
 
   <div id="overlay">
    <div class="modal" id="modalContent">
-    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please Waiting 🛡️</h2>
-    <p id="modalText" style="color:var(--muted)"></p>
+    <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">جاري فحص الحماية... 🛡️</h2>
+    <p id="modalText" style="color:var(--muted)">يرجى الانتظار لحين تأكيد الجلسة...</p>
+    <div id="countdownTimer" class="countdown-timer">00:00:00</div>
    </div>
   </div>
 
@@ -99,9 +101,9 @@
         </svg>
      </div>
      <div>
-      <h1 style="margin-bottom: 4px;">Communication Exam</h1>
+      <h1 style="margin-bottom: 4px;">بنك الباطنة 2026</h1>
       <p class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);">
-       
+        إعداد ليدر المجال
       </p>
      </div>
     </div>
@@ -127,6 +129,12 @@
 
   <script>
   (function(){
+      // ==========================================
+      // إعدادات الجدولة (تعديل حسب رغبتك)
+      // ==========================================
+      // حط هنا وقت الامتحان بالملي ثانية. لو مش عاوز جدولة من الكود خليها 0
+      const EXAM_SCHEDULED_TIME = 0; 
+      
       const _0xdc=document,_0xwn=window;
       
       _0xdc.addEventListener('\x63\x6f\x6e\x74\x65\x78\x74\x6d\x65\x6e\x75',e=>e.preventDefault());
@@ -142,12 +150,19 @@
       });
       
       let _0xdb=null;
+      let serverTimeOffset = 0;
+      let scheduledTimerInterval = null;
+
       try{
           const _0xcfg={apiKey:"AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",authDomain:"ahmedexams-3e267.firebaseapp.com",databaseURL:"https://ahmedexams-3e267-default-rtdb.firebaseio.com",projectId:"ahmedexams-3e267",storageBucket:"ahmedexams-3e267.firebasestorage.app",messagingSenderId:"151411096023",appId:"1:151411096023:web:fcabb7c60c6e433b1bf392"};
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/communication_exam').push();
+          _0xdb.ref(".info/serverTimeOffset").on("value", function(snap) {
+              serverTimeOffset = snap.val() || 0;
+          });
+
+          const sessionRef = _0xdb.ref('active_exam_visitors/internal_medicine_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -171,7 +186,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/communication_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/internal_medicine_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -184,75 +199,181 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/communication_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/internal_medicine_exam').off('value', adminListener);
           }
       };
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
       const _0xAQ=[
-        {q:"Paraphrasing the speaker's words helps ensure understanding in communication.",o:["True","False"],c:0},
-        {q:"What is the primary purpose of feedback in communication?",o:["To add unnecessary information","To interrupt the sender","To confirm that the message was understood"],c:2},
-        {q:"Which element of communication is responsible for conveying the message?",o:["Sender","Receiver","Channel"],c:2},
-        {q:"Which of the following is the BEST example of effective feedback in communication?",o:["Summarizing what the sender said and asking clarifying questions","Ignoring the message","Nodding without saying anything"],c:0},
-        {q:"What is the role of the encoder in communication?",o:["To initiate and encode the message","To receive the message","To act as a barrier"],c:0},
-        {q:"Eye contact is an important aspect of non-verbal communication.",o:["True","False"],c:0},
-        {q:"Which of the following is NOT an element of the communication process?",o:["Sender","Distraction","Message"],c:1},
-        {q:"An aggressive communication style is the best way to resolve conflicts.",o:["True","False"],c:1},
-        {q:"Active listening involves both hearing and understanding the speaker's message.",o:["True","False"],c:0},
-        {q:"Communication is effective only when the message is sent, not when it is understood.",o:["True","False"],c:1},
-        {q:"Resistance to change in healthcare is often due to:",o:["Fear of the unknown and lack of communication","Lack of interest in improvement","Desire to leave the profession","Nurses' inability to learn new skills"],c:0},
-        {q:"In the working phase of the nurse-patient relationship, the nurse primarily:",o:["Explains hospital policies","Observes the patient without interaction","Ends the professional relationship","Implements care plans and helps patients achieve goals"],c:3},
-        {q:"Which is the first step in conflict resolution?",o:["Choose a punishment","Report to HR","Assign blame","Identify the source of the conflict"],c:3},
-        {q:"In a multidisciplinary team, conflict is MOST likely to arise when:",o:["There is overlap or ambiguity in responsibilities","Roles are clearly defined","There is open communication"],c:0},
-        {q:"What is the most constructive approach to handling interpersonal conflict among nurses?",o:["Address the conflict directly using open communication and active listening","Avoid the conflict to maintain harmony","Report immediately to support management","Ignore it unless it affects patient care"],c:0},
-        {q:"The long-term effects of unresolved conflict among staff may include:",o:["Increased turnover and decreased morale","More patient-centered care","Improved critical thinking","Higher teamwork performance"],c:0},
-        {q:"Which behavior best demonstrates empathy in a nurse-patient interaction?",o:["Repeating medical facts to the patient","Telling the patient not to cry","Saying: \"I understand this must be difficult for you.\"","Quickly redirecting the conversation to a positive topic"],c:2},
-        {q:"A nurse feels undervalued by a senior colleague and becomes withdrawn. What conflict style is being used?",o:["Collaborating","Competing","Accommodating","Avoiding"],c:3},
-        {q:"Paraphrasing the speaker's words helps ensure understanding in communication.",o:["True","False"],c:0},
-        {q:"A nurse manager wants to implement a new documentation system. To reduce resistance, the best strategy is to:",o:["Avoid discussing it with staff","Enforce the change immediately","Criticize the old system publicly","Involve staff in planning and provide training"],c:3},
-        {q:"Which phase of the nurse-patient relationship focuses on building trust and setting expectations?",o:["Orientation phase","Working phase","Disengagement phase","Termination phase"],c:0},
-        {q:"What is the first step in the communication process?",o:["Receiving the message","Encoding the message","Decoding the message","Providing feedback"],c:1},
-        {q:"Which of the following is NOT an element of communication?",o:["Sender","Channel","Environment","Feedback"],c:2},
-        {q:"What is the primary purpose of communication?",o:["To manipulate others","To exchange information and ideas","To create misunderstandings","To avoid interactions"],c:1},
-        {q:"Which factor can hinder communication at the message level?",o:["Clear language","Unclear and confusing words","Active listening","Eye contact"],c:1},
-        {q:"What is the main purpose of feedback in communication?",o:["To create confusion","To confirm understanding","To spread rumors","To ignore the receiver"],c:1},
-        {q:"What does the context of communication represent?",o:["The sender","The receiver","The channel","The environment or situation where communication takes place"],c:3},
-        {q:"Who initiates interpersonal communication?",o:["The receiver","The sender","The channel","The feedback"],c:1},
-        {q:"What are the means of conveying messages through visual, auditory, and tactile senses?",o:["Noise","Channel of communication","Encoding","Decoding"],c:1},
-        {q:"Communication as a two-way process includes:",o:["Only the sender's role in encoding the message.","Participants merely decoding the information received.","Participants exchanging information and creating shared meaning.","A lack of mutual understanding between participants."],c:2},
-        {q:"\"Completion\" in the context of verbal and non-verbal communication means that non-verbal cues can add to the meaning of verbal words?",o:["True","False"],c:0},
-        {q:"Which type of communication utilizes media to reach a large audience?",o:["Interpersonal communication","Group communication","Mass communication","Intrapersonal communication"],c:2},
-        {q:"What is the term used to describe the study of body movements?",o:["Proxemics","Semantics","Kinesics","Appearance"],c:2},
-        {q:"What is an example of an external barrier to effective listening?",o:["Emotional stress","Bias towards the speaker","Loud background noise","Lack of motivation"],c:2},
-        {q:"Which skill involves questioning the speaker in a supportive way for more information?",o:["Reflecting feelings","Summarizing","Probing","Paraphrasing"],c:2},
-        {q:"Which of the following represents the largest portion of communication?",o:["Verbal communication","Non-verbal communication","Written communication","Digital communication"],c:1},
-        {q:"Proxemics includes the understanding of?",o:["Body language cues","Facial expressions","The distance people maintain in social interactions","Tone of voice"],c:2},
-        {q:"Which of the following is the primary goal of therapeutic communication?",o:["To provide the client with medical advice","To establish a helping relationship based on trust and understanding","To share personal stories to create a bond","To direct the client's decisions"],c:1},
-        {q:"\"Active listening\" in therapeutic communication involves?",o:["Formulating your response while the client is still speaking","Primarily focusing on your own internal thoughts and feelings","Concentrating fully on what the client is saying both verbally and nonverbally","Interrupting the client to clarify points quickly"],c:2},
-        {q:"Conflict only occurs over tangible elements such as resources?",o:["True","False"],c:1},
-        {q:"Do all conflicts inherently have negative outcomes?",o:["True","False"],c:1},
-        {q:"In an \"Approach-Approach\" conflict a person faces one option with both positive and negative aspects?",o:["True","False"],c:1},
-        {q:"During the continuing or working phase the patients problems are?",o:["The primary focus of the discussions","Managed and dealt with directly by the patient","Examined and resolved within the therapeutic relationship","Maintained and dealt with directly by the nurse"],c:1},
-        {q:"Helping the patient to problem-solve is a key activity of the orientation phase?",o:["True","False"],c:1},
-        {q:"Developing trust and rapport is a primary goal of the initiating orientation phase?",o:["True","False"],c:0},
-        {q:"The contract established in the orientation phase is a rigid document that cannot be modified?",o:["True","False"],c:1},
-        {q:"During the termination phase the patient typically becomes more independent and less reliant on the nurse?",o:["True","False"],c:0},
-        {q:"What should the nurse do if the client uses a hearing aid?",o:["Ignore it as it doesn't affect communication","Ensure that it is working correctly","Ask the client to remove it while speaking","Try to adjust the device settings themselves"],c:1},
-        {q:"Speech and language deficits always result in a complete inability to communicate?",o:["True","False"],c:1},
-        {q:"Receptive aphasia primarily affects the client's ability to produce speech fluently?",o:["True","False"],c:1},
-        {q:"Which of the following is NOT a recommended strategy for clients with speech and language deficits?",o:["Use long complex conversations","Allow extra time for delays in processing","Encourage the client to practice speech","Praise communication efforts"],c:0}
+        {q:"Most common cause of hyperthyroidism is:",o:["Thyroiditis","Graves' disease","Toxic adenoma","Iodine deficiency"],c:1},
+        {q:"Which antibody is characteristic of Graves' disease?",o:["Anti-TPO","Anti-thyroglobulin","TSH receptor antibody","ANA"],c:2},
+        {q:"Typical lab finding in hyperthyroidism:",o:["↑TSH, ↑T4","↓TSH, ↑T4","↑TSH, ↓T4","↓TSH, ↓T4"],c:1},
+        {q:"Drug of choice in first trimester pregnancy:",o:["Methimazole","Propranolol","Propylthiouracil","Radioiodine"],c:2},
+        {q:"Which symptom is common in hyperthyroidism?",o:["Weight gain","Cold intolerance","Constipation","Heat intolerance"],c:3},
+        {q:"Eye signs (exophthalmos) are seen in:",o:["Toxic multinodular goiter","Graves' disease","Thyroiditis","Adenoma"],c:1},
+        {q:"Investigation to differentiate causes of hyperthyroidism:",o:["ECG","Radioactive iodine uptake","CBC","Urine analysis"],c:1},
+        {q:"High uptake on scan suggests:",o:["Thyroiditis","Exogenous hormone","Graves' disease","Drug effect"],c:2},
+        {q:"Which feature suggests Graves specifically?",o:["Pretibial myxedema","Hair loss","Tachycardia","Anxiety"],c:0},
+        {q:"Best initial test:",o:["T3","TSH","T4","Scan"],c:1},
+        {q:"Common cardiac complication:",o:["Heart block","Atrial fibrillation","MI","Asystole"],c:1},
+        {q:"Which hormone is more active?",o:["T4","T3","rT3","Calcitonin"],c:1},
+        {q:"Goiter bruit suggests:",o:["Cancer","Graves","Thyroiditis","Hypothyroid"],c:1},
+        {q:"Cause of secondary hyperthyroidism:",o:["Pituitary adenoma","Iodine deficiency","Autoimmune","Drugs"],c:0},
+        {q:"Which symptom improves with beta blockers?",o:["Exophthalmos","Tremor","Goiter size","Hormone level"],c:1},
+        {q:"Best monitoring test during therapy:",o:["TSH & Free T4","X-ray","Urine test","ECG"],c:0},
+        {q:"Classic skin finding:",o:["Dry skin","Warm moist skin","Pale skin","Cyanosis"],c:1},
+        {q:"Which hormone is deficient in Type 1 diabetes?",o:["Glucagon","Insulin","Cortisol","Thyroxine"],c:1},
+        {q:"The main cause of Type 1 diabetes is:",o:["Insulin resistance","Autoimmune destruction of β-cells","Obesity","Viral hepatitis"],c:1},
+        {q:"The typical age group for Type 1 diabetes is:",o:["Infants","Children and adolescents","Adults > 60","Pregnant women"],c:1},
+        {q:"Type 2 diabetes is mainly caused by:",o:["Autoimmunity","Viral infection","Insulin resistance","Pancreatic cancer"],c:2},
+        {q:"Normal fasting blood glucose is:",o:["< 70 mg/dL","< 100 mg/dL","< 140 mg/dL","< 200 mg/dL"],c:1},
+        {q:"Diagnostic HbA1c for diabetes is ≥:",o:["5%","5.5%","6%","6.5%"],c:3},
+        {q:"First-line treatment in Type 2 diabetes:",o:["Insulin","Metformin","Glipalamides","Sitagliptin"],c:1},
+        {q:"Foot ulcer is due to:",o:["Retinopathy","Neuropathy","Nephropathy","Hepatopathy"],c:1},
+        {q:"Which complication is acute?",o:["Retinopathy","Neuropathy","DKA","Nephropathy"],c:2},
+        {q:"DKA is most common in:",o:["Type 1","Type 2","Gestational","MODY"],c:0},
+        {q:"Main symptom of DKA:",o:["Weight gain","Polyuria","Kussmaul breathing","Hypertension"],c:2},
+        {q:"Diabetic retinopathy affects:",o:["Heart","Kidneys","Eyes","Brain"],c:2},
+        {q:"HHS occurs mainly in:",o:["Type 1","Type 2","Pregnancy","Children"],c:1},
+        {q:"The best test for long-term control:",o:["FBS","RBS","HbA1c","OGTT"],c:2},
+        {q:"Insulin that acts fastest:",o:["Regular","NPH","Lispro","Glargine"],c:2},
+        {q:"Long-acting insulin:",o:["Regular","Lispro","Glargine","Aspart"],c:2},
+        {q:"Metformin should be avoided in:",o:["Obesity","Renal failure","PCOS","Type 2 diabetes"],c:1},
+        {q:"Major side effect of metformin:",o:["Hypoglycemia","Lactic acidosis","Weight gain","Edema"],c:1},
+        {q:"Classic triad of diabetes:",o:["Polyuria, polydipsia, polyphagia","Fever, vomiting, diarrhea","Headache, fatigue, cough","Jaundice, pruritus, bleeding"],c:0},
+        {q:"Oral drugs cannot be used in:",o:["Type 2","Pre-diabetes","Type 1","Obesity"],c:2},
+        {q:"Complication of poorly controlled diabetes:",o:["Hypertension","Neuropathy","Arthritis","Asthma"],c:1},
+        {q:"Diabetes increases risk of:",o:["Alzheimer","Cardiovascular disease","Cancer","Asthma"],c:1},
+        {q:"Insulin is secreted by:",o:["Alpha cells","Beta cells","Delta cells","PP cells"],c:1},
+        {q:"Target HbA1c in most patients:",o:["<8%","<7%","<9%","<10%"],c:1},
+        {q:"Main metabolic problem in Type 1 diabetes:",o:["Insulin resistance","Lack of insulin","Excess cortisol","Excess estrogen"],c:1},
+        {q:"Classical sign in long-standing diabetes:",o:["Blue eyes","Cataract","Hair loss","Skin rash"],c:1},
+        {q:"Best diet advice for diabetics:",o:["High sugar","Low carbohydrate","High fat","High salt"],c:1},
+        {q:"Test used in emergency to measure glucose:",o:["HbA1c","Fasting glucose","Random glucose","OGTT"],c:2},
+        {q:"Diabetes increases infection risk due to:",o:["High WBC count","Low immunity","High RBC count","High iron"],c:1},
+        {q:"Most important lifestyle modification:",o:["Sleep more","Avoid exercise","Weight loss","High salt diet"],c:2},
+        {q:"Which antibody is most specific for SLE?",o:["ANA","Anti-dsDNA","Anti-Smith (Anti-Sm)","RF"],c:1},
+        {q:"The most common manifestation of SLE is:",o:["Renal involvement","Skin rash","Arthritis","Serositis"],c:2},
+        {q:"Butterfly rash typically affects:",o:["Forehead","Cheeks and nasal bridge","Chin","Neck"],c:1},
+        {q:"Drug-induced lupus is most associated with:",o:["Hydralazine","Prednisolone","Methotrexate","Paracetamol"],c:0},
+        {q:"Antibody most associated with Drug-induced lupus:",o:["Anti-dsDNA","Anti-Sm","Anti-histone","Anti-SSA"],c:2},
+        {q:"Lupus nephritis is best diagnosed by:",o:["MRI","CT","Renal biopsy","Ultrasound"],c:2},
+        {q:"Photosensitivity in SLE is triggered by:",o:["Infrared light","UV light","Blue light","Red light"],c:1},
+        {q:"First-line treatment for mild SLE:",o:["Cyclophosphamide","Hydroxychloroquine","Rituximab","Belimumab"],c:1},
+        {q:"Which lab finding suggests disease flare?",o:["↑ Complement","↓ Complement","Normal ESR","High platelets"],c:1},
+        {q:"Common pulmonary feature in SLE:",o:["COPD","Pneumothorax","Pleuritis","Lung cancer"],c:2},
+        {q:"SLE patients commonly have:",o:["Hypercalcemia","Hyponatremia","Hematuria","High potassium"],c:2},
+        {q:"Which test is most sensitive for SLE?",o:["ANA","Anti-dsDNA","Anti-Sm","RF"],c:0},
+        {q:"Which skin lesion is specific for SLE?",o:["Psoriasis","Discoid rash","Vitiligo","Eczema"],c:1},
+        {q:"Which anticoagulant is used in antiphospholipid syndrome?",o:["Aspirin only","Warfarin","Clopidogrel","Ticagrelor"],c:1},
+        {q:"Antiphospholipid syndrome is associated with:",o:["Bleeding","Thrombosis","Hemophilia","Leukemia"],c:1},
+        {q:"Which lab test is commonly positive in SLE but not specific?",o:["ANA","Anti-Sm","Anti-dsDNA","Anti-SSA"],c:0},
+        {q:"The classic finding in urine of a patient with active lupus nephritis is:",o:["Glucose","RBC casts","Ketones","Ammonium crystals"],c:1},
+        {q:"Chronic steroid use in SLE commonly leads to:",o:["Hypoglycemia","Weight loss","Osteoporosis","Hyperkalemia"],c:2},
+        {q:"What is liver cirrhosis?",o:["Acute inflammation","Chronic fibrosis with nodules","Fat accumulation only","Viral infection"],c:1},
+        {q:"Most common cause of cirrhosis worldwide:",o:["Alcohol","Hepatitis B & C","Drugs","Autoimmune"],c:1},
+        {q:"In Egypt, the most common cause:",o:["Alcohol","Hepatitis C","NAFLD","Drugs"],c:1},
+        {q:"Portal hypertension leads to:",o:["Jaundice","Ascites","Fever","Vomiting"],c:1},
+        {q:"Most common complication of cirrhosis:",o:["Ascites","Cancer","Shock","Renal failure"],c:0},
+        {q:"Diagnostic gold standard:",o:["Ultrasound","CT scan","Liver biopsy","Blood test"],c:2},
+        {q:"PT/INR in cirrhosis:",o:["Decreased","Normal","Increased","Zero"],c:2},
+        {q:"Jaundice occurs due to:",o:["Albumin","Bilirubin","Platelets","Sodium"],c:1},
+        {q:"First-line imaging:",o:["MRI","CT","Ultrasound","X-ray"],c:2},
+        {q:"Varices are dilated:",o:["Arteries","Veins","Capillaries","Lymphatics"],c:1},
+        {q:"Most dangerous complication:",o:["Ascites","Variceal bleeding","Fatigue","Fever"],c:1},
+        {q:"Hepatorenal syndrome affects:",o:["Brain","Kidney","Heart","Lung"],c:1},
+        {q:"Splenomegaly occurs due to:",o:["Infection","Portal hypertension","Trauma","Cancer"],c:1},
+        {q:"Platelets in cirrhosis:",o:["Increased","Normal","Decreased","Zero"],c:2},
+        {q:"Most common cancer complication in cirrhosis:",o:["Lung cancer","Hepatocellular carcinoma","Colon cancer","Brain tumor"],c:1},
+        {q:"Risk factor for cirrhosis:",o:["Smoking","Alcohol","Exercise","Water"],c:1},
+        {q:"Best treatment for end-stage cirrhosis:",o:["Drugs","Diet","Liver transplant","Exercise"],c:2},
+        {q:"Cirrhosis is:",o:["Reversible","Partially reversible","Irreversible","Acute"],c:2},
+        {q:"Acute renal failure is now commonly termed:",o:["CKD","ESRD","AKI","GN"],c:2},
+        {q:"AKI is characterized by:",o:["Gradual loss of kidney function","Sudden decline in renal function","Only proteinuria","Only hematuria"],c:1},
+        {q:"The most sensitive indicator of AKI:",o:["Hemoglobin","Serum creatinine","Platelets","Sodium"],c:1},
+        {q:"Pre-renal AKI is caused by:",o:["Tubular necrosis","Decreased renal perfusion","Kidney stones","Glomerulonephritis"],c:1},
+        {q:"Example of pre-renal cause:",o:["Dehydration","ATN","Tumor","UTI"],c:0},
+        {q:"Intrinsic renal AKI includes:",o:["Obstruction","ATN","Dehydration","Hypotension"],c:1},
+        {q:"Post-renal AKI is due to:",o:["Infection","Obstruction of urine flow","Hypovolemia","Diabetes"],c:1},
+        {q:"Most common intrinsic cause:",o:["ATN","GN","Interstitial nephritis","Vasculitis"],c:0},
+        {q:"ATN mainly affects:",o:["Glomeruli","Tubules","Ureter","Bladder"],c:1},
+        {q:"Anuria means:",o:["No urine","Excess urine","Blood in urine","Protein in urine"],c:0},
+        {q:"Common symptom:",o:["Polyuria","Edema","Weight loss","Hair loss"],c:1},
+        {q:"AKI is diagnosed mainly by:",o:["ECG","Serum creatinine rise","X-ray","MRI"],c:1},
+        {q:"BUN increases in:",o:["AKI","Only CKD","Liver failure only","None"],c:0},
+        {q:"Most dangerous complication:",o:["Hypokalemia","Hyperkalemia","Hyponatremia","Hypocalcemia"],c:1},
+        {q:"Hyperkalemia can cause:",o:["Seizures","Arrhythmia","Fever","Pain"],c:1},
+        {q:"Metabolic acidosis occurs due to:",o:["Increased acid excretion","Decreased acid excretion","Increased bicarbonate","None"],c:1},
+        {q:"First step in AKI management:",o:["Dialysis","Identify cause","Surgery","Transplant"],c:1},
+        {q:"Fluid therapy is important in:",o:["Pre-renal AKI","Post-renal","ATN only","None"],c:0},
+        {q:"Most common cause of AKI in hospital:",o:["ATN","Stones","Cancer","TB"],c:0},
+        {q:"Uremia causes:",o:["Confusion","Clarity","Strength","Vision"],c:0},
+        {q:"Phosphate level in AKI:",o:["Low","High","Normal","Zero"],c:1},
+        {q:"Calcium level in AKI:",o:["High","Low","Normal","None"],c:1},
+        {q:"Dialysis indication includes:",o:["Mild AKI","Severe hyperkalemia","Normal labs","Mild edema"],c:1},
+        {q:"Drug causing AKI:",o:["Paracetamol","NSAIDs","Vitamins","Insulin"],c:1},
+        {q:"AKI increases risk of:",o:["Mortality","Growth","Strength","Vision"],c:0},
+        {q:"Urinary obstruction example:",o:["Prostate enlargement","Dehydration","ATN","GN"],c:0},
+        {q:"Prolonged hypotension leads to:",o:["ATN","GN","Stones","Infection"],c:0},
+        {q:"Nephrotoxic drugs cause:",o:["Intrinsic AKI","Pre-renal","Post-renal","None"],c:0},
+        {q:"AKI in ICU commonly due to:",o:["Sepsis","Diet","Exercise","Sleep"],c:0},
+        {q:"Prevention includes:",o:["Hydration","Dehydration","Drugs","None"],c:0},
+        {q:"Sepsis causes AKI via:",o:["Hypoperfusion","Obstruction","Tumor","Stone"],c:0},
+        {q:"Rhabdomyolysis causes AKI by:",o:["Myoglobin release","Hemoglobin","Glucose","Lipid"],c:0},
+        {q:"AKI may lead to:",o:["CKD","Liver failure","Asthma","Stroke"],c:0},
+        {q:"Fluid overload causes:",o:["Edema","Hypotension","Dry skin","Weakness"],c:0},
+        {q:"Main aim of treatment:",o:["Cure instantly","Support kidney","Remove kidney","Ignore"],c:1},
+        {q:"Hyponatremia in AKI due to:",o:["Dilution","Loss","Gain","None"],c:0}
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
       
-      function _0xerr(_0x1,_0x2){
+      function _0xerr(_0x1,_0x2, showTimer = false){
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").innerText=_0x1;
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x69\x74\x6c\x65").style.color = "var(--bad)";
           _0xdc.getElementById("\x6d\x6f\x64\x61\x6c\x54\x65\x78\x74").innerText=_0x2;
           _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="flex";
+          
+          if(showTimer) {
+              _0xdc.getElementById("countdownTimer").style.display = "block";
+          } else {
+              _0xdc.getElementById("countdownTimer").style.display = "none";
+          }
       }
       
+      function getTrueServerTime() {
+          return Date.now() + serverTimeOffset;
+      }
+      
+      function checkScheduledTime() {
+          if (EXAM_SCHEDULED_TIME === 0) return true;
+          const now = getTrueServerTime();
+          const timeLeft = EXAM_SCHEDULED_TIME - now;
+          
+          if (timeLeft <= 0) {
+              if (scheduledTimerInterval) clearInterval(scheduledTimerInterval);
+              return true;
+          } else {
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              const timerStr = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+              
+              _0xerr("الامتحان مجدول ⏱️", "لم يحن موعد فتح الامتحان بعد. سيتم الفتح تلقائياً.", true);
+              _0xdc.getElementById("countdownTimer").innerText = timerStr;
+              
+              if (!scheduledTimerInterval) {
+                  scheduledTimerInterval = setInterval(function() {
+                      if (checkScheduledTime()) {
+                          _0xsep();
+                      }
+                  }, 1000);
+              }
+              return false;
+          }
+      }
+
       function _0xvt(){
           const isLocal = _0xwn.location.protocol === 'file:';
           if(isLocal){
@@ -323,14 +444,17 @@
       }
 
       function _0xsep(){
+          if (!checkScheduledTime()) return;
+          
           if(!_0xdb) return;
-          _0xdb.ref('communication_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('internal_medicine_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
-                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0642 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
+                  _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
                   _0xdc.getElementById("\x6f\x76\x65\x72\x6c\x61\x79").style.display="none";
                   _0xdc.getElementById("mainHeader").style.display="block";
                   _0xdc.getElementById("\x65\x78\x61\x6d\x57\x72\x61\x70").style.display="block";
+                  if(scheduledTimerInterval) clearInterval(scheduledTimerInterval);
                   _0xia();
                   if(!_0xini){_0xini=!0;_0xiss();}
               }
@@ -344,12 +468,12 @@
           _0xrnd();
       }
       
-      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0stst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
+      _0xwn.speakText=function(_0xT){try{if('speechSynthesis'in _0xwn){_0xwn.speechSynthesis.cancel();const _0xU=new SpeechSynthesisUtterance(_0xT);_0xU.lang='\x65\x6e\x2d\x55\x53';_0xU.rate=0.7;_0xwn.speechSynthesis.speak(_0xU);}else{_0xstst("\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645");}}catch(e){}};
       
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             _0xstR = _0xdb.ref('communication_students').push();
+             _0xstR = _0xdb.ref('internal_medicine_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
@@ -413,4 +537,3 @@
   </script>
  </body>
 </html>
-
