@@ -194,6 +194,10 @@
         let logoutTimer;
         let adminListener = null;
 
+        // متغيرات المراقبة للجلسة الواحدة (Single Session)
+        window.sessionListenerRef = null;
+        window.sessionListenerCallback = null;
+
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
@@ -208,6 +212,23 @@
                 });
             }
         } catch(e) { console.error("Firebase Error"); }
+
+        // مراقبة جلسة المستخدم لحظر الدخول المزدوج
+        function monitorSession(username) {
+            const localToken = sessionStorage.getItem('session_token');
+            if (!localToken || !database) return;
+
+            window.sessionListenerRef = database.ref('credentials/' + username + '/session_token');
+            window.sessionListenerCallback = window.sessionListenerRef.on('value', function(snap) {
+                const remoteToken = snap.val();
+                if (remoteToken && remoteToken !== localToken) {
+                    showSmartAlert("⚠️ تم تسجيل الدخول من جهاز أو متصفح آخر. تم إنهاء جلستك هنا.");
+                    setTimeout(() => {
+                        window.handleLogout();
+                    }, 2500);
+                }
+            });
+        }
 
         // 4. Alerts and Admin Panel
         let alertTimeout;
@@ -291,8 +312,11 @@
             
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
-                // ⏱️ تحديث: زيادة وقت الجلسة إلى 30 دقيقة عند تحميل الصفحة
                 if (timePassed < 30 * 60 * 1000) {
+                    // تفعيل المراقبة عند عمل ريفريش للصفحة
+                    const sName = sessionStorage.getItem('student_name');
+                    if (sName) monitorSession(sName);
+
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
                     document.getElementById('examsSection').style.display = 'block';
@@ -526,13 +550,22 @@
             btn.innerHTML = 'تم بنجاح ✓'; 
             btn.disabled = false; 
             
+            // إنشاء توكن الجلسة وتخزينه محلياً وفي قاعدة البيانات
+            const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+            sessionStorage.setItem('session_token', sessionToken);
+            
+            if(database) {
+                database.ref('credentials/' + uVal + '/session_token').set(sessionToken).then(() => {
+                    monitorSession(uVal);
+                });
+            }
+
             sessionStorage.setItem('student_auth', 'verified'); 
             sessionStorage.setItem('student_name', uVal); 
             sessionStorage.setItem('login_time', Date.now()); 
             history.pushState({page: 'exams'}, 'Exams', '#exams');
             
             clearTimeout(logoutTimer); 
-            // ⏱️ تحديث: ضبط توقيت انتهاء الجلسة عند تسجيل الدخول الجديد إلى 30 دقيقة
             logoutTimer = setTimeout(() => { 
                 alert("انتهت الجلسة."); 
                 window.handleLogout(); 
@@ -587,7 +620,6 @@
             });
         }
 
-        // 📚 تحديث دالة الـ PDF لمعالجة الروابط وحل مشكلة الحظر والتضمين
         window.openPdfModal = function(url) {
             let fUrl = url;
             if (url.includes('drive.google.com')) {
@@ -645,6 +677,13 @@
         }
 
         window.handleLogout = function() {
+            // إيقاف مراقب الجلسة
+            if (window.sessionListenerRef && window.sessionListenerCallback) {
+                window.sessionListenerRef.off('value', window.sessionListenerCallback);
+                window.sessionListenerRef = null;
+                window.sessionListenerCallback = null;
+            }
+
             sessionStorage.clear(); 
             clearTimeout(logoutTimer); 
             document.getElementById('username').value = localStorage.getItem('saved_username_v2') || ''; 
@@ -675,7 +714,6 @@
         window.addEventListener('pageshow', function(e) { 
             if (e.persisted) { 
                 const lt = sessionStorage.getItem('login_time'); 
-                // ⏱️ تحديث: تعديل شرط التحقق عند الرجوع للمنصة ليطابق الـ 30 دقيقة (1800000 مللي ثانية)
                 if (lt && (Date.now() - parseInt(lt) > 1800000)) window.handleLogout(); 
             } 
         });
@@ -684,4 +722,3 @@
     </script>
 </body>
 </html>
-
