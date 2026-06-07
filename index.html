@@ -99,7 +99,6 @@
 <body>
     <div id="smartToast" class="smart-toast"><span id="smartToastMsg" style="line-height: 1.5;"></span></div>
     
-    <!-- شاشة الطرد الإجبارية -->
     <div id="kickOverlay">
         <div class="kick-card">
             <svg style="margin-bottom:20px; color:var(--bad);" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -208,7 +207,6 @@
         let logoutTimer;
         let adminListener = null;
 
-        // متغيرات المراقبة (تم استخدام مسار active_tickets لضمان الكتابة)
         window.sessionListenerRef = null;
         window.sessionListenerCallback = null;
         window.isKickedOut = false;
@@ -228,7 +226,6 @@
             }
         } catch(e) { console.error("Firebase Error"); }
 
-        // المراقبة عبر مسار active_tickets/sessions/username (مضمون 100%)
         function monitorSession(username) {
             const localToken = sessionStorage.getItem('session_token');
             if (!localToken || !database) return;
@@ -417,19 +414,68 @@
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            let deviceStr = "جهاز غير معروف", platformStr = navigator.platform || "غير معروف", screenRes = window.screen.width + "x" + window.screen.height;
+            // 🛠️ التحديث الجديد: استخدام User-Agent Client Hints للحصول على الموديل الدقيق 
+            let deviceStr = "جهاز غير معروف";
+            let osStr = "";
+            let browserStr = "";
+            let screenRes = window.screen.width + "x" + window.screen.height;
+
             try { 
+                // 1. تقنية User-Agent Client Hints (دقيقة جداً للأندرويد الحديث)
+                if (navigator.userAgentData) {
+                    let isMobile = navigator.userAgentData.mobile;
+                    try {
+                        const highEntropyData = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
+                        if (highEntropyData.model) deviceStr = highEntropyData.model;
+                        else if (isMobile) deviceStr = "هاتف محمول";
+                        
+                        if (highEntropyData.platform) osStr = highEntropyData.platform + (highEntropyData.platformVersion ? " " + highEntropyData.platformVersion : "");
+                    } catch(e) {}
+                }
+                
+                // 2. استخدام مكتبة UAParser كبديل (للآيفون والكمبيوتر والموبايلات القديمة)
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
-                
-                if (res.os.name && res.browser.name) {
-                    deviceStr = res.os.name + " (" + res.browser.name + ")";
-                } else if (res.device.vendor && res.device.model) {
-                    deviceStr = res.device.vendor + " " + res.device.model;
-                } else if (res.os.name) {
-                    deviceStr = res.os.name;
+                const ua = navigator.userAgent;
+
+                if (deviceStr === "جهاز غير معروف" || deviceStr === "هاتف محمول") {
+                    if (res.device.vendor && res.device.model) {
+                        deviceStr = res.device.vendor + " " + res.device.model;
+                    } else if (res.device.model) {
+                        deviceStr = res.device.model;
+                    } else {
+                        // استخراج متقدم من متصفحات الأندرويد اللي بتخبي اسمها
+                        if (/iPhone/i.test(ua)) deviceStr = "Apple iPhone";
+                        else if (/iPad/i.test(ua)) deviceStr = "Apple iPad";
+                        else if (/Android/i.test(ua)) {
+                            let match = ua.match(/Android\s+[0-9\.]+(?:-[a-zA-Z0-9]+)?;\s+([^;)]+)\)/);
+                            if (match && match[1] && !match[1].includes("wv") && match[1].length < 30) {
+                                deviceStr = match[1].trim();
+                            } else deviceStr = "هاتف أندرويد";
+                        }
+                        else if (/Mac/i.test(ua)) deviceStr = "كمبيوتر Mac";
+                        else if (/Win/i.test(ua)) deviceStr = "كمبيوتر Windows";
+                    }
                 }
+
+                if (!osStr) {
+                    if (res.os.name) osStr = res.os.name + (res.os.version ? " " + res.os.version : "");
+                    else osStr = navigator.platform;
+                }
+
+                if (res.browser.name) {
+                    browserStr = res.browser.name + (res.browser.version ? " " + res.browser.version : "");
+                }
+
+                // تنظيف الأسماء (منع ظهور Linux armv81 بدل الأندرويد)
+                if (osStr.includes("Linux") || osStr.includes("armv81")) {
+                    let v = ua.match(/Android\s+([0-9\.]+)/);
+                    if (v) osStr = "Android " + v[1];
+                }
+
             } catch(e) {}
+
+            const finalOsBrowser = `${osStr || 'نظام غير معروف'} | ${browserStr || 'متصفح غير معروف'}`;
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
@@ -519,11 +565,11 @@
                 return; 
             }
 
-            const successMsg = `🟢 طالب سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            const successMsg = `🟢 طالب سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${finalOsBrowser}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
 
             if(database) {
                 database.ref('login_logs').push({ 
-                    username: username, device: deviceStr, platform: platformStr, screen: screenRes, location: loc, isp: isp, ip: ip, time: timeNow 
+                    username: username, device: deviceStr, platform: finalOsBrowser, screen: screenRes, location: loc, isp: isp, ip: ip, time: timeNow 
                 }).catch(e=>{});
             } 
             
@@ -580,7 +626,6 @@
             btn.innerHTML = 'تم بنجاح ✓'; 
             btn.disabled = false; 
             
-            // تسجيل التوكن في active_tickets المضمونة
             const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
             sessionStorage.setItem('session_token', sessionToken);
             
