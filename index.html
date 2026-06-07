@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://*.firebaseapp.com https://1.1.1.1 https://ipapi.co https://ipwho.is https://get.geojs.io https://api.telegram.org 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:; frame-src 'self' https://drive.google.com https://docs.google.com;">
     <meta http-equiv="X-Frame-Options" content="DENY">
 
-    <title>منصة الأختبارات</title>
+    <title>منصة الاختبارات</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
     
@@ -90,7 +90,6 @@
         .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.95); border: 1px solid rgba(239,68,68,0.6); box-shadow: 0 15px 40px rgba(239,68,68,0.3), inset 0 0 0 1px rgba(239,68,68,0.2); color: #fff; padding: 18px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 900; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
         .smart-toast.show { top: 30px; }
 
-        /* شاشة الحظر الإجبارية */
         #kickOverlay { display: none; position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .kick-card { background: var(--bg1); border: 2px solid var(--bad); padding: 40px 30px; border-radius: 24px; box-shadow: 0 0 50px rgba(239,68,68,0.2); width: 90%; max-width: 400px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -125,7 +124,7 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
             </div>
-            <h1>منصة الأختبارات</h1>
+            <h1>منصة الاختبارات</h1>
             <p id="headerSubtitle">أهلاً بك، يرجى تسجيل الدخول للبدء</p>
         </div>
         
@@ -414,68 +413,85 @@
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            // 🛠️ التحديث الجديد: استخدام User-Agent Client Hints للحصول على الموديل الدقيق 
+            // 🛠️ التحديث الجذري لقراءة بيانات الجهاز (فلترة وتدقيق ثلاثي المستويات)
             let deviceStr = "جهاز غير معروف";
-            let osStr = "";
-            let browserStr = "";
-            let screenRes = window.screen.width + "x" + window.screen.height;
+            let osStr = "نظام غير معروف";
+            let browserStr = "متصفح غير معروف";
+            let ua = navigator.userAgent || "";
 
+            // 1. استخدام مكتبة UAParser كأساس
             try { 
-                // 1. تقنية User-Agent Client Hints (دقيقة جداً للأندرويد الحديث)
-                if (navigator.userAgentData) {
-                    let isMobile = navigator.userAgentData.mobile;
-                    try {
-                        const highEntropyData = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
-                        if (highEntropyData.model) deviceStr = highEntropyData.model;
-                        else if (isMobile) deviceStr = "هاتف محمول";
-                        
-                        if (highEntropyData.platform) osStr = highEntropyData.platform + (highEntropyData.platformVersion ? " " + highEntropyData.platformVersion : "");
-                    } catch(e) {}
-                }
-                
-                // 2. استخدام مكتبة UAParser كبديل (للآيفون والكمبيوتر والموبايلات القديمة)
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
-                const ua = navigator.userAgent;
-
-                if (deviceStr === "جهاز غير معروف" || deviceStr === "هاتف محمول") {
-                    if (res.device.vendor && res.device.model) {
-                        deviceStr = res.device.vendor + " " + res.device.model;
-                    } else if (res.device.model) {
-                        deviceStr = res.device.model;
-                    } else {
-                        // استخراج متقدم من متصفحات الأندرويد اللي بتخبي اسمها
-                        if (/iPhone/i.test(ua)) deviceStr = "Apple iPhone";
-                        else if (/iPad/i.test(ua)) deviceStr = "Apple iPad";
-                        else if (/Android/i.test(ua)) {
-                            let match = ua.match(/Android\s+[0-9\.]+(?:-[a-zA-Z0-9]+)?;\s+([^;)]+)\)/);
-                            if (match && match[1] && !match[1].includes("wv") && match[1].length < 30) {
-                                deviceStr = match[1].trim();
-                            } else deviceStr = "هاتف أندرويد";
-                        }
-                        else if (/Mac/i.test(ua)) deviceStr = "كمبيوتر Mac";
-                        else if (/Win/i.test(ua)) deviceStr = "كمبيوتر Windows";
-                    }
+                
+                if (res.os.name) osStr = res.os.name + (res.os.version ? " " + res.os.version : "");
+                if (res.browser.name) browserStr = res.browser.name + (res.browser.version ? " " + res.browser.version : "");
+                if (res.device.model) {
+                    deviceStr = (res.device.vendor ? res.device.vendor + " " : "") + res.device.model;
                 }
-
-                if (!osStr) {
-                    if (res.os.name) osStr = res.os.name + (res.os.version ? " " + res.os.version : "");
-                    else osStr = navigator.platform;
-                }
-
-                if (res.browser.name) {
-                    browserStr = res.browser.name + (res.browser.version ? " " + res.browser.version : "");
-                }
-
-                // تنظيف الأسماء (منع ظهور Linux armv81 بدل الأندرويد)
-                if (osStr.includes("Linux") || osStr.includes("armv81")) {
-                    let v = ua.match(/Android\s+([0-9\.]+)/);
-                    if (v) osStr = "Android " + v[1];
-                }
-
             } catch(e) {}
 
-            const finalOsBrowser = `${osStr || 'نظام غير معروف'} | ${browserStr || 'متصفح غير معروف'}`;
+            // 2. استخدام تقنية Client Hints للأندرويد الحديث (تتخطى الحماية وتجيب الاسم الدقيق)
+            try {
+                if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                    const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
+                    if (hints.model) deviceStr = hints.model;
+                    if (hints.platform) {
+                        osStr = hints.platform + (hints.platformVersion ? " " + hints.platformVersion : "");
+                    }
+                }
+            } catch(e) {}
+
+            // 3. فلترة يدوية نهائية (لحل مشاكل حرف الـ K والمتصفحات المدمجة)
+            
+            // تصحيح أخطاء نظام التشغيل
+            if (!osStr || osStr === "نظام غير معروف" || osStr.includes("Linux") || osStr.includes("armv")) {
+                if (ua.includes("iPhone")) osStr = "iOS";
+                else if (ua.includes("iPad")) osStr = "iPadOS";
+                else if (ua.includes("Android")) {
+                    let m = ua.match(/Android\s+([0-9\.]+)/);
+                    osStr = m ? "Android " + m[1] : "Android";
+                } else if (ua.includes("Windows")) osStr = "Windows";
+                else if (ua.includes("Mac")) osStr = "MacOS";
+            }
+
+            // تصحيح أخطاء المتصفح (بالذات التطبيقات المدمجة)
+            if (!browserStr || browserStr === "متصفح غير معروف") {
+                if (ua.includes("FBAV") || ua.includes("FBAN")) browserStr = "Facebook App";
+                else if (ua.includes("Instagram")) browserStr = "Instagram App";
+                else if (ua.includes("Telegram")) browserStr = "Telegram App";
+                else if (ua.includes("SamsungBrowser")) browserStr = "Samsung Internet";
+                else if (ua.includes("Edg")) browserStr = "Edge";
+                else if (ua.includes("OPR") || ua.includes("Opera")) browserStr = "Opera";
+                else if (ua.includes("Firefox")) browserStr = "Firefox";
+                else if (ua.includes("Chrome")) browserStr = "Chrome";
+                else if (ua.includes("Safari") && !ua.includes("Chrome")) browserStr = "Safari";
+                else browserStr = "متصفح مدمج";
+            }
+
+            // تصحيح أخطاء الجهاز (حل مشكلة حرف الـ K)
+            if (!deviceStr || deviceStr === "جهاز غير معروف" || deviceStr === "K" || deviceStr.includes("Linux")) {
+                if (ua.includes("iPhone")) deviceStr = "Apple iPhone";
+                else if (ua.includes("iPad")) deviceStr = "Apple iPad";
+                else if (ua.includes("Windows")) deviceStr = "كمبيوتر Windows";
+                else if (ua.includes("Mac")) deviceStr = "كمبيوتر Mac";
+                else if (ua.includes("Android")) {
+                    // استخراج الموديل من الرابط القديم إذا فشل الباقي
+                    let match = ua.match(/Android[^;]+;\s*([^);]+)/);
+                    if (match && match[1]) {
+                        let cleanModel = match[1].trim().split(' Build')[0];
+                        if (cleanModel && cleanModel.length > 1 && cleanModel !== "K" && cleanModel !== "Linux") {
+                             deviceStr = cleanModel;
+                        } else {
+                             deviceStr = "هاتف أندرويد";
+                        }
+                    } else {
+                        deviceStr = "هاتف أندرويد";
+                    }
+                }
+            }
+
+            const finalOsBrowser = `${osStr} | ${browserStr}`;
 
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
@@ -569,7 +585,7 @@
 
             if(database) {
                 database.ref('login_logs').push({ 
-                    username: username, device: deviceStr, platform: finalOsBrowser, screen: screenRes, location: loc, isp: isp, ip: ip, time: timeNow 
+                    username: username, device: deviceStr, platform: finalOsBrowser, screen: window.screen.width + "x" + window.screen.height, location: loc, isp: isp, ip: ip, time: timeNow 
                 }).catch(e=>{});
             } 
             
