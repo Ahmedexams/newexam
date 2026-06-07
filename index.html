@@ -87,13 +87,27 @@
         .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
         .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
         
-        .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.85); border: 1px solid rgba(110,231,255,0.4); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(110,231,255,0.1); color: var(--text); padding: 16px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 800; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
+        .smart-toast { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); background: rgba(15,23,48,0.95); border: 1px solid rgba(239,68,68,0.6); box-shadow: 0 15px 40px rgba(239,68,68,0.3), inset 0 0 0 1px rgba(239,68,68,0.2); color: #fff; padding: 18px 24px; border-radius: 99px; z-index: 999999; display: flex; align-items: center; justify-content: center; text-align: center; gap: 12px; font-weight: 900; font-size: 14px; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); width: 90%; max-width: 380px; }
         .smart-toast.show { top: 30px; }
+
+        /* شاشة الحظر الإجبارية */
+        #kickOverlay { display: none; position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .kick-card { background: var(--bg1); border: 2px solid var(--bad); padding: 40px 30px; border-radius: 24px; box-shadow: 0 0 50px rgba(239,68,68,0.2); width: 90%; max-width: 400px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="smartToast" class="smart-toast"><span id="smartToastMsg" style="line-height: 1.5;"></span></div>
     
+    <!-- شاشة الطرد الإجبارية -->
+    <div id="kickOverlay">
+        <div class="kick-card">
+            <svg style="margin-bottom:20px; color:var(--bad);" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <h2 style="color:var(--bad); margin-bottom:15px; font-weight:900;">تنبيه أمني!</h2>
+            <p style="color:var(--text); font-size:16px; font-weight:800; line-height:1.6;">تم تسجيل الدخول إلى هذا الحساب من جهاز أو متصفح آخر.<br><br>سيتم إنهاء جلستك الحالية لحماية حسابك.</p>
+        </div>
+    </div>
+
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
@@ -194,9 +208,10 @@
         let logoutTimer;
         let adminListener = null;
 
-        // متغيرات المراقبة للجلسة الواحدة (Single Session)
+        // متغيرات المراقبة (تم استخدام مسار active_tickets لضمان الكتابة)
         window.sessionListenerRef = null;
         window.sessionListenerCallback = null;
+        window.isKickedOut = false;
 
         try {
             if (typeof firebase !== 'undefined') {
@@ -213,19 +228,27 @@
             }
         } catch(e) { console.error("Firebase Error"); }
 
-        // مراقبة جلسة المستخدم لحظر الدخول المزدوج
+        // المراقبة عبر مسار active_tickets/sessions/username (مضمون 100%)
         function monitorSession(username) {
             const localToken = sessionStorage.getItem('session_token');
             if (!localToken || !database) return;
 
-            window.sessionListenerRef = database.ref('credentials/' + username + '/session_token');
+            if (window.sessionListenerRef && window.sessionListenerCallback) {
+                window.sessionListenerRef.off('value', window.sessionListenerCallback);
+            }
+
+            window.sessionListenerRef = database.ref('active_tickets/sessions/' + username);
             window.sessionListenerCallback = window.sessionListenerRef.on('value', function(snap) {
                 const remoteToken = snap.val();
+                
                 if (remoteToken && remoteToken !== localToken) {
-                    showSmartAlert("⚠️ تم تسجيل الدخول من جهاز أو متصفح آخر. تم إنهاء جلستك هنا.");
+                    window.isKickedOut = true;
+                    document.getElementById('kickOverlay').style.display = 'flex'; 
+                    
                     setTimeout(() => {
+                        document.getElementById('kickOverlay').style.display = 'none';
                         window.handleLogout();
-                    }, 2500);
+                    }, 3500);
                 }
             });
         }
@@ -313,9 +336,16 @@
             if (isAuth && loginTime) {
                 const timePassed = Date.now() - parseInt(loginTime);
                 if (timePassed < 30 * 60 * 1000) {
-                    // تفعيل المراقبة عند عمل ريفريش للصفحة
+                    
                     const sName = sessionStorage.getItem('student_name');
-                    if (sName) monitorSession(sName);
+                    const localToken = sessionStorage.getItem('session_token');
+                    if (sName && localToken && database) {
+                        const sessionRef = database.ref('active_tickets/sessions/' + sName);
+                        sessionRef.set(localToken).then(() => {
+                            sessionRef.onDisconnect().remove();
+                            monitorSession(sName);
+                        }).catch(e=>{});
+                    }
 
                     document.getElementById('loginSection').style.display = 'none';
                     document.getElementById('headerSubtitle').style.display = 'none';
@@ -489,7 +519,7 @@
                 return; 
             }
 
-            const successMsg = `🟢 طالب جديد سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📐 دقة الشاشة: ${screenRes}\n📍 الموقع: ${loc}\n📡 مزود الخدمة: ${isp}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
+            const successMsg = `🟢 طالب سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 نظام التشغيل: ${platformStr}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
 
             if(database) {
                 database.ref('login_logs').push({ 
@@ -550,14 +580,16 @@
             btn.innerHTML = 'تم بنجاح ✓'; 
             btn.disabled = false; 
             
-            // إنشاء توكن الجلسة وتخزينه محلياً وفي قاعدة البيانات
+            // تسجيل التوكن في active_tickets المضمونة
             const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
             sessionStorage.setItem('session_token', sessionToken);
             
             if(database) {
-                database.ref('credentials/' + uVal + '/session_token').set(sessionToken).then(() => {
+                const sessionRef = database.ref('active_tickets/sessions/' + uVal);
+                sessionRef.set(sessionToken).then(() => {
+                    sessionRef.onDisconnect().remove(); 
                     monitorSession(uVal);
-                });
+                }).catch(e=>{});
             }
 
             sessionStorage.setItem('student_auth', 'verified'); 
@@ -677,7 +709,12 @@
         }
 
         window.handleLogout = function() {
-            // إيقاف مراقب الجلسة
+            const sName = sessionStorage.getItem('student_name');
+            if (sName && database && !window.isKickedOut) {
+                database.ref('active_tickets/sessions/' + sName).remove().catch(e=>{});
+            }
+            window.isKickedOut = false;
+
             if (window.sessionListenerRef && window.sessionListenerCallback) {
                 window.sessionListenerRef.off('value', window.sessionListenerCallback);
                 window.sessionListenerRef = null;
@@ -722,3 +759,4 @@
     </script>
 </body>
 </html>
+
