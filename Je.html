@@ -146,7 +146,7 @@
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/gerontological_exam').push();
+          const sessionRef = _0xdb.ref('active_exam_visitors/surgery1_exam').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -170,7 +170,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/gerontological_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/surgery1_exam').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -183,7 +183,7 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/gerontological_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/surgery1_exam').off('value', adminListener);
           }
       };
 
@@ -426,7 +426,7 @@
 
       function _0xsep(){
           if(!_0xdb) return;
-          _0xdb.ref('gerontological_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('surgery1_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
@@ -451,7 +451,7 @@
       function _0xiss(){
           if(!_0xdb) return;
           try {
-             _0xstR = _0xdb.ref('gerontological_students').push();
+             _0xstR = _0xdb.ref('surgery1_students').push();
              _0xstR.set({name:_0xsn,time:new Date().toLocaleTimeString('\x61\x72\x2d\x45\x47'),score:0});
           } catch(e) {}
       }
@@ -515,4 +515,3 @@
   </script>
  </body>
 </html>
-
