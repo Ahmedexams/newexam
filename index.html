@@ -93,6 +93,17 @@
         #kickOverlay { display: none; position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .kick-card { background: var(--bg1); border: 2px solid var(--bad); padding: 40px 30px; border-radius: 24px; box-shadow: 0 0 50px rgba(239,68,68,0.2); width: 90%; max-width: 400px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* تصاميم بطاقة الوصول الرقمية VIP */
+        .cred-card { background: linear-gradient(180deg, rgba(15,23,48,.95), rgba(15,23,48,.7)); border: 1px solid rgba(110,231,255,.4); border-radius: 28px; padding: 40px 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(110,231,255,0.1); width: 90%; max-width: 380px; position: relative; overflow: hidden; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .cred-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(110,231,255,0.1), transparent 30%); animation: spin 4s linear infinite; z-index: 0; }
+        .cred-content { position: relative; z-index: 1; }
+        .cred-row { background: rgba(7,9,18,0.7); border: 1px solid rgba(26,43,85,.85); border-radius: 16px; padding: 16px 20px; margin: 12px 0; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .cred-row:hover { border-color: rgba(110,231,255,0.3); background: rgba(7,9,18,0.9); transform: translateY(-2px); }
+        .cred-val { font-family: 'Outfit', sans-serif; font-weight: 900; color: var(--glow1); font-size: 18px; letter-spacing: 1px; }
+        .copy-icon { cursor: pointer; color: var(--muted); transition: 0.2s; padding: 5px; border-radius: 8px; background: rgba(255,255,255,0.05); }
+        .copy-icon:hover { color: var(--glow1); background: rgba(110,231,255,0.15); transform: scale(1.1); }
+        .copy-icon:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
@@ -103,6 +114,39 @@
             <svg style="margin-bottom:20px; color:var(--bad);" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             <h2 style="color:var(--bad); margin-bottom:15px; font-weight:900;">تنبيه أمني!</h2>
             <p style="color:var(--text); font-size:16px; font-weight:800; line-height:1.6;">تم تسجيل الدخول إلى هذا الحساب من جهاز أو متصفح آخر.<br><br>سيتم إنهاء جلستك الحالية لحماية حسابك.</p>
+        </div>
+    </div>
+
+    <div id="vipCredModal" style="display: none; position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 999999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s;">
+        <div class="cred-card">
+            <div class="cred-content">
+                <div style="width: 65px; height: 65px; background: linear-gradient(135deg, rgba(110,231,255,0.1), rgba(167,139,250,0.1)); border: 1px solid rgba(110,231,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; box-shadow: 0 0 20px rgba(110,231,255,0.2);">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#gradientModal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <defs><linearGradient id="gradientModal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6ee7ff" /><stop offset="100%" stop-color="#a78bfa" /></linearGradient></defs>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <h2 style="color: var(--text); font-weight: 900; margin-bottom: 5px; font-size: 24px;">تم إنشاء حسابك!</h2>
+                <p style="color: var(--muted); font-size: 14px; margin-bottom: 25px; font-weight: 800;">احتفظ بهذه البيانات للدخول لاحقاً</p>
+
+                <div class="cred-row">
+                    <span style="color: var(--muted); font-size: 14px; font-weight: 800;">اسم المستخدم</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="cred-val" id="newUsernameVal"></span>
+                        <svg class="copy-icon" onclick="copyText('newUsernameVal')" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+
+                <div class="cred-row">
+                    <span style="color: var(--muted); font-size: 14px; font-weight: 800;">كلمة المرور</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="cred-val" id="newPasswordVal"></span>
+                        <svg class="copy-icon" onclick="copyText('newPasswordVal')" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="margin-top: 25px; font-size: 16px;" onclick="closeVipModal()">متابعة وتسجيل الدخول 🚀</button>
+            </div>
         </div>
     </div>
 
@@ -137,7 +181,7 @@
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
-                <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء حساب جديد</button>
+                <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء  حساب جديد  </button>
             </div>
             
             <div id="examsSection" style="display: none;">
@@ -362,12 +406,12 @@
         window.generateAccount = function() {
             const btn = document.getElementById('genBtn');
             if(localStorage.getItem('account_generated_v2') === 'true') { 
-                alert("⚠️ لديك حساب بالفعل!"); 
+                showSmartAlert("⚠️ لديك حساب بالفعل على هذا الجهاز!"); 
                 return; 
             }
             
             btn.disabled = true; 
-            btn.innerHTML = 'جاري الإنشاء... ⏳';
+            btn.innerHTML = 'جاري التجهيز... ⏳';
             
             const username = 'stu' + Math.floor(1000 + Math.random() * 9000);
             let password = ''; 
@@ -377,9 +421,9 @@
             }
 
             if (!database) { 
-                alert("مشكلة اتصال!"); 
+                showSmartAlert("مشكلة في الاتصال بقاعدة البيانات!"); 
                 btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد'; 
+                btn.innerHTML = 'استخراج  حساب جديد ✨'; 
                 return; 
             }
 
@@ -387,39 +431,55 @@
                 localStorage.setItem('account_generated_v2', 'true'); 
                 localStorage.setItem('saved_username_v2', username); 
                 localStorage.setItem('saved_password_v2', password);
-                try {
-                    const tempInput = document.createElement("textarea"); 
-                    tempInput.value = `اسم: ${username}\nمرور: ${password}`;
-                    document.body.appendChild(tempInput); 
-                    tempInput.select(); 
-                    document.execCommand("copy"); 
-                    document.body.removeChild(tempInput);
-                    alert(`✅ تم إنشاء الحساب ونسخ البيانات!\n\n👤 اسم: ${username}\n🔑 مرور: ${password}`);
-                } catch(e) { 
-                    alert(`✅ تم!\n👤 اسم: ${username}\n🔑 مرور: ${password}`); 
-                }
+                
                 document.getElementById('username').value = username; 
                 document.getElementById('password').value = password;
+                
+                document.getElementById('newUsernameVal').innerText = username;
+                document.getElementById('newPasswordVal').innerText = password;
+                
+                const modal = document.getElementById('vipCredModal');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.style.opacity = '1', 10);
+
                 btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد';
+                btn.innerHTML = 'استخراج حساب جديد  ✨';
             }).catch(() => { 
-                alert("فشل الإنشاء."); 
+                showSmartAlert("حدث خطأ أثناء الإنشاء، حاول مجدداً."); 
                 btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد'; 
+                btn.innerHTML = 'استخراج حساب جديد   '; 
             });
+        };
+
+        window.copyText = function(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showSmartAlert("تم النسخ بنجاح! ✅");
+        };
+
+        window.closeVipModal = function() {
+            const modal = document.getElementById('vipCredModal');
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                window.handleLogin();
+            }, 300);
         };
 
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            // 🛠️ التحديث الجذري لقراءة بيانات الجهاز (فلترة وتدقيق ثلاثي المستويات)
             let deviceStr = "جهاز غير معروف";
             let osStr = "نظام غير معروف";
             let browserStr = "متصفح غير معروف";
             let ua = navigator.userAgent || "";
 
-            // 1. استخدام مكتبة UAParser كأساس
             try { 
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
@@ -431,7 +491,6 @@
                 }
             } catch(e) {}
 
-            // 2. استخدام تقنية Client Hints للأندرويد الحديث (تتخطى الحماية وتجيب الاسم الدقيق)
             try {
                 if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
                     const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
@@ -441,10 +500,7 @@
                     }
                 }
             } catch(e) {}
-
-            // 3. فلترة يدوية نهائية (لحل مشاكل حرف الـ K والمتصفحات المدمجة)
             
-            // تصحيح أخطاء نظام التشغيل
             if (!osStr || osStr === "نظام غير معروف" || osStr.includes("Linux") || osStr.includes("armv")) {
                 if (ua.includes("iPhone")) osStr = "iOS";
                 else if (ua.includes("iPad")) osStr = "iPadOS";
@@ -455,7 +511,6 @@
                 else if (ua.includes("Mac")) osStr = "MacOS";
             }
 
-            // تصحيح أخطاء المتصفح (بالذات التطبيقات المدمجة)
             if (!browserStr || browserStr === "متصفح غير معروف") {
                 if (ua.includes("FBAV") || ua.includes("FBAN")) browserStr = "Facebook App";
                 else if (ua.includes("Instagram")) browserStr = "Instagram App";
@@ -469,14 +524,12 @@
                 else browserStr = "متصفح مدمج";
             }
 
-            // تصحيح أخطاء الجهاز (حل مشكلة حرف الـ K)
             if (!deviceStr || deviceStr === "جهاز غير معروف" || deviceStr === "K" || deviceStr.includes("Linux")) {
                 if (ua.includes("iPhone")) deviceStr = "Apple iPhone";
                 else if (ua.includes("iPad")) deviceStr = "Apple iPad";
                 else if (ua.includes("Windows")) deviceStr = "كمبيوتر Windows";
                 else if (ua.includes("Mac")) deviceStr = "كمبيوتر Mac";
                 else if (ua.includes("Android")) {
-                    // استخراج الموديل من الرابط القديم إذا فشل الباقي
                     let match = ua.match(/Android[^;]+;\s*([^);]+)/);
                     if (match && match[1]) {
                         let cleanModel = match[1].trim().split(' Build')[0];
@@ -492,7 +545,6 @@
             }
 
             const finalOsBrowser = `${osStr} | ${browserStr}`;
-
             let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
             
             try { 
@@ -673,7 +725,6 @@
             }, 500);
         }
 
-        // 6. Data Fetching
         function fetchExamsFromServer() {
             const cont = document.getElementById('dynamicExamsList');
             if (!database) { cont.innerHTML = '<p>مشكلة اتصال.</p>'; return; }
@@ -779,44 +830,4 @@
             if (window.sessionListenerRef && window.sessionListenerCallback) {
                 window.sessionListenerRef.off('value', window.sessionListenerCallback);
                 window.sessionListenerRef = null;
-                window.sessionListenerCallback = null;
-            }
-
-            sessionStorage.clear(); 
-            clearTimeout(logoutTimer); 
-            document.getElementById('username').value = localStorage.getItem('saved_username_v2') || ''; 
-            document.getElementById('password').value = localStorage.getItem('saved_password_v2') || '';
-            const btn = document.getElementById('loginBtn'); 
-            btn.style.background = ''; 
-            btn.innerHTML = 'تسجيل الدخول'; 
-            btn.disabled = false; 
-            
-            document.getElementById('examsSection').style.display = 'none'; 
-            document.getElementById('headerSubtitle').style.display = 'block'; 
-            document.getElementById('loginSection').style.display = 'block';
-            
-            window.switchTab('exams'); 
-            if (location.hash === '#exams') history.back();
-        };
-
-        window.addEventListener('popstate', function() { 
-            if (document.getElementById('examsSection').style.display === 'block') { 
-                if(sessionStorage.getItem('student_auth')) {
-                    history.pushState({page:'exams'},'Exams','#exams'); 
-                } else {
-                    window.handleLogout(); 
-                }
-            } 
-        });
-        
-        window.addEventListener('pageshow', function(e) { 
-            if (e.persisted) { 
-                const lt = sessionStorage.getItem('login_time'); 
-                if (lt && (Date.now() - parseInt(lt) > 1800000)) window.handleLogout(); 
-            } 
-        });
-
-    })();
-    </script>
-</body>
-</html>
+          
