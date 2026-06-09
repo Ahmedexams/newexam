@@ -181,7 +181,7 @@
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
-                <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء  حساب جديد  </button>
+                <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء حساب جديد ✨</button>
             </div>
             
             <div id="examsSection" style="display: none;">
@@ -423,7 +423,7 @@
             if (!database) { 
                 showSmartAlert("مشكلة في الاتصال بقاعدة البيانات!"); 
                 btn.disabled = false; 
-                btn.innerHTML = 'استخراج  حساب جديد ✨'; 
+                btn.innerHTML = 'إنشاء حساب جديد ✨'; 
                 return; 
             }
 
@@ -443,11 +443,11 @@
                 setTimeout(() => modal.style.opacity = '1', 10);
 
                 btn.disabled = false; 
-                btn.innerHTML = 'استخراج حساب جديد  ✨';
+                btn.innerHTML = 'إنشاء حساب جديد ✨';
             }).catch(() => { 
                 showSmartAlert("حدث خطأ أثناء الإنشاء، حاول مجدداً."); 
                 btn.disabled = false; 
-                btn.innerHTML = 'استخراج حساب جديد   '; 
+                btn.innerHTML = 'إنشاء حساب جديد ✨'; 
             });
         };
 
@@ -830,4 +830,4 @@
             if (window.sessionListenerRef && window.sessionListenerCallback) {
                 window.sessionListenerRef.off('value', window.sessionListenerCallback);
                 window.sessionListenerRef = null;
-          
+                window.session
