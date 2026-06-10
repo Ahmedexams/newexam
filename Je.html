@@ -146,7 +146,7 @@
           firebase.initializeApp(_0xcfg);
           _0xdb=firebase.database();
 
-          const sessionRef = _0xdb.ref('active_exam_visitors/midquality_exam').push();
+          const sessionRef = _0xdb.ref('active_exam_visitors/midquality').push();
           const connectedRef = _0xdb.ref('.info/connected');
           connectedRef.on('value', (snap) => {
               if (snap.val() === true) {
@@ -170,7 +170,7 @@
               dash.style.display = 'flex';
               setTimeout(() => dash.style.opacity = '1', 10);
               
-              adminListener = _0xdb.ref('active_exam_visitors/midquality_exam').on('value', (snapshot) => {
+              adminListener = _0xdb.ref('active_exam_visitors/midquality').on('value', (snapshot) => {
                   const count = snapshot.numChildren() || 0;
                   _0xdc.getElementById('onlineCounter').innerText = count;
               });
@@ -183,56 +183,56 @@
           dash.style.opacity = '0';
           setTimeout(() => dash.style.display = 'none', 300);
           if(adminListener && _0xdb) {
-              _0xdb.ref('active_exam_visitors/midquality_exam').off('value', adminListener);
+              _0xdb.ref('active_exam_visitors/midquality').off('value', adminListener);
           }
       };
 
       let _0xstR=null,_0xsn="\u0637\u0627\u0644\u0628 \u0645\u062c\u0647\u0648\u0644",_0xini=!1,_0xeq=[],_0xst={a:0,s:0,l:[],so:[]};
       
       const _0xAQ=[
-          // --- Quality Midterm MCQs[span_3](start_span)[span_3](end_span) ---
-          {q:"Factors that can affect access to services do Not include?[span_4](start_span)[span_4](end_span)",o:["Financial.","Leadership skills.","Distance.","Culture beliefs and values."],c:1},
-          {q:"Principles of Quality Assurance do Not Include?[span_5](start_span)[span_5](end_span)",o:["Using data to analyze service delivery.","Meeting the needs and expectations of our clients.","Encouraging the use of teams in problem solving and quality improvement.","Ignorance of systems and processes."],c:3},
-          {q:"Sources of Data to Improve Quality include?[span_6](start_span)[span_6](end_span)",o:["Surveillance System.","Client's satisfaction surveys.","Record review.","Review of Incident report.","All of the above"],c:4},
-          {q:"Benefits of quality assurance to the clients include?[span_7](start_span)[span_7](end_span)",o:["Less frustration.","More patients may use our services.","The facility will have a good reputation.","The environment will become clean and beautiful."],c:0},
-          {q:"Benefits of quality assurance to Health Providers include?[span_8](start_span)[span_8](end_span)",o:["Value for money.","Information flow among staff is improved.","Client satisfaction.","Good health outcomes."],c:1},
-          {q:"Quality control is used in Hospital to?[span_9](start_span)[span_9](end_span)",o:["Having adequate and competent staff to provide care.","Managing efficiently the resources of the health facility.","Staff being disciplined.","Ensures that patient receive the correct treatments."],c:3},
-          {q:"Through inspection the inspector can?[span_10](start_span)[span_10](end_span)",o:["Provide adequate knowledge and skills.","Provide enough resources, staff, drugs supplies, equipment and transport.","Sort out poor quality.","Maintain a safe and clean workplace opportunity to regularly improve himself."],c:2},
-          {q:"Sources of information frequently used by managers to measure actual performance in the quality control process include?[span_11](start_span)[span_11](end_span)",o:["Review of Adverse Incidences.","Client's satisfaction surveys.","Statistical reports.","Clients Patients complaints system.","All of the above"],c:4},
-          {q:"Aims for improving quality in the healthcare include?[span_12](start_span)[span_12](end_span)",o:["Providing lessons to learn from as we progress with our implementation.","Monitoring helps us to identify gaps in quality of our health care delivery.","Patient centered.","It tells us if we are making progress in improving quality of care."],c:2},
-          {q:"Success factors in quality improvement include?[span_13](start_span)[span_13](end_span)",o:["Customer focus.","Environmental factors.","Social factors.","Managerial factors."],c:0},
+          // --- Quality Midterm MCQs ---
+          {q:"Factors that can affect access to services do Not include?",o:["Financial.","Leadership skills.","Distance.","Culture beliefs and values."],c:1},
+          {q:"Principles of Quality Assurance do Not Include?",o:["Using data to analyze service delivery.","Meeting the needs and expectations of our clients.","Encouraging the use of teams in problem solving and quality improvement.","Ignorance of systems and processes."],c:3},
+          {q:"Sources of Data to Improve Quality include?",o:["Surveillance System.","Client's satisfaction surveys.","Record review.","Review of Incident report.","All of the above"],c:4},
+          {q:"Benefits of quality assurance to the clients include?",o:["Less frustration.","More patients may use our services.","The facility will have a good reputation.","The environment will become clean and beautiful."],c:0},
+          {q:"Benefits of quality assurance to Health Providers include?",o:["Value for money.","Information flow among staff is improved.","Client satisfaction.","Good health outcomes."],c:1},
+          {q:"Quality control is used in Hospital to?",o:["Having adequate and competent staff to provide care.","Managing efficiently the resources of the health facility.","Staff being disciplined.","Ensures that patient receive the correct treatments."],c:3},
+          {q:"Through inspection the inspector can?",o:["Provide adequate knowledge and skills.","Provide enough resources, staff, drugs supplies, equipment and transport.","Sort out poor quality.","Maintain a safe and clean workplace opportunity to regularly improve himself."],c:2},
+          {q:"Sources of information frequently used by managers to measure actual performance in the quality control process include?",o:["Review of Adverse Incidences.","Client's satisfaction surveys.","Statistical reports.","Clients Patients complaints system.","All of the above"],c:4},
+          {q:"Aims for improving quality in the healthcare include?",o:["Providing lessons to learn from as we progress with our implementation.","Monitoring helps us to identify gaps in quality of our health care delivery.","Patient centered.","It tells us if we are making progress in improving quality of care."],c:2},
+          {q:"Success factors in quality improvement include?",o:["Customer focus.","Environmental factors.","Social factors.","Managerial factors."],c:0},
 
-          // --- Quality Midterm True/False[span_14](start_span)[span_14](end_span) ---
-          {q:"Quality is beautiful or attractive?[span_15](start_span)[span_15](end_span)",o:["True","False"],c:1},
-          {q:"Quality services should be provided to all people who need them who may be they poor children adults old people pregnant women disabled?[span_16](start_span)[span_16](end_span)",o:["True","False"],c:0},
-          {q:"Continuity mean that the client gets full range of health services he needs and that when the case is beyond us we refer him to the right level for further care?[span_17](start_span)[span_17](end_span)",o:["True","False"],c:0},
-          {q:"Safety means when providing health services we reduce to the minimum injuries, infections harmful side effects and other dangers to clients?[span_18](start_span)[span_18](end_span)",o:["True","False"],c:0},
-          {q:"Interpersonal Relations refers to the relationship between us and our clients and communities between health managers and their staff?[span_19](start_span)[span_19](end_span)",o:["True","False"],c:0},
-          {q:"Amenities are features that can be provided by the health facilities to make life comfortable and pleasant for clients They contribute to clients satisfaction and make clients willing to use our services?[span_20](start_span)[span_20](end_span)",o:["True","False"],c:0},
-          {q:"Components of quality health services include efficiency?[span_21](start_span)[span_21](end_span)",o:["True","False"],c:0},
-          {q:"Process refers to what is done and the way things are done?[span_22](start_span)[span_22](end_span)",o:["True","False"],c:0},
-          {q:"Quality assurance include monitoring to see if there is a gap between what is being done now and what is expected?[span_23](start_span)[span_23](end_span)",o:["True","False"],c:0},
-          {q:"Quality control is a set of activities that are planned for carried out systematically or in an orderly manner and continuously to improve quality of care?[span_24](start_span)[span_24](end_span)",o:["True","False"],c:1},
-          {q:"Quality Assurance uses effective communication to improve service delivery?[span_25](start_span)[span_25](end_span)",o:["True","False"],c:0},
-          {q:"The internal clients include people who directly use our services and those who have special interest in our services?[span_26](start_span)[span_26](end_span)",o:["True","False"],c:1},
-          {q:"The external clients are the workers in the health facility Their needs must also be catered for so that they can provide quality care?[span_27](start_span)[span_27](end_span)",o:["True","False"],c:1},
-          {q:"Systems are the various aspects or components of service delivery that must operate together as a unit in a facility to deliver quality health care?[span_28](start_span)[span_28](end_span)",o:["True","False"],c:0},
-          {q:"Communication is a process by which messages are passed from a sender to a receiver with feedback to the sender?[span_29](start_span)[span_29](end_span)",o:["True","False"],c:0},
-          {q:"Quality control is the process of monitoring activities to ensure that they are being accomplished as planned and of correcting any significant deviations?[span_30](start_span)[span_30](end_span)",o:["True","False"],c:0},
-          {q:"Control is the regulatory process through which we measure actual quality performance compare it with standards and act on the difference?[span_31](start_span)[span_31](end_span)",o:["True","False"],c:0},
-          {q:"Quality control is used to detect errors and correct them before patients results are reported?[span_32](start_span)[span_32](end_span)",o:["True","False"],c:0},
-          {q:"Quality control gives employees feedback about their current quality care and how the care they provide can be improved?[span_33](start_span)[span_33](end_span)",o:["True","False"],c:0},
-          {q:"The quality control inspector should have the authority and support of upper management to identify nonconformance recommend corrective actions and stop work if required?[span_34](start_span)[span_34](end_span)",o:["True","False"],c:0},
-          {q:"Quality control helps to reduce staff absenteeism and turnover?[span_35](start_span)[span_35](end_span)",o:["True","False"],c:0},
-          {q:"The quality control inspector is the qualified person designated by the manager to perform individual inspections and verify that work is being performed according to the predetermined criteria?[span_36](start_span)[span_36](end_span)",o:["True","False"],c:0},
-          {q:"Quality improvement is the process of reducing the variation of performance or variation from standards to achieve a better outcome for the organization's customers?[span_37](start_span)[span_37](end_span)",o:["True","False"],c:0},
-          {q:"Efficient means providing care that does not vary in quality because of characteristics such as gender ethnicity geographic location and socioeconomic status?[span_38](start_span)[span_38](end_span)",o:["True","False"],c:1},
-          {q:"Process refers to the setting in which the care is given and to the resources human financial and material that are available?[span_39](start_span)[span_39](end_span)",o:["True","False"],c:1},
-          {q:"Structure refers to the activities carried out by the health care providers and all the decisions made while a patient is interacting with the organization?[span_40](start_span)[span_40](end_span)",o:["True","False"],c:1},
-          {q:"Outcome is the result of all the health care providers' activities Outcome measures evaluate the effectiveness of nursing activities?[span_41](start_span)[span_41](end_span)",o:["True","False"],c:0},
-          {q:"Each employee should be treated as a customer They should be trained and continuously developed to render the best possible service to external clients?[span_42](start_span)[span_42](end_span)",o:["True","False"],c:0},
-          {q:"Continuous development of the human resource of the organization is one of the requirements for a healthy and improving organization?[span_43](start_span)[span_43](end_span)",o:["True","False"],c:0},
-          {q:"Effective means providing services based on scientific knowledge to all who could benefit and refraining from providing services to those not likely to benefit avoiding underuse and overuse?[span_44](start_span)[span_44](end_span)",o:["True","False"],c:0}
+          // --- Quality Midterm True/False ---
+          {q:"Quality is beautiful or attractive?",o:["True","False"],c:1},
+          {q:"Quality services should be provided to all people who need them who may be they poor children adults old people pregnant women disabled?",o:["True","False"],c:0},
+          {q:"Continuity mean that the client gets full range of health services he needs and that when the case is beyond us we refer him to the right level for further care?",o:["True","False"],c:0},
+          {q:"Safety means when providing health services we reduce to the minimum injuries, infections harmful side effects and other dangers to clients?",o:["True","False"],c:0},
+          {q:"Interpersonal Relations refers to the relationship between us and our clients and communities between health managers and their staff?",o:["True","False"],c:0},
+          {q:"Amenities are features that can be provided by the health facilities to make life comfortable and pleasant for clients They contribute to clients satisfaction and make clients willing to use our services?",o:["True","False"],c:0},
+          {q:"Components of quality health services include efficiency?",o:["True","False"],c:0},
+          {q:"Process refers to what is done and the way things are done?",o:["True","False"],c:0},
+          {q:"Quality assurance include monitoring to see if there is a gap between what is being done now and what is expected?",o:["True","False"],c:0},
+          {q:"Quality control is a set of activities that are planned for carried out systematically or in an orderly manner and continuously to improve quality of care?",o:["True","False"],c:1},
+          {q:"Quality Assurance uses effective communication to improve service delivery?",o:["True","False"],c:0},
+          {q:"The internal clients include people who directly use our services and those who have special interest in our services?",o:["True","False"],c:1},
+          {q:"The external clients are the workers in the health facility Their needs must also be catered for so that they can provide quality care?",o:["True","False"],c:1},
+          {q:"Systems are the various aspects or components of service delivery that must operate together as a unit in a facility to deliver quality health care?",o:["True","False"],c:0},
+          {q:"Communication is a process by which messages are passed from a sender to a receiver with feedback to the sender?",o:["True","False"],c:0},
+          {q:"Quality control is the process of monitoring activities to ensure that they are being accomplished as planned and of correcting any significant deviations?",o:["True","False"],c:0},
+          {q:"Control is the regulatory process through which we measure actual quality performance compare it with standards and act on the difference?",o:["True","False"],c:0},
+          {q:"Quality control is used to detect errors and correct them before patients results are reported?",o:["True","False"],c:0},
+          {q:"Quality control gives employees feedback about their current quality care and how the care they provide can be improved?",o:["True","False"],c:0},
+          {q:"The quality control inspector should have the authority and support of upper management to identify nonconformance recommend corrective actions and stop work if required?",o:["True","False"],c:0},
+          {q:"Quality control helps to reduce staff absenteeism and turnover?",o:["True","False"],c:0},
+          {q:"The quality control inspector is the qualified person designated by the manager to perform individual inspections and verify that work is being performed according to the predetermined criteria?",o:["True","False"],c:0},
+          {q:"Quality improvement is the process of reducing the variation of performance or variation from standards to achieve a better outcome for the organization's customers?",o:["True","False"],c:0},
+          {q:"Efficient means providing care that does not vary in quality because of characteristics such as gender ethnicity geographic location and socioeconomic status?",o:["True","False"],c:1},
+          {q:"Process refers to the setting in which the care is given and to the resources human financial and material that are available?",o:["True","False"],c:1},
+          {q:"Structure refers to the activities carried out by the health care providers and all the decisions made while a patient is interacting with the organization?",o:["True","False"],c:1},
+          {q:"Outcome is the result of all the health care providers' activities Outcome measures evaluate the effectiveness of nursing activities?",o:["True","False"],c:0},
+          {q:"Each employee should be treated as a customer They should be trained and continuously developed to render the best possible service to external clients?",o:["True","False"],c:0},
+          {q:"Continuous development of the human resource of the organization is one of the requirements for a healthy and improving organization?",o:["True","False"],c:0},
+          {q:"Effective means providing services based on scientific knowledge to all who could benefit and refraining from providing services to those not likely to benefit avoiding underuse and overuse?",o:["True","False"],c:0}
       ];
       
       const _0xup=new URLSearchParams(_0xwn.location.search);const _0xu=_0xup.get('u'),_0xt=_0xup.get('t');
@@ -315,7 +315,7 @@
 
       function _0xsep(){
           if(!_0xdb) return;
-          _0xdb.ref('midquality_settings/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
+          _0xdb.ref('midquality/exam_status').on('\x76\x61\x6c\x75\x65',(s)=>{
               if(s.val()==='\x63\x6c\x6f\x73\x65\x64'){
                   _0xerr("\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0645\u063a\u0644\u0642 \uD83D\uDD12","\u062a\u0645 \u0625\u063a\u0644\u0627\u0645\u062a\u062d\u0627\u0646.");
               }else{
