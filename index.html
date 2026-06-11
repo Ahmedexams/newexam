@@ -137,7 +137,6 @@
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
-                <button class="btn-secondary" id="genBtn" onclick="generateAccount()">إنشاء حساب جديد</button>
             </div>
             
             <div id="examsSection" style="display: none;">
@@ -359,67 +358,15 @@
             }
         });
 
-        window.generateAccount = function() {
-            const btn = document.getElementById('genBtn');
-            if(localStorage.getItem('account_generated_v2') === 'true') { 
-                alert("⚠️ لديك حساب بالفعل!"); 
-                return; 
-            }
-            
-            btn.disabled = true; 
-            btn.innerHTML = 'جاري الإنشاء... ⏳';
-            
-            const username = 'stu' + Math.floor(1000 + Math.random() * 9000);
-            let password = ''; 
-            const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-            for (let i = 0; i < 4; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-
-            if (!database) { 
-                alert("مشكلة اتصال!"); 
-                btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد'; 
-                return; 
-            }
-
-            database.ref('credentials/' + username).set({ password: password }).then(() => {
-                localStorage.setItem('account_generated_v2', 'true'); 
-                localStorage.setItem('saved_username_v2', username); 
-                localStorage.setItem('saved_password_v2', password);
-                try {
-                    const tempInput = document.createElement("textarea"); 
-                    tempInput.value = `اسم: ${username}\nمرور: ${password}`;
-                    document.body.appendChild(tempInput); 
-                    tempInput.select(); 
-                    document.execCommand("copy"); 
-                    document.body.removeChild(tempInput);
-                    alert(`✅ تم إنشاء الحساب ونسخ البيانات!\n\n👤 اسم: ${username}\n🔑 مرور: ${password}`);
-                } catch(e) { 
-                    alert(`✅ تم!\n👤 اسم: ${username}\n🔑 مرور: ${password}`); 
-                }
-                document.getElementById('username').value = username; 
-                document.getElementById('password').value = password;
-                btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد';
-            }).catch(() => { 
-                alert("فشل الإنشاء."); 
-                btn.disabled = false; 
-                btn.innerHTML = 'إنشاء حساب جديد'; 
-            });
-        };
-
         async function verifyConnectionAndLogin(username) {
             const btn = document.getElementById('loginBtn'); 
             btn.innerHTML = 'جاري الفحص... 🛡️';
             
-            // 🛠️ التحديث الجذري لقراءة بيانات الجهاز (فلترة وتدقيق ثلاثي المستويات)
             let deviceStr = "جهاز غير معروف";
             let osStr = "نظام غير معروف";
             let browserStr = "متصفح غير معروف";
             let ua = navigator.userAgent || "";
 
-            // 1. استخدام مكتبة UAParser كأساس
             try { 
                 const parser = new UAParser(); 
                 const res = parser.getResult(); 
@@ -431,7 +378,6 @@
                 }
             } catch(e) {}
 
-            // 2. استخدام تقنية Client Hints للأندرويد الحديث (تتخطى الحماية وتجيب الاسم الدقيق)
             try {
                 if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
                     const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
@@ -441,10 +387,7 @@
                     }
                 }
             } catch(e) {}
-
-            // 3. فلترة يدوية نهائية (لحل مشاكل حرف الـ K والمتصفحات المدمجة)
             
-            // تصحيح أخطاء نظام التشغيل
             if (!osStr || osStr === "نظام غير معروف" || osStr.includes("Linux") || osStr.includes("armv")) {
                 if (ua.includes("iPhone")) osStr = "iOS";
                 else if (ua.includes("iPad")) osStr = "iPadOS";
@@ -455,7 +398,6 @@
                 else if (ua.includes("Mac")) osStr = "MacOS";
             }
 
-            // تصحيح أخطاء المتصفح (بالذات التطبيقات المدمجة)
             if (!browserStr || browserStr === "متصفح غير معروف") {
                 if (ua.includes("FBAV") || ua.includes("FBAN")) browserStr = "Facebook App";
                 else if (ua.includes("Instagram")) browserStr = "Instagram App";
@@ -469,14 +411,12 @@
                 else browserStr = "متصفح مدمج";
             }
 
-            // تصحيح أخطاء الجهاز (حل مشكلة حرف الـ K)
             if (!deviceStr || deviceStr === "جهاز غير معروف" || deviceStr === "K" || deviceStr.includes("Linux")) {
                 if (ua.includes("iPhone")) deviceStr = "Apple iPhone";
                 else if (ua.includes("iPad")) deviceStr = "Apple iPad";
                 else if (ua.includes("Windows")) deviceStr = "كمبيوتر Windows";
                 else if (ua.includes("Mac")) deviceStr = "كمبيوتر Mac";
                 else if (ua.includes("Android")) {
-                    // استخراج الموديل من الرابط القديم إذا فشل الباقي
                     let match = ua.match(/Android[^;]+;\s*([^);]+)/);
                     if (match && match[1]) {
                         let cleanModel = match[1].trim().split(' Build')[0];
@@ -820,3 +760,4 @@
     </script>
 </body>
 </html>
+
