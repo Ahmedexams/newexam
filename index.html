@@ -34,7 +34,8 @@
         .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(110,231,255,0.3); }
         .header p { color: var(--muted); font-size: 15px; font-weight: 800; }
         
-        .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; }
+        .card { background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border: 1px solid rgba(26,43,85,.85); border-radius: 24px; padding: 30px 20px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.04); position: relative; overflow: hidden; width: 100%; transition: all 0.3s ease; }
+        
         .input-group { margin-bottom: 15px; position: relative; z-index: 2;}
         .input-group input { width: 100%; border-radius: 16px; border: 1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.45); padding: 16px 18px; color: var(--text); font-size: 16px; font-weight: 800; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: rgba(110,231,255,.40); box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); }
@@ -44,6 +45,11 @@
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         
+        /* زر التبديل بين اللوجين والتسجيل */
+        .toggle-auth { text-align: center; margin-top: 20px; font-size: 14px; font-weight: 800; color: var(--muted); cursor: pointer; transition: 0.2s; position: relative; z-index: 2; }
+        .toggle-auth span { color: var(--glow1); text-decoration: underline; }
+        .toggle-auth:hover { color: var(--text); }
+
         .btn-secondary { width: 100%; padding: 14px; border: 1px solid rgba(110,231,255,.3); border-radius: 16px; background: rgba(7,9,18,.6); color: var(--glow1); font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; position: relative; z-index: 2; }
         .btn-secondary:active { transform: scale(0.97); }
         .btn-secondary:hover { background: rgba(110,231,255,.1); border-color: rgba(110,231,255,.6); }
@@ -93,6 +99,8 @@
         #kickOverlay { display: none; position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
         .kick-card { background: var(--bg1); border: 2px solid var(--bad); padding: 40px 30px; border-radius: 24px; box-shadow: 0 0 50px rgba(239,68,68,0.2); width: 90%; max-width: 400px; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        #registerSection { display: none; }
     </style>
 </head>
 <body>
@@ -129,6 +137,7 @@
         </div>
         
         <div class="card fade-in" style="animation-delay: 0.1s;">
+            <!-- قسم تسجيل الدخول الأساسي -->
             <div id="loginSection">
                 <div class="input-group">
                     <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" autocorrect="off" autocapitalize="none">
@@ -137,8 +146,25 @@
                     <input type="password" id="password" placeholder="كلمة المرور">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+                <div class="toggle-auth" onclick="toggleAuthMode('register')">ليس لديك حساب؟ <span>طلب انضمام للمنصة</span></div>
+            </div>
+
+            <!-- قسم إنشاء حساب جديد للموافقة -->
+            <div id="registerSection">
+                <div class="input-group">
+                    <input type="text" id="regUser" placeholder="اسم المستخدم (بالإنجليزي أو أرقام)" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <input type="tel" id="regPhone" placeholder="رقم الموبايل للتواصل" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPass" placeholder="كلمة المرور">
+                </div>
+                <button class="btn-primary" id="regBtn" onclick="handleRegister()">إرسال طلب انضمام</button>
+                <div class="toggle-auth" onclick="toggleAuthMode('login')">لديك حساب بالفعل؟ <span>تسجيل الدخول</span></div>
             </div>
             
+            <!-- قسم الاختبارات (يظهر بعد الموافقة والدخول) -->
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
                     <button class="logout-btn" onclick="handleLogout()">خروج <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></button>
@@ -311,6 +337,22 @@
             } else {
                 document.getElementById('tabPdfsBtn').classList.add('active'); 
                 document.getElementById('dynamicPdfsList').style.display = 'flex';
+            }
+        };
+
+        window.toggleAuthMode = function(mode) {
+            const loginSec = document.getElementById('loginSection');
+            const regSec = document.getElementById('registerSection');
+            const subTitle = document.getElementById('headerSubtitle');
+            
+            if(mode === 'register') {
+                loginSec.style.display = 'none';
+                regSec.style.display = 'block';
+                subTitle.innerText = "أنشئ حساباً جديداً وانتظر الموافقة";
+            } else {
+                regSec.style.display = 'none';
+                loginSec.style.display = 'block';
+                subTitle.innerText = "سجل دخولك للبدء";
             }
         };
 
@@ -543,10 +585,9 @@
             }
             
             if (btn.disabled) return; 
-            btn.disabled = true; 
             
             if (!database) { 
-                showError(btn, "مشكلة اتصال!"); 
+                showError(btn, "مشكلة اتصال بالخادم!"); 
                 return; 
             }
 
@@ -554,25 +595,103 @@
             const pVal = document.getElementById('password').value.trim();
             
             if(uVal === '' || pVal === '') { 
-                showError(btn, 'أدخل البيانات!'); 
+                showError(btn, 'أدخل البيانات كامله!'); 
                 return; 
             }
 
             localStorage.setItem('last_login_attempt_time', Date.now());
+            btn.disabled = true; 
             btn.style.background = 'rgba(26,43,85,.8)'; 
             btn.innerHTML = 'جاري التحقق...';
 
-            database.ref('credentials/' + uVal).once('value').then((snapshot) => {
-                const userData = snapshot.val();
-                if (userData && String(userData.password) === pVal) {
-                    localStorage.setItem('saved_username_v2', uVal); 
-                    localStorage.setItem('saved_password_v2', pVal);
-                    verifyConnectionAndLogin(uVal);
-                } else { 
-                    showError(btn, 'خطأ بالبيانات!'); 
+            // أولاً: نتحقق هل الحساب ده قيد المراجعة؟
+            database.ref('pending_users/' + uVal).once('value').then((pendingSnap) => {
+                if (pendingSnap.exists()) {
+                    showError(btn, 'حسابك قيد المراجعة ⏳');
+                    showSmartAlert('يرجى الانتظار حتى يتم تفعيل حسابك من الإدارة.');
+                    return;
                 }
-            }).catch(() => { 
-                showError(btn, 'فشل الاتصال!'); 
+
+                // ثانياً: لو مش قيد المراجعة، نفحص الـ credentials العادية
+                database.ref('credentials/' + uVal).once('value').then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData && String(userData.password) === pVal) {
+                        localStorage.setItem('saved_username_v2', uVal); 
+                        localStorage.setItem('saved_password_v2', pVal);
+                        verifyConnectionAndLogin(uVal);
+                    } else { 
+                        showError(btn, 'خطأ بالبيانات ❌'); 
+                    }
+                }).catch(() => { 
+                    showError(btn, 'فشل الاتصال!'); 
+                });
+            });
+        };
+
+        // دالة إنشاء حساب جديد (تقديم الطلب)
+        window.handleRegister = function() {
+            const btn = document.getElementById('regBtn');
+            const uVal = document.getElementById('regUser').value.trim();
+            const phoneVal = document.getElementById('regPhone').value.trim();
+            const pVal = document.getElementById('regPass').value.trim();
+
+            if (!uVal || !phoneVal || !pVal) { 
+                showError(btn, 'أكمل جميع البيانات!'); 
+                return; 
+            }
+            if (uVal.length < 3) { 
+                showError(btn, 'اسم المستخدم قصير!'); 
+                return; 
+            }
+            if (!database) { 
+                showError(btn, "مشكلة اتصال بالخادم!"); 
+                return; 
+            }
+
+            btn.disabled = true; 
+            btn.style.background = 'rgba(26,43,85,.8)'; 
+            btn.innerHTML = 'جاري إرسال الطلب...';
+
+            // نفحص هل الاسم مستخدم قبل كده؟
+            Promise.all([
+                database.ref('credentials/' + uVal).once('value'),
+                database.ref('pending_users/' + uVal).once('value')
+            ]).then(([credSnap, pendSnap]) => {
+                if (credSnap.exists() || pendSnap.exists()) {
+                    showError(btn, 'اسم المستخدم محجوز ❌');
+                    return;
+                }
+
+                // إضافة الطالب لقائمة الانتظار
+                database.ref('pending_users/' + uVal).set({
+                    password: pVal,
+                    phone: phoneVal,
+                    timestamp: new Date().toLocaleString('ar-EG'),
+                    status: 'pending'
+                }).then(() => {
+                    btn.style.background = 'rgba(34,197,94,.8)';
+                    btn.innerHTML = 'تم إرسال طلبك ✓';
+                    showSmartAlert('تم إرسال طلبك بنجاح! يرجى انتظار موافقة الإدارة 🚀');
+                    
+                    const sendTg = (txt) => fetch(getTeleUrl(), { 
+                        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: txt }) 
+                    }).catch(e=>{});
+                    
+                    sendTg(`🆕 طلب انضمام جديد للمنصة!\n👤 الاسم: ${uVal}\n📱 الموبايل: ${phoneVal}\n🔑 الباسورد: ${pVal}\n⏰ الوقت: ${new Date().toLocaleString('ar-EG')}`);
+
+                    setTimeout(() => {
+                        toggleAuthMode('login'); 
+                        document.getElementById('username').value = uVal;
+                        btn.style.background = '';
+                        btn.innerHTML = 'إرسال طلب انضمام';
+                        btn.disabled = false;
+                        document.getElementById('regUser').value = '';
+                        document.getElementById('regPhone').value = '';
+                        document.getElementById('regPass').value = '';
+                    }, 2000);
+                });
+            }).catch(() => {
+                showError(btn, 'حدث خطأ في الاتصال!');
             });
         };
 
@@ -704,7 +823,8 @@
             btn.innerHTML = msg;
             setTimeout(() => { 
                 btn.style.background = ''; 
-                btn.innerHTML = 'تسجيل الدخول'; 
+                // استرجاع النص الأصلي بناءً على الأي دي بتاع الزرار
+                btn.innerHTML = btn.id === 'regBtn' ? 'إرسال طلب انضمام' : 'تسجيل الدخول'; 
                 btn.disabled = false; 
             }, 2500);
         }
