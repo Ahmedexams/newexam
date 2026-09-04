@@ -6,12 +6,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070912">
     
-    <title>منصة الأختبارات</title>
+    <title>منصة الاختبارات</title>
     
-    <!-- خطوط جوجل الفخمة -->
+    <!-- خطوط جوجل -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
     
-    <!-- مكتبات فايربيز الأساسية (بدون مكتبة الـ Auth لأننا عملنا نظامنا الخاص) -->
+    <!-- مكتبات فايربيز الأساسية -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
@@ -42,7 +42,7 @@
         }
         
         /* ==========================================
-           2. تنسيق الخلفية والجسم الأساسي (Body & Background)
+           2. تنسيق الخلفية والجسم الأساسي
            ========================================== */
         body { 
             margin: 0; 
@@ -87,7 +87,7 @@
         }
         
         /* ==========================================
-           3. الهيدر واللوجو المضيء (Header & Logo)
+           3. الهيدر واللوجو المضيء
            ========================================== */
         .header { 
             text-align: center; 
@@ -147,7 +147,7 @@
         }
         
         /* ==========================================
-           4. البطاقات الزجاجية (Glassmorphism Cards)
+           4. البطاقات الزجاجية وتصميم العناصر
            ========================================== */
         .card { 
             background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); 
@@ -161,9 +161,6 @@
             transition: all 0.3s ease; 
         }
         
-        /* ==========================================
-           5. حقول الإدخال والأزرار (Inputs & Buttons)
-           ========================================== */
         .input-group { 
             margin-bottom: 15px; 
             position: relative; 
@@ -188,13 +185,6 @@
         .input-group input:focus { 
             border-color: rgba(110,231,255,.40); 
             box-shadow: 0 0 15px rgba(110,231,255,.1), inset 0 0 0 1px rgba(110,231,255,.1); 
-        }
-        
-        .input-group input::placeholder { 
-            color: #5a6b9c; 
-            font-weight: 500; 
-            text-align: center; 
-            letter-spacing: normal; 
         }
         
         .btn-primary { 
@@ -224,7 +214,7 @@
         }
 
         /* ==========================================
-           6. شريط الترحيب وتسجيل الخروج (Welcome Header)
+           5. شريط الترحيب والتابات (للاختبارات، PDF، الذكاء الاصطناعي)
            ========================================== */
         .exams-header-row { 
             display: flex; 
@@ -262,15 +252,6 @@
             gap: 6px; 
         }
         
-        .logout-btn:hover, .logout-btn:active { 
-            background: rgba(239,68,68,.25); 
-            box-shadow: 0 0 15px rgba(239,68,68,.2); 
-            transform: translateY(-2px); 
-        }
-
-        /* ==========================================
-           7. نظام التابات (Tabs Navigation)
-           ========================================== */
         .tabs-row { 
             display: flex; 
             background: rgba(7,9,18,.6); 
@@ -303,7 +284,7 @@
         }
 
         /* ==========================================
-           8. حالات التحميل والقوائم (Empty States & Lists)
+           6. قوائم الاختبارات والملفات (Lists & Items)
            ========================================== */
         .empty-state { 
             display: flex; 
@@ -321,12 +302,6 @@
             color: rgba(110,231,255,0.5); 
             filter: drop-shadow(0 0 10px rgba(110,231,255,0.2)); 
             margin-bottom: 5px; 
-        }
-        
-        .empty-state p { 
-            color: var(--muted); 
-            font-size: 15px; 
-            font-weight: 800; 
         }
         
         .exams-list { 
@@ -400,127 +375,8 @@
         }
 
         /* ==========================================
-           9. الفوتر والشريط السفلي (Footer & Neon Text)
+           7. التنبيهات والأدوات المخفية (Toasts, Dashboards, Modals)
            ========================================== */
-        .footer { 
-            text-align: center; 
-            margin-top: 30px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            width: 100%; 
-        }
-        
-        .glass-box { 
-            background: rgba(15,23,48,.65); 
-            border: 1px solid rgba(26,43,85,.85); 
-            border-radius: 20px; 
-            padding: 12px 26px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); 
-            backdrop-filter: blur(12px); 
-            text-decoration: none; 
-            transition: 0.3s; 
-            display: inline-block; 
-        }
-        
-        .glass-box:hover { 
-            border-color: rgba(110,231,255,.3); 
-            transform: translateY(-3px); 
-        }
-        
-        .neon { 
-            font-family: 'Outfit', sans-serif; 
-            background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); 
-            background-size: 200% 100%; 
-            -webkit-background-clip: text; 
-            color: transparent; 
-            animation: flow 3s linear infinite; 
-            font-weight: 900; 
-            font-size: 14px; 
-            letter-spacing: 1px; 
-        }
-        
-        @keyframes flow { 
-            0% { background-position: 0% 50%; } 
-            100% { background-position: 200% 50%; } 
-        }
-        
-        .fade-in { 
-            animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-        }
-        
-        @keyframes appFadeIn { 
-            from { transform: translateY(15px); } 
-            to { transform: translateY(0); } 
-        }
-
-        /* ==========================================
-           10. التراكبات والتنبيهات المخفية (Overlays & Dashboards)
-           ========================================== */
-        #adminDashboard { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(7,9,18,0.95); 
-            z-index: 99999; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            backdrop-filter: blur(15px); 
-            opacity: 0; 
-            transition: 0.3s; 
-        }
-        
-        .dash-card { 
-            background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); 
-            border: 1px solid rgba(110,231,255,.3); 
-            border-radius: 30px; 
-            padding: 40px; 
-            text-align: center; 
-            box-shadow: 0 0 50px rgba(110,231,255,.1); 
-            width: 90%; 
-            max-width: 350px; 
-        }
-        
-        .live-pulse { 
-            width: 15px; 
-            height: 15px; 
-            background: #22c55e; 
-            border-radius: 50%; 
-            margin: 0 auto 20px; 
-            box-shadow: 0 0 15px #22c55e; 
-            animation: pulse 1.5s infinite; 
-        }
-        
-        @keyframes pulse { 
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 
-            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } 
-        }
-        
-        .online-count { 
-            font-size: 80px; 
-            font-weight: 900; 
-            font-family: 'Outfit', sans-serif; 
-            background: linear-gradient(90deg, var(--glow1), var(--glow3)); 
-            -webkit-background-clip: text; 
-            color: transparent; 
-            line-height: 1; 
-            margin: 10px 0; 
-        }
-        
-        .close-dash { 
-            margin-top: 30px; 
-            background: rgba(239,68,68,.15); 
-            color: var(--bad); 
-            border: 1px solid rgba(239,68,68,.4); 
-            padding: 12px 30px; 
-            border-radius: 16px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            font-size: 16px; 
-        }
-        
         .smart-toast { 
             position: fixed; 
             top: -120px; 
@@ -551,10 +407,6 @@
             box-shadow: 0 15px 40px rgba(239,68,68,0.2); 
         }
         
-        .smart-toast.show { 
-            top: 30px; 
-        }
-
         #kickOverlay { 
             display: none; 
             position: fixed; 
@@ -579,21 +431,67 @@
             max-width: 400px; 
             animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
-        
-        @keyframes popIn { 
-            0% { transform: scale(0.8); opacity: 0; } 
-            100% { transform: scale(1); opacity: 1; } 
+
+        #adminDashboard { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(7,9,18,0.95); 
+            z-index: 99999; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(15px); 
+            opacity: 0; 
+            transition: 0.3s; 
         }
+        
+        .dash-card { 
+            background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); 
+            border: 1px solid rgba(110,231,255,.3); 
+            border-radius: 30px; 
+            padding: 40px; 
+            text-align: center; 
+            box-shadow: 0 0 50px rgba(110,231,255,.1); 
+            width: 90%; 
+            max-width: 350px; 
+        }
+
+        .live-pulse { width: 15px; height: 15px; background: #22c55e; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #22c55e; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        
+        .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow3)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+        .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
+
+        /* حاوية زر تليجرام */
+        .tg-btn-wrapper { 
+            display: flex; 
+            justify-content: center; 
+            margin-top: 15px; 
+            background: rgba(7,9,18,.45); 
+            border-radius: 16px; 
+            padding: 15px; 
+            border: 1px solid rgba(26,43,85,.85); 
+        }
+
+        /* الفوتر */
+        .footer { text-align: center; margin-top: 30px; display: flex; justify-content: center; align-items: center; width: 100%; }
+        .glass-box { background: rgba(15,23,48,.65); border: 1px solid rgba(26,43,85,.85); border-radius: 20px; padding: 12px 26px; box-shadow: 0 12px 30px rgba(0,0,0,.3), inset 0 0 0 1px rgba(110,231,255,.05); backdrop-filter: blur(12px); text-decoration: none; transition: 0.3s; display: inline-block; }
+        .neon { font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); background-size: 200% 100%; -webkit-background-clip: text; color: transparent; animation: flow 3s linear infinite; font-weight: 900; font-size: 14px; letter-spacing: 1px; }
+        
+        .fade-in { animation: appFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes appFadeIn { from { transform: translateY(15px); } to { transform: translateY(0); } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
-    <!-- 1. شاشة تشخيص الأخطاء المباشرة -->
+    <!-- شاشة تشخيص الأخطاء المباشرة -->
     <div id="onScreenDebug"></div>
 
-    <!-- 2. شريط التنبيهات الذكية -->
+    <!-- التنبيهات الذكية -->
     <div id="smartToast" class="smart-toast"><span id="smartToastMsg" style="line-height: 1.5;"></span></div>
     
-    <!-- 3. شاشة الطرد عند الدخول من جهاز آخر -->
+    <!-- نظام الطرد (Kick-out) -->
     <div id="kickOverlay">
         <div class="kick-card">
             <svg style="margin-bottom:20px; color:var(--bad);" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -606,7 +504,7 @@
         </div>
     </div>
 
-    <!-- 4. لوحة تحكم الأدمن (للأونلاين) -->
+    <!-- لوحة تحكم الأدمن المخفية -->
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
@@ -617,7 +515,7 @@
         </div>
     </div>
     
-    <!-- 5. الحاوية الرئيسية للتطبيق -->
+    <!-- محتوى التطبيق الأساسي -->
     <div class="app-container" id="appContainer">
         
         <!-- الهيدر واللوجو -->
@@ -635,22 +533,39 @@
                 </svg>
             </div>
             <h1>منصة الاختبارات</h1>
-            <p id="headerSubtitle">سجل دخول بحسابك المعتمد</p>
+            <p id="headerSubtitle">تسجيل الدخول الآمن عبر تليجرام</p>
         </div>
         
         <div class="card fade-in" style="animation-delay: 0.1s;">
-            <!-- نظام الدخول الجديد (رقم + كود سري) -->
+            
+            <!-- قسم تسجيل الدخول بتليجرام -->
             <div id="loginSection">
-                <div class="input-group">
-                    <input type="tel" id="loginPhone" placeholder="رقم الموبايل (مثال: 01012345678)" autocomplete="off">
+                <p style="text-align:center; color:var(--text); font-weight:800; margin-bottom:10px; font-size:15px;">اضغط على الزر بالأسفل للتحقق من هويتك</p>
+                
+                <div class="tg-btn-wrapper" id="telegramBtnContainer">
+                    <!-- ⚠️ يجب تغيير YOUR_BOT_USERNAME باسم البوت الفعلي ⚠️ -->
+                    <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                            data-telegram-login="Newexamuni_bot" 
+                            data-size="large" 
+                            data-radius="12"
+                            data-onauth="onTelegramAuth(user)" 
+                            data-request-access="write"></script>
                 </div>
+            </div>
+
+            <!-- قسم ربط الرقم (يظهر لأول مرة فقط للمستخدم الجديد) -->
+            <div id="linkPhoneSection" style="display:none;">
+                <p style="text-align:center; color:var(--glow1); font-weight:900; margin-bottom:15px;">
+                    تم التحقق من تليجرام ✓<br>
+                    <span style="color:var(--text);font-size:14px;font-weight:500;">أدخل رقمك المعتمد لربط الحساب لأول مرة</span>
+                </p>
                 <div class="input-group">
-                    <input type="password" id="loginPin" placeholder="كود الطالب السري (PIN)" autocomplete="off" style="letter-spacing: 2px;">
+                    <input type="tel" id="linkPhoneInput" placeholder="رقم الموبايل (مثال: 01012345678)">
                 </div>
-                <button class="btn-primary" id="loginBtn" onclick="processLogin()">تسجيل الدخول</button>
+                <button class="btn-primary" id="linkBtn" onclick="linkTelegramToPhone()">ربط الحساب والدخول</button>
             </div>
             
-            <!-- قسم الاختبارات والملفات والـ AI -->
+            <!-- قسم المنصة والاختبارات (يظهر بعد الدخول بنجاح) -->
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
                     <div class="welcome-text">أهلاً بك، <span id="studentNameDisplay">يا بطل</span> 👋</div>
@@ -670,9 +585,32 @@
                     <button class="tab-btn" id="tabAiBtn" onclick="switchTab('ai')">🤖 مساعد AI</button>
                 </div>
                 
-                <div class="exams-list" id="dynamicExamsList"></div>
-                <div class="exams-list" id="dynamicPdfsList" style="display: none;"></div>
+                <div class="exams-list" id="dynamicExamsList">
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>جاري تحميل الاختبارات...</p>
+                    </div>
+                </div>
                 
+                <div class="exams-list" id="dynamicPdfsList" style="display: none;">
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>جاري تحميل الملفات...</p>
+                    </div>
+                </div>
+
                 <div class="exams-list" id="dynamicAiList" style="display: none;">
                     <div class="empty-state">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -680,12 +618,13 @@
                             <path d="M12 16v-4"></path>
                             <path d="M12 8h.01"></path>
                         </svg>
-                        <p>جاري تجهيز مساعد الذكاء الاصطناعي قريباً...</p>
+                        <p>جاري تجهيز مساعد الذكاء الاصطناعي...</p>
                     </div>
                 </div>
             </div>
         </div>
         
+        <!-- الفوتر -->
         <div class="footer fade-in">
             <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
                 <span class="neon">DEVELOPED BY AHMED HAMED</span>
@@ -693,18 +632,22 @@
         </div>
     </div>
     <!-- ==========================================
-         سكربت الجافاسكريبت (المنطق والحماية)
+         سكربت الجافاسكريبت (المنطق والحماية وتليجرام)
          ========================================== -->
     <script>
-        // 1. صائد الأخطاء العنيف (عشان لو في أي حرف غلط يظهرلك على الشاشة)
-        const debugBox = document.getElementById('onScreenDebug');
-        window.onerror = function(message, source, lineno, colno, error) {
-            debugBox.style.display = 'block';
-            debugBox.innerHTML += `<div>❌ <b>Error:</b> ${message} (Line: ${lineno})</div>`;
-            return true;
+        // ==========================================
+        // 1. نظام تشخيص الأخطاء المباشر (Error Catcher)
+        // ==========================================
+        window.onerror = function(message, source, lineno, colno, error) { 
+            const dbg = document.getElementById('onScreenDebug');
+            dbg.style.display = 'block'; 
+            dbg.innerHTML += `<div>❌ <b>Error:</b> ${message} (Line: ${lineno})</div>`; 
+            return true; 
         };
 
+        // ==========================================
         // 2. نظام الحماية ضد الفحص والتعديل (Anti-Inspect)
+        // ==========================================
         document.addEventListener('contextmenu', function(e) { 
             e.preventDefault(); 
         });
@@ -720,12 +663,14 @@
             console.log("%c🛑 منطقة محظورة!", "color: red; font-size: 30px; font-weight: bold;"); 
         }, 1000);
 
-        // 3. مفاتيح وإعدادات Firebase و Telegram 
-        const fbKeys = {
-            k: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
-            d: atob("YWhtZWRleGFtcy0zZTI2Ny5maXJlYmFzZWFwcC5jb20="),
-            u: atob("aHR0cHM6Ly9haG1lZGV4YW1zLTNlMjY3LWRlZmF1bHQtcnRkYi5maXJlYmFzZWlvLmNvbQ=="),
-            p: atob("YWhtZWRleGFtcy0zZTI2Nw==")
+        // ==========================================
+        // 3. إعدادات ومفاتيح Firebase و Telegram
+        // ==========================================
+        const fbKeys = { 
+            k: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"), 
+            d: atob("YWhtZWRleGFtcy0zZTI2Ny5maXJlYmFzZWFwcC5jb20="), 
+            u: atob("aHR0cHM6Ly9haG1lZGV4YW1zLTNlMjY3LWRlZmF1bHQtcnRkYi5maXJlYmFzZWlvLmNvbQ=="), 
+            p: atob("YWhtZWRleGFtcy0zZTI2Nw==") 
         };
         
         const firebaseConfig = { 
@@ -737,7 +682,7 @@
             messagingSenderId: "151411096023", 
             appId: "1:151411096023:web:fcabb7c60c6e433b1bf392" 
         };
-        
+
         const tgKeys = { 
             p1: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA=="), 
             p2: atob("ODkyNTYyMDU5NDo="), 
@@ -747,96 +692,70 @@
         };
         
         const getTeleUrl = () => tgKeys.p1 + tgKeys.p2 + tgKeys.p3 + tgKeys.p4;
-
-        // 4. تهيئة المتغيرات الأساسية
+        
+        // المتغيرات العامة
         let database = null;
-        let logoutTimer;
+        let pendingTgUser = null; // تخزين بيانات المستخدم مؤقتاً لحين ربط الرقم
+        let sessionListenerRef = null;
+        let isKickedOut = false;
+        let logoutTimer = null;
         let adminListener = null;
-        
-        window.sessionListenerRef = null;
-        window.sessionListenerCallback = null;
-        window.isKickedOut = false;
 
-        // الاتصال بقاعدة البيانات
-        try {
-            if (typeof firebase !== 'undefined') {
-                firebase.initializeApp(firebaseConfig);
-                database = firebase.database();
-                
-                const sessionRef = database.ref('active_visitors').push();
-                database.ref('.info/connected').on('value', function(snap) { 
-                    if (snap.val() === true) { 
-                        sessionRef.onDisconnect().remove(); 
-                        sessionRef.set(true); 
-                    } 
-                });
-            } else {
-                throw new Error("مكتبة Firebase لم يتم تحميلها.");
-            }
-        } catch(e) {
-            debugBox.style.display = 'block';
-            debugBox.innerHTML += `<div>❌ <b>Firebase Init Error:</b> ${e.message}</div>`;
-        }
-
-        // 5. دوال مساعدة للحماية والواجهة
-        function getPlatformDeviceId() {
-            let deviceId = localStorage.getItem('platform_unique_device_id');
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-                localStorage.setItem('platform_unique_device_id', deviceId);
-            }
-            return deviceId;
-        }
-
-        function monitorSession(phone) {
-            const localToken = sessionStorage.getItem('session_token');
-            if (!localToken || !database) return;
+        try { 
+            firebase.initializeApp(firebaseConfig); 
+            database = firebase.database(); 
             
-            if (window.sessionListenerRef && window.sessionListenerCallback) { 
-                window.sessionListenerRef.off('value', window.sessionListenerCallback); 
-            }
-            
-            window.sessionListenerRef = database.ref('active_tickets/sessions/' + phone);
-            window.sessionListenerCallback = window.sessionListenerRef.on('value', function(snap) {
-                const remoteToken = snap.val();
-                if (remoteToken && remoteToken !== localToken) {
-                    window.isKickedOut = true;
-                    document.getElementById('kickOverlay').style.display = 'flex'; 
-                    setTimeout(() => { 
-                        document.getElementById('kickOverlay').style.display = 'none'; 
-                        window.handleLogout(); 
-                    }, 3500);
-                }
+            // مراقبة الاتصال لحساب المتواجدين الآن
+            const sessionRef = database.ref('active_visitors').push();
+            database.ref('.info/connected').on('value', function(snap) { 
+                if (snap.val() === true) { 
+                    sessionRef.onDisconnect().remove(); 
+                    sessionRef.set(true); 
+                } 
             });
+        } catch(e) { 
+            console.error("Firebase init failed", e);
         }
 
-        let alertTimeout;
-        let lastMsg = "";
-        
-        function showSmartAlert(msg, isError = false) {
-            const toast = document.getElementById('smartToast');
-            toast.className = 'smart-toast' + (isError ? ' error' : '');
-            document.getElementById('smartToastMsg').innerText = msg;
-            toast.classList.add('show');
+        // ==========================================
+        // 4. دوال مساعدة (التنبيهات ومعرف الجهاز والتابات)
+        // ==========================================
+        function getPlatformDeviceId() { 
+            let d = localStorage.getItem('platform_unique_device_id'); 
+            if(!d) { 
+                d = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36); 
+                localStorage.setItem('platform_unique_device_id', d); 
+            } 
+            return d; 
+        }
+
+        function showSmartAlert(msg, isError = false) { 
+            const t = document.getElementById('smartToast'); 
+            t.className = 'smart-toast' + (isError ? ' error' : '');
+            document.getElementById('smartToastMsg').innerText = msg; 
+            t.style.top = '30px'; 
+            setTimeout(() => t.style.top = '-120px', 4000); 
+        }
+
+        window.switchTab = function(tab) {
+            ['tabExamsBtn','tabPdfsBtn','tabAiBtn'].forEach(id => document.getElementById(id).classList.remove('active'));
+            ['dynamicExamsList','dynamicPdfsList','dynamicAiList'].forEach(id => document.getElementById(id).style.display = 'none');
             
-            clearTimeout(alertTimeout);
-            alertTimeout = setTimeout(() => { 
-                toast.classList.remove('show'); 
-            }, 5000); 
-        }
+            if(tab === 'exams') { 
+                document.getElementById('tabExamsBtn').classList.add('active'); 
+                document.getElementById('dynamicExamsList').style.display = 'flex'; 
+            } else if(tab === 'pdfs') { 
+                document.getElementById('tabPdfsBtn').classList.add('active'); 
+                document.getElementById('dynamicPdfsList').style.display = 'flex'; 
+            } else if(tab === 'ai') { 
+                document.getElementById('tabAiBtn').classList.add('active'); 
+                document.getElementById('dynamicAiList').style.display = 'flex'; 
+            }
+        };
 
-        function listenForLiveAlerts() {
-            if(!database) return;
-            database.ref('admin_message').on('value', function(snap) {
-                const msg = snap.val();
-                if(msg && msg.trim() !== "" && msg !== lastMsg) { 
-                    lastMsg = msg; 
-                    showSmartAlert(msg); 
-                }
-            });
-        }
-
-        // 6. لوحة تحكم الأدمن (النقرات السرية)
+        // ==========================================
+        // 5. لوحة تحكم الأدمن السرية (Secret Tap)
+        // ==========================================
         let tapCount = 0;
         let tapTimer;
         
@@ -858,10 +777,7 @@
             if(!database) return;
             const dash = document.getElementById('adminDashboard'); 
             dash.style.display = 'flex'; 
-            
-            setTimeout(() => {
-                dash.style.opacity = '1';
-            }, 10);
+            setTimeout(() => { dash.style.opacity = '1'; }, 10);
             
             adminListener = database.ref('active_visitors').on('value', function(snap) { 
                 document.getElementById('onlineCounter').innerText = snap.numChildren() || 0; 
@@ -871,391 +787,361 @@
         window.closeAdminDash = function() {
             const dash = document.getElementById('adminDashboard'); 
             dash.style.opacity = '0'; 
-            
-            setTimeout(() => {
-                dash.style.display = 'none';
-            }, 300);
-            
-            if(adminListener) {
-                database.ref('active_visitors').off('value', adminListener);
-            }
+            setTimeout(() => { dash.style.display = 'none'; }, 300);
+            if(adminListener) { database.ref('active_visitors').off('value', adminListener); }
         };
 
-        // 7. التحكم في التابات (Exams, PDFs, AI)
-        window.switchTab = function(tab) {
-            document.getElementById('tabExamsBtn').classList.remove('active'); 
-            document.getElementById('tabPdfsBtn').classList.remove('active');
-            document.getElementById('tabAiBtn').classList.remove('active');
-            
-            document.getElementById('dynamicExamsList').style.display = 'none'; 
-            document.getElementById('dynamicPdfsList').style.display = 'none';
-            document.getElementById('dynamicAiList').style.display = 'none';
-            
-            if (tab === 'exams') { 
-                document.getElementById('tabExamsBtn').classList.add('active'); 
-                document.getElementById('dynamicExamsList').style.display = 'flex'; 
-            } else if (tab === 'pdfs') { 
-                document.getElementById('tabPdfsBtn').classList.add('active'); 
-                document.getElementById('dynamicPdfsList').style.display = 'flex'; 
-            } else if (tab === 'ai') {
-                document.getElementById('tabAiBtn').classList.add('active'); 
-                document.getElementById('dynamicAiList').style.display = 'flex'; 
-            }
-        };
-
-        function showError(btn, msg, originalText = 'تسجيل الدخول') {
-            btn.style.background = 'rgba(239,68,68,.8)'; 
-            btn.innerHTML = msg;
-            
-            setTimeout(() => { 
-                btn.style.background = ''; 
-                btn.innerHTML = originalText; 
-                btn.disabled = false; 
-            }, 2500);
-        }
-
-        // 8. التحقق التلقائي عند فتح الصفحة (Auto Login)
-        document.addEventListener("DOMContentLoaded", function() {
-            const savedPhone = localStorage.getItem('saved_phone_v3');
-            if(savedPhone) { 
-                const pInput = document.getElementById('loginPhone'); 
-                if(pInput) pInput.value = savedPhone; 
-            }
-
-            const isAuth = sessionStorage.getItem('student_auth') === 'verified';
-            const loginTime = sessionStorage.getItem('login_time');
-            
-            if (isAuth && loginTime && (Date.now() - parseInt(loginTime) < 30 * 60 * 1000)) {
-                const sPhone = sessionStorage.getItem('student_phone');
-                const localToken = sessionStorage.getItem('session_token');
-                const sName = sessionStorage.getItem('student_name');
-                
-                if (sName) {
-                    document.getElementById('studentNameDisplay').innerText = sName;
-                }
-                
-                if (sPhone && localToken && database) {
-                    const sessionRef = database.ref('active_tickets/sessions/' + sPhone);
-                    sessionRef.set(localToken).then(() => { 
-                        sessionRef.onDisconnect().remove(); 
-                        monitorSession(sPhone); 
-                    }).catch(e=>{});
-                }
-                
+        // ==========================================
+        // 6. التحقق التلقائي عند فتح الصفحة (Auto Login)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", () => {
+            if(sessionStorage.getItem('student_auth') === 'verified' && sessionStorage.getItem('login_time')) {
+                document.getElementById('studentNameDisplay').innerText = sessionStorage.getItem('student_name') || 'يا بطل';
                 document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('linkPhoneSection').style.display = 'none';
                 document.getElementById('mainHeader').style.display = 'none'; 
                 document.getElementById('examsSection').style.display = 'block';
                 
+                const phone = sessionStorage.getItem('student_phone');
+                if(phone) monitorSession(phone);
+                
                 fetchExamsFromServer(); 
-                fetchPdfsFromServer(); 
-                listenForLiveAlerts();
+                fetchPdfsFromServer();
                 
                 logoutTimer = setTimeout(() => { 
                     alert("انتهت الجلسة."); 
                     window.handleLogout(); 
-                }, (30 * 60 * 1000) - (Date.now() - parseInt(loginTime)));
-            } else { 
-                window.handleLogout(); 
+                }, 30 * 60 * 1000);
             }
         });
 
-        // 9. نظام تسجيل الدخول الجديد (بدون SMS - بالكود السري)
-        window.processLogin = async function() {
-            const btn = document.getElementById('loginBtn');
-            if (!btn || btn.disabled) return; 
-
-            const lastClick = localStorage.getItem('last_login_attempt_time');
-            if (lastClick && (Date.now() - parseInt(lastClick) < 3000)) { 
-                showError(btn, 'انتظر ثواني ⏳'); 
-                return; 
-            }
-            
-            let phoneVal = document.getElementById('loginPhone').value.trim();
-            let pinVal = document.getElementById('loginPin').value.trim();
-            
-            if(phoneVal === '') { 
-                showError(btn, 'أدخل رقم الموبايل!'); 
-                return; 
-            }
-            if(pinVal === '') { 
-                showError(btn, 'أدخل الكود السري!'); 
-                return; 
-            }
+        // ==========================================
+        // 7. نظام تسجيل الدخول الرسمي عبر تليجرام
+        // ==========================================
+        
+        // دالة استقبال الاستجابة من زر تليجرام
+        window.onTelegramAuth = async function(user) {
             if(!database) { 
-                showError(btn, 'مشكلة اتصال بالخادم!'); 
+                showSmartAlert("مشكلة في الاتصال بالسيرفر", true); 
                 return; 
             }
-
-            localStorage.setItem('last_login_attempt_time', Date.now()); 
-            btn.disabled = true; 
-            btn.style.background = 'rgba(26,43,85,.8)'; 
-            btn.innerHTML = 'جاري التحقق... 🛡️';
-
+            
             try {
-                // البحث عن الرقم في قاعدة البيانات
-                const snap = await database.ref('allowed_phones/' + phoneVal).once('value');
+                const tgId = String(user.id);
+                // الفحص في قاعدة البيانات إذا كان معرف تليجرام موجوداً مسبقاً
+                const snap = await database.ref('telegram_users/' + tgId).once('value');
                 
+                if(snap.exists()) {
+                    // مسجل مسبقاً -> نقوم بتسجيل الدخول مباشرة
+                    const phone = snap.val().phone;
+                    const name = snap.val().name || user.first_name;
+                    verifyAndLogin(phone, name, tgId);
+                } else {
+                    // مستخدم جديد -> نطلب منه ربط رقم هاتفه أولاً
+                    pendingTgUser = user;
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('linkPhoneSection').style.display = 'block';
+                }
+            } catch(e) { 
+                showSmartAlert("حدث خطأ في قاعدة البيانات!", true); 
+            }
+        };
+
+        // دالة ربط الهاتف بحساب تليجرام للمستخدم الجديد
+        window.linkTelegramToPhone = async function() {
+            const btn = document.getElementById('linkBtn');
+            const phone = document.getElementById('linkPhoneInput').value.trim();
+            
+            if(phone === "") { 
+                showSmartAlert("يرجى إدخال رقم الموبايل!", true); 
+                return; 
+            }
+            
+            btn.innerHTML = 'جاري التحقق...'; 
+            btn.disabled = true;
+            
+            try {
+                // التأكد من أن الرقم مسجل ومصرح له من قبل الإدارة
+                const snap = await database.ref('allowed_phones/' + phone).once('value');
                 if(!snap.exists()) { 
-                    showError(btn, 'رقمك غير مسجل ❌'); 
+                    showSmartAlert("هذا الرقم غير مصرح له بالدخول!", true); 
+                    btn.innerHTML = 'ربط الحساب والدخول'; btn.disabled = false; 
                     return; 
                 }
                 
                 const userData = snap.val();
-                // الكود الافتراضي 123456 لو الأدمن لسه مكتبلوش كود خاص
-                const expectedPin = userData.pin || "123456"; 
                 
-                if(pinVal !== expectedPin) { 
-                    showError(btn, 'الكود السري خطأ ❌'); 
-                    return; 
+                // التأكد من أن الرقم غير مربوط بحساب تليجرام آخر
+                if(userData.telegramId && String(userData.telegramId) !== String(pendingTgUser.id)) {
+                    showSmartAlert("هذا الرقم مربوط بحساب تليجرام آخر مسبقاً!", true); 
+                    btn.innerHTML = 'ربط الحساب والدخول'; btn.disabled = false; 
+                    return;
                 }
 
-                // الحماية ضد مشاركة الحساب
-                const currentDeviceId = getPlatformDeviceId();
-                if(userData.deviceId && userData.deviceId !== currentDeviceId) { 
-                    showError(btn, 'مسجل من جهاز آخر 🚫'); 
-                    return; 
-                }
-                
-                // حفظ الجهاز لأول مرة
-                if(!userData.deviceId) { 
-                    await database.ref('allowed_phones/' + phoneVal + '/deviceId').set(currentDeviceId); 
-                }
+                // تسجيل الربط في قاعدة البيانات
+                await database.ref('allowed_phones/' + phone + '/telegramId').set(String(pendingTgUser.id));
+                await database.ref('telegram_users/' + String(pendingTgUser.id)).set({
+                    phone: phone, 
+                    name: userData.name || pendingTgUser.first_name
+                });
 
-                localStorage.setItem('saved_phone_v3', phoneVal);
-                sessionStorage.setItem('student_name', userData.name || 'يا بطل');
-                
-                verifyConnectionAndFinalize(phoneVal, userData.name || 'طالب', btn);
+                // إكمال تسجيل الدخول
+                verifyAndLogin(phone, userData.name || pendingTgUser.first_name, String(pendingTgUser.id));
 
-            } catch(err) {
-                debugBox.style.display = 'block'; 
-                debugBox.innerHTML += `<div>❌ <b>DB Error:</b> ${err.message}</div>`;
-                showError(btn, 'خطأ في قاعدة البيانات!');
+            } catch(e) { 
+                showSmartAlert("خطأ في الاتصال بقاعدة البيانات!", true); 
+                btn.innerHTML = 'ربط الحساب والدخول'; btn.disabled = false; 
             }
         };
 
-        // 10. فحص الـ IP والـ VPN وتسجيل الدخول
-        async function verifyConnectionAndFinalize(phone, name, btn) {
-            let dev = "غير معروف", loc = "غير معروف", ip = "غير معروف", isVpn = false, isOut = false, isVerified = false;
+        // دالة التحقق وإتمام تسجيل الدخول (وتسجيل اللوج)
+        async function verifyAndLogin(phone, name, tgId) {
+            const cDev = getPlatformDeviceId();
             
-            try { 
-                const parser = new UAParser(); 
-                const res = parser.getResult(); 
-                dev = (res.device.vendor ? res.device.vendor + " " : "") + res.device.model || dev; 
-            } catch(e) {}
-            
-            try { 
-                let r = await fetch('https://ipapi.co/json/'); 
-                let d = await r.json(); 
-                if(!d.error) { 
-                    loc = d.city + ", " + d.country_name; 
-                    ip = d.ip; 
-                    if(d.country_code !== "EG") isOut = true; 
-                    isVerified = true; 
-                } 
-            } catch(e) {}
-            
-            let bannedList = []; 
-            if(database) { 
-                try { 
-                    let bSnap = await database.ref('banned_ips').once('value'); 
-                    if(bSnap.exists()) bannedList = Object.values(bSnap.val()); 
-                } catch(e) {} 
-            }
-            
-            const timeNow = new Date().toLocaleString('ar-EG');
-            
-            if(bannedList.includes(ip)) { 
-                showError(btn, 'جهاز محظور 🚫'); 
-                fetch(getTeleUrl(), { 
-                    method: "POST", headers: { "Content-Type": "application/json" }, 
-                    body: JSON.stringify({ chat_id: tgKeys.cid, text: `🛑 محظور: ${phone} - IP: ${ip}` }) 
-                }).catch(e=>{}); 
-                return; 
-            }
-            
-            if(isVpn || isOut || !isVerified) { 
-                showError(btn, 'أغلق VPN 🚫'); 
-                fetch(getTeleUrl(), { 
-                    method: "POST", headers: { "Content-Type": "application/json" }, 
-                    body: JSON.stringify({ chat_id: tgKeys.cid, text: `⚠️ VPN: ${phone} - Loc: ${loc}` }) 
-                }).catch(e=>{}); 
-                return; 
-            }
-            
-            // تسجيل اللوج في الداتا بيز والتليجرام
-            if(database) {
-                database.ref('login_logs').push({
-                    phone: phone, name: name, device: dev, location: loc, ip: ip, time: timeNow
-                }).catch(e=>{});
-            }
-            
-            fetch(getTeleUrl(), { 
-                method: "POST", headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول بكود الدخول!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n⏰ الوقت: ${timeNow}` }) 
-            }).catch(e=>{});
-            
-            finalizeLogin(phone, name, btn);
-        }
+            try {
+                const snap = await database.ref('allowed_phones/' + phone).once('value');
+                const userData = snap.val() || {};
 
-        // 11. إتمام الدخول وإظهار المحتوى
-        function finalizeLogin(phone, name, btn) {
-            btn.style.background = 'rgba(34,197,94,.8)'; 
-            btn.innerHTML = 'تم بنجاح ✓'; 
-            btn.disabled = false;
-            
-            document.getElementById('studentNameDisplay').innerText = name;
-            
-            const tToken = Math.random().toString(36).substring(2) + Date.now().toString(36); 
-            sessionStorage.setItem('session_token', tToken);
-            
-            if(database) { 
-                const sessionRef = database.ref('active_tickets/sessions/' + phone); 
-                sessionRef.set(tToken).then(() => { 
-                    sessionRef.onDisconnect().remove(); 
-                    monitorSession(phone); 
-                }).catch(e=>{}); 
-            }
-            
-            sessionStorage.setItem('student_auth', 'verified'); 
-            sessionStorage.setItem('student_phone', phone); 
-            sessionStorage.setItem('login_time', Date.now()); 
-            history.pushState({page: 'exams'}, 'Exams', '#exams');
-            
-            clearTimeout(logoutTimer); 
-            logoutTimer = setTimeout(() => { 
-                alert("انتهت الجلسة."); 
-                window.handleLogout(); 
-            }, 30 * 60 * 1000);
-            
-            setTimeout(() => { 
-                document.getElementById('loginSection').style.display = 'none'; 
-                document.getElementById('mainHeader').style.display = 'none'; 
-                document.getElementById('examsSection').style.display = 'block'; 
+                // نظام الحماية لمنع مشاركة الحساب
+                if(userData.deviceId && userData.deviceId !== cDev) {
+                    showSmartAlert("حسابك مسجل من جهاز آخر 🚫", true); 
+                    return;
+                }
                 
-                btn.style.background = ''; 
-                btn.innerHTML = 'تسجيل الدخول'; 
+                // تسجيل بصمة الجهاز لأول مرة
+                if(!userData.deviceId) { 
+                    await database.ref('allowed_phones/' + phone + '/deviceId').set(cDev); 
+                }
+
+                // جمع بيانات الأمان والموقع
+                let dev = "غير معروف", loc = "غير معروف", ip = "غير معروف";
+                try { const p = new UAParser(); const r = p.getResult(); dev = (r.device.vendor ? r.device.vendor + " " : "") + r.device.model || dev; } catch(e) {}
+                try { let res = await fetch('https://ipapi.co/json/'); let d = await res.json(); if(!d.error) { loc = d.city + ", " + d.country_name; ip = d.ip; } } catch(e) {}
+
+                const tNow = new Date().toLocaleString('ar-EG');
+                
+                // إرسال اللوج لفايربيز وتليجرام
+                database.ref('login_logs').push({ phone: phone, name: name, telegramId: tgId, device: dev, location: loc, ip: ip, time: tNow }).catch(e=>{});
+                fetch(getTeleUrl(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول آمن بتليجرام!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n⏰ الوقت: ${tNow}` }) }).catch(e=>{});
+
+                // تهيئة الجلسة المحلية (Session)
+                sessionStorage.setItem('student_auth', 'verified'); 
+                sessionStorage.setItem('student_phone', phone); 
+                sessionStorage.setItem('student_name', name); 
+                sessionStorage.setItem('login_time', Date.now());
+                
+                const tToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                sessionStorage.setItem('session_token', tToken);
+                
+                // حماية الطرد المباشر (Monitor)
+                await database.ref('active_tickets/sessions/' + phone).set(tToken);
+                database.ref('active_tickets/sessions/' + phone).onDisconnect().remove();
+                monitorSession(phone);
+
+                // تجهيز واجهة المنصة
+                document.getElementById('studentNameDisplay').innerText = name;
+                document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('linkPhoneSection').style.display = 'none'; 
+                document.getElementById('mainHeader').style.display = 'none'; 
+                document.getElementById('examsSection').style.display = 'block';
+                
+                history.pushState({page: 'exams'}, 'Exams', '#exams');
+                
+                clearTimeout(logoutTimer); 
+                logoutTimer = setTimeout(() => { alert("انتهت الجلسة."); handleLogout(); }, 30 * 60 * 1000);
                 
                 fetchExamsFromServer(); 
-                fetchPdfsFromServer(); 
-            }, 500);
+                fetchPdfsFromServer();
+                
+            } catch(e) {
+                showSmartAlert("حدث خطأ أثناء تسجيل الدخول.", true);
+            }
         }
 
-        // 12. جلب الامتحانات والـ PDF
-        function fetchExamsFromServer() {
-            const cont = document.getElementById('dynamicExamsList'); 
-            if (!database) { 
-                cont.innerHTML = '<p>مشكلة اتصال بالخادم.</p>'; 
-                return; 
-            }
+        // ==========================================
+        // 8. نظام مراقبة الجلسة (Session Monitoring)
+        // ==========================================
+        function monitorSession(phone) {
+            const lToken = sessionStorage.getItem('session_token'); 
+            if(!lToken || !database) return;
             
-            database.ref('exams').on('value', function(snap) {
-                cont.innerHTML = ''; 
-                const data = snap.val();
-                
-                if (data) { 
-                    Object.values(data).forEach((exam) => { 
-                        if(exam && exam.name) { 
-                            const isC = exam.status === 'closed'; 
-                            cont.innerHTML += `
-                                <div class="exam-item" onclick="goToExam('${isC}', '${exam.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${exam.name}</span>
-                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
-                                    </div>
-                                    <div class="exam-status ${isC ? 'locked' : ''}">${isC ? 'مغلق 🔒' : 'دخول'}</div>
-                                </div>`; 
+            if(sessionListenerRef) sessionListenerRef.off('value', window.sessionListenerCallback);
+            
+            sessionListenerRef = database.ref('active_tickets/sessions/' + phone);
+            window.sessionListenerCallback = sessionListenerRef.on('value', snap => {
+                const rToken = snap.val();
+                if(rToken && rToken !== lToken) { 
+                    isKickedOut = true; 
+                    document.getElementById('kickOverlay').style.display = 'flex'; 
+                    setTimeout(() => {
+                        document.getElementById('kickOverlay').style.display = 'none';
+                        handleLogout();
+                    }, 3500); 
+                }
+            });
+        }
+
+        // ==========================================
+        // 9. جلب الاختبارات وملفات PDF
+        // ==========================================
+        function fetchExamsFromServer() {
+            const c = document.getElementById('dynamicExamsList'); 
+            if(!database) return;
+            
+            database.ref('exams').on('value', snap => {
+                c.innerHTML = ''; const d = snap.val();
+                if(d) { 
+                    Object.values(d).forEach(ex => { 
+                        if(ex && ex.name) { 
+                            const isC = ex.status === 'closed'; 
+                            c.innerHTML += `
+                            <div class="exam-item" onclick="goToExam('${isC}','${ex.url}')">
+                                <div class="exam-info">
+                                    <span class="exam-name">${ex.name}</span>
+                                    <span class="exam-meta">${ex.questionsCount} سؤال</span>
+                                </div>
+                                <div class="exam-status ${isC?'locked':''}">${isC?'مغلق 🔒':'دخول'}</div>
+                            </div>`; 
                         } 
-                    });
+                    }); 
                 } else { 
-                    cont.innerHTML = `
-                        <div class="empty-state">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                            <p>لا توجد اختبارات متاحة حالياً.</p>
-                        </div>`;
+                    c.innerHTML = `<div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>لا توجد اختبارات متاحة حالياً.</p>
+                    </div>`; 
                 }
             });
         }
 
         function fetchPdfsFromServer() {
-            const cont = document.getElementById('dynamicPdfsList'); 
-            if (!database) return;
+            const c = document.getElementById('dynamicPdfsList'); 
+            if(!database) return;
             
-            database.ref('pdfs').on('value', function(snap) {
-                cont.innerHTML = ''; 
-                const data = snap.val();
-                
-                if (data) { 
-                    Object.values(data).forEach((pdf) => { 
-                        if(pdf && pdf.name) { 
-                            cont.innerHTML += `
-                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${pdf.name}</span>
-                                        <span class="exam-meta">${pdf.size || 'ملف قابل للقراءة'}</span>
-                                    </div>
-                                    <div class="pdf-status">فتح 📖</div>
-                                </div>`; 
+            database.ref('pdfs').on('value', snap => {
+                c.innerHTML = ''; const d = snap.val();
+                if(d) { 
+                    Object.values(d).forEach(pf => { 
+                        if(pf && pf.name) { 
+                            c.innerHTML += `
+                            <div class="exam-item" onclick="openPdfModal('${pf.url}')">
+                                <div class="exam-info">
+                                    <span class="exam-name">${pf.name}</span>
+                                    <span class="exam-meta">${pf.size||'ملف مقروء'}</span>
+                                </div>
+                                <div class="pdf-status">فتح 📖</div>
+                            </div>`; 
                         } 
                     }); 
-                } else {
-                    cont.innerHTML = `
-                        <div class="empty-state">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                            <p>لا توجد ملفات PDF متاحة حالياً.</p>
-                        </div>`;
+                } else { 
+                    c.innerHTML = `<div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>لا توجد ملفات PDF متاحة حالياً.</p>
+                    </div>`; 
                 }
             });
         }
 
-        // 13. وضع المسرح للـ PDF والروابط
+        // ==========================================
+        // 10. التفاعل مع الروابط والمودال
+        // ==========================================
         window.openPdfModal = function(url) {
-            let fUrl = url; 
-            if (url.includes('drive.google.com')) { 
-                fUrl = url.replace(/\/(view|edit).*/, '/preview'); 
-            }
+            let f = url; 
+            if(f.includes('drive.google.com')) f = f.replace(/\/(view|edit).*/, '/preview');
             
             const modal = document.createElement('div'); 
-            modal.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: rgba(7,9,18,0.85); z-index: 99999; display: flex; 
-                flex-direction: column; align-items: center; justify-content: center; 
-                backdrop-filter: blur(15px); opacity: 0; transition: opacity 0.4s ease;
-            `;
+            modal.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.85); z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(15px); opacity:0; transition:opacity 0.4s ease;`;
             
             const closeBtn = document.createElement('button'); 
-            closeBtn.innerHTML = `
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            `; 
-            closeBtn.style.cssText = `
-                position: absolute; top: 25px; right: 25px; width: 45px; height: 45px; 
-                border-radius: 50%; background: rgba(239,68,68,0.15); color: #ef4444; 
-                border: 1px solid rgba(239,68,68,0.4); cursor: pointer; display: flex; 
-                align-items: center; justify-content: center; transition: all 0.3s ease; 
-                z-index: 10; box-shadow: 0 0 20px rgba(239,68,68,0.2);
-            `;
-            closeBtn.onmouseover = () => { closeBtn.style.transform = 'scale(1.1)'; closeBtn.style.background = 'rgba(239,68,68,0.25)'; };
-            closeBtn.onmouseout = () => { closeBtn.style.transform = 'scale(1)'; closeBtn.style.background = 'rgba(239,68,68,0.15)'; };
+            closeBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`; 
+            closeBtn.style.cssText = `position:absolute; top:25px; right:25px; width:45px; height:45px; border-radius:50%; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center;`;
             closeBtn.onclick = () => { modal.style.opacity = '0'; setTimeout(() => document.body.removeChild(modal), 400); };
+            
+            const iframeCont = document.createElement('div'); 
+            iframeCont.style.cssText = `width:95%; max-width:900px; height:85vh; border-radius:20px; background:#0b1020; box-shadow:0 20px 50px rgba(0,0,0,0.5); overflow:hidden;`;
+            
+            const iframe = document.createElement('iframe'); 
+            iframe.src = f; 
+            iframe.style.cssText = `width:100%; height:100%; border:none; background:white;`;
+            
+            iframeCont.appendChild(iframe); 
+            modal.appendChild(closeBtn); 
+            modal.appendChild(iframeCont); 
+            document.body.appendChild(modal); 
+            
+            setTimeout(() => modal.style.opacity = '1', 10);
+        };
 
-            const loaderContainer = document.createElement('div');
-            loaderContainer.style.cssText = `
-                position: absolute; display: flex; flex-direction: column; align-items: center; 
-                gap: 15px; color: var(--glow1); font-weight: 800; font-size: 16px; letter-spacing: 1px;
-            `;
-            loaderContainer.innerHTML = `
-                <div style="width: 50px; height: 50px; border: 3px solid rgba(110,231,255,0.2); border-top: 3px so
+        window.goToExam = function(isClosed, url) {
+            if(isClosed === 'true' || isClosed === true) { 
+                alert('مغلق 🔒'); 
+            } else {
+                const phone = sessionStorage.getItem('student_phone'); 
+                if(!phone) return;
+                
+                const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                
+                if(database) {
+                    database.ref('active_tickets/' + phone).set({ token: token, timestamp: Date.now() })
+                    .then(() => {
+                        window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(phone)}&t=${token}`;
+                    });
+                }
+            }
+        };
+
+        // ==========================================
+        // 11. تسجيل الخروج والتحكم في المتصفح
+        // ==========================================
+        window.handleLogout = function() {
+            const phone = sessionStorage.getItem('student_phone');
+            if(phone && database && !isKickedOut) {
+                database.ref('active_tickets/sessions/' + phone).remove().catch(e=>{});
+            }
+            
+            isKickedOut = false;
+            
+            if(sessionListenerRef) {
+                sessionListenerRef.off('value', window.sessionListenerCallback);
+                sessionListenerRef = null;
+            }
+            
+            sessionStorage.clear();
+            clearTimeout(logoutTimer);
+            
+            document.getElementById('examsSection').style.display = 'none'; 
+            document.getElementById('linkPhoneSection').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'block'; 
+            document.getElementById('loginSection').style.display = 'block';
+            
+            switchTab('exams');
+            if (location.hash === '#exams') history.back();
+        };
+
+        window.addEventListener('popstate', function() { 
+            if (document.getElementById('examsSection').style.display === 'block') { 
+                if(sessionStorage.getItem('student_auth')) { 
+                    history.pushState({page:'exams'},'Exams','#exams'); 
+                } else { 
+                    window.handleLogout(); 
+                } 
+            } 
+        });
+        
+        window.addEventListener('pageshow', function(e) { 
+            if (e.persisted) { 
+                const lt = sessionStorage.getItem('login_time'); 
+                if (lt && (Date.now() - parseInt(lt) > 1800000)) { 
+                    window.handleLogout(); 
+               
