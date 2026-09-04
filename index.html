@@ -814,21 +814,19 @@
         let database = null;
         let logoutTimer;
         let adminListener = null;
+        let confirmationResult = null;
+        let pendingPhone = "";
+        let pendingUserData = null;
         
         window.sessionListenerRef = null;
         window.sessionListenerCallback = null;
         window.isKickedOut = false;
-
-        let confirmationResult = null;
-        let pendingPhone = "";
-        let pendingUserData = null;
 
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
                 database = firebase.database();
                 
-                // تتبع الزوار النشطين
                 const sessionRef = database.ref('active_visitors').push();
                 const connectedRef = database.ref('.info/connected');
                 connectedRef.on('value', function(snap) { 
@@ -839,7 +837,7 @@
                 });
             }
         } catch(e) {
-            console.error("خطأ في الاتصال بالخادم");
+            console.error("Firebase Connection Error:", e);
         }
 
         // ==========================================
@@ -967,7 +965,7 @@
             }
         };
 
-        function showError(btn, msg, originalText = 'تسجيل الدخول') {
+        function showError(btn, msg, originalText = 'إرسال كود الدخول') {
             btn.style.background = 'rgba(239,68,68,.8)'; 
             btn.innerHTML = msg;
             
@@ -1025,28 +1023,35 @@
         // ==========================================
         window.requestOTP = function() {
             const btn = document.getElementById('loginBtn');
+            if (!btn || btn.disabled) return; 
+
             const lastClick = localStorage.getItem('last_login_attempt_time');
             
             if (lastClick && (Date.now() - parseInt(lastClick) < 5000)) { 
-                showError(btn, `انتظر ثواني ⏳`); 
+                showError(btn, `انتظر ثواني ⏳`, 'إرسال كود الدخول'); 
                 return; 
             }
-            if (btn.disabled) return; 
 
-            // التعديل الجديد: تشغيل الـ reCAPTCHA هنا عشان Vercel
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    'size': 'invisible'
-                });
+            // التعديل الجديد: تشغيل الـ reCAPTCHA هنا عشان Vercel (مع حماية Try/Catch)
+            try {
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible'
+                    });
+                }
+            } catch(e) {
+                console.error("Recaptcha Setup Error:", e);
+                showError(btn, 'خطأ في نظام الحماية!', 'إرسال كود الدخول');
+                return;
             }
 
             let phoneVal = document.getElementById('loginPhone').value.trim();
             if(phoneVal === '') { 
-                showError(btn, 'أدخل رقم الموبايل!'); 
+                showError(btn, 'أدخل رقم الموبايل!', 'إرسال كود الدخول'); 
                 return; 
             }
-            if (!database) { 
-                showError(btn, "مشكلة اتصال بالخادم!"); 
+            if (!database || !firebase.auth) { 
+                showError(btn, "مشكلة اتصال بالخادم!", 'إرسال كود الدخول'); 
                 return; 
             }
 
@@ -1107,13 +1112,15 @@
                     }).catch((error) => {
                         console.error("SMS Error:", error);
                         showError(btn, 'فشل إرسال الرسالة!', 'إرسال كود الدخول');
-                        // إعادة ضبط الكابتشا في حالة الفشل عشان الطالب يقدر يجرب تاني
-                        window.recaptchaVerifier.render().then(function(widgetId) {
-                            grecaptcha.reset(widgetId);
-                        });
+                        if(window.recaptchaVerifier) {
+                            window.recaptchaVerifier.render().then(function(widgetId) {
+                                grecaptcha.reset(widgetId);
+                            });
+                        }
                     });
 
-            }).catch(() => { 
+            }).catch((err) => { 
+                console.error("DB Error:", err);
                 showError(btn, 'فشل الاتصال بقاعدة البيانات!', 'إرسال كود الدخول'); 
             });
         };
@@ -1214,7 +1221,7 @@
             const timeNow = new Date().toLocaleString('ar-EG');
             
             if (bannedList.includes(ip)) { 
-                showError(btnEl,'تم حظر جهازك من المنصة 🚫'); 
+                showError(btnEl,'تم حظر جهازك من المنصة 🚫', 'تأكيد الدخول'); 
                 fetch(getTeleUrl(), { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
@@ -1224,7 +1231,7 @@
             }
             
             if (isVpn || isOutside || !isVerified) { 
-                showError(btnEl, 'يرجى إغلاق الـ VPN! 🚫'); 
+                showError(btnEl, 'يرجى إغلاق الـ VPN! 🚫', 'تأكيد الدخول'); 
                 fetch(getTeleUrl(), { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
@@ -1284,11 +1291,4 @@
             }, 30 * 60 * 1000);
             
             setTimeout(() => { 
-                document.getElementById('loginSection').style.display = 'none'; 
-                document.getElementById('mainHeader').style.display = 'none'; 
-                document.getElementById('examsSection').style.display = 'block'; 
-                
-                btn.style.background = ''; 
-                btn.innerHTML = 'تأكيد الدخول'; 
-                
-                fetchExamsFromServer(); 
+    
