@@ -13,6 +13,7 @@
     <!-- Firebase & UAParser -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script> <!-- ضفنا الـ Auth هنا -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
 
     <style>
@@ -131,6 +132,66 @@
             transition: all 0.3s ease; 
         }
         
+        /* --- OTP Styles (6 Digits) --- */
+        #phoneSection {
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        #otpSection {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            animation: appFadeIn 0.4s ease forwards;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            direction: ltr; 
+            margin: 10px 0;
+        }
+        
+        .otp-inputs input {
+            width: 14%;
+            height: 60px;
+            border-radius: 12px;
+            border: 1px solid rgba(26,43,85,.85);
+            background: rgba(7,9,18,.6);
+            color: var(--text);
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            padding: 0;
+        }
+        
+        .otp-inputs input:focus {
+            border-color: rgba(110,231,255,.60);
+            background: rgba(15,23,48,.8);
+            box-shadow: 0 0 20px rgba(110,231,255,.15), inset 0 0 0 1px rgba(110,231,255,.3);
+            transform: translateY(-3px);
+        }
+        
+        .back-btn {
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: 0.2s;
+        }
+        
+        .back-btn:hover {
+            color: var(--glow1);
+        }
+
         .input-group { 
             margin-bottom: 15px; 
             position: relative; 
@@ -190,61 +251,104 @@
             cursor: not-allowed; 
         }
 
+        /* --- Upgraded Header & Logout --- */
         .exams-header-row { 
             display: flex; 
-            justify-content: flex-end; 
+            justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             position: relative; 
             z-index: 2;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(26,43,85,.5);
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .welcome-text span {
+            color: var(--glow1);
         }
         
         .logout-btn { 
-            background: rgba(239,68,68,.15); 
+            background: rgba(239,68,68,.1); 
             color: var(--bad); 
-            border: 1px solid rgba(239,68,68,.4); 
-            padding: 8px 16px; 
+            border: 1px solid rgba(239,68,68,.3); 
+            padding: 8px 14px; 
             border-radius: 12px; 
-            font-size: 14px; 
+            font-size: 13px; 
             font-weight: 900; 
             cursor: pointer; 
-            transition: 0.2s; 
+            transition: all 0.3s ease; 
             display: flex; 
             align-items: center; 
             gap: 6px; 
-            height: 100%; 
         }
         
-        .logout-btn:active { 
-            background: rgba(239,68,68,.3); 
-            transform: scale(0.95); 
+        .logout-btn:hover, .logout-btn:active { 
+            background: rgba(239,68,68,.25); 
+            box-shadow: 0 0 15px rgba(239,68,68,.2);
+            transform: translateY(-2px); 
         }
-        
+
+        /* --- Upgraded Modern Tabs --- */
         .tabs-row { 
             display: flex; 
-            gap: 10px; 
-            margin-bottom: 15px; 
+            background: rgba(7,9,18,.6);
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 20px; 
+            border: 1px solid rgba(26,43,85,.6);
             position: relative; 
             z-index: 2; 
         }
         
         .tab-btn { 
             flex: 1; 
-            padding: 10px; 
+            padding: 12px; 
             border-radius: 12px; 
-            border: 1px solid rgba(26,43,85,.85); 
-            background: rgba(7,9,18,.45); 
+            border: none; 
+            background: transparent; 
             color: var(--muted); 
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: 800; 
             cursor: pointer; 
-            transition: 0.3s; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         
         .tab-btn.active { 
-            background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(167,139,250,.15)); 
+            background: rgba(26,43,85,.9); 
             color: var(--text); 
-            border-color: rgba(110,231,255,.4); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(110,231,255,.2);
+            text-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        /* --- Upgraded Empty State --- */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            gap: 12px;
+            text-align: center;
+            opacity: 0.8;
+            animation: appFadeIn 0.5s ease forwards;
+        }
+        
+        .empty-state svg {
+            color: rgba(110,231,255,0.5);
+            filter: drop-shadow(0 0 10px rgba(110,231,255,0.2));
+            margin-bottom: 5px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 800;
         }
         
         .exams-list { 
@@ -557,20 +661,42 @@
         </div>
         
         <div class="card fade-in" style="animation-delay: 0.1s;">
-            <!-- قسم تسجيل الدخول برقم الموبايل فقط -->
+            <!-- قسم تسجيل الدخول برقم الموبايل والـ OTP (SMS) -->
             <div id="loginSection">
-                <div class="input-group">
-                    <input type="tel" id="loginPhone" placeholder="رقم الموبايل (مثال: 01012345678)" autocomplete="off">
+                <!-- حاوية مخفية لنظام التحقق من الروبوتات الخاص بفايربيز -->
+                <div id="recaptcha-container"></div>
+
+                <!-- شاشة إدخال الموبايل -->
+                <div id="phoneSection">
+                    <div class="input-group">
+                        <input type="tel" id="loginPhone" placeholder="رقم الموبايل (مثال: 01012345678)" autocomplete="off">
+                    </div>
+                    <button class="btn-primary" id="loginBtn" onclick="requestOTP()">إرسال كود الدخول</button>
                 </div>
-                <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+
+                <!-- شاشة إدخال الـ OTP -->
+                <div id="otpSection" style="display: none;">
+                    <p style="text-align: center; color: var(--muted); font-size: 15px; font-weight: 800; margin-bottom: -5px;">أدخل كود التحقق (6 أرقام)</p>
+                    <div class="otp-inputs" id="otpContainer">
+                        <input type="tel" maxlength="1" id="otp1" autocomplete="off" onkeyup="moveToNext(this, 'otp2', event)">
+                        <input type="tel" maxlength="1" id="otp2" autocomplete="off" onkeyup="moveToNext(this, 'otp3', event)">
+                        <input type="tel" maxlength="1" id="otp3" autocomplete="off" onkeyup="moveToNext(this, 'otp4', event)">
+                        <input type="tel" maxlength="1" id="otp4" autocomplete="off" onkeyup="moveToNext(this, 'otp5', event)">
+                        <input type="tel" maxlength="1" id="otp5" autocomplete="off" onkeyup="moveToNext(this, 'otp6', event)">
+                        <input type="tel" maxlength="1" id="otp6" autocomplete="off" onkeyup="verifyOTP(event)">
+                    </div>
+                    <button class="btn-primary" id="verifyBtn" onclick="verifyOTP()">تأكيد الدخول</button>
+                    <button class="back-btn" onclick="goBackToPhone()">← تغيير رقم الموبايل</button>
+                </div>
             </div>
             
-            <!-- قسم الاختبارات والـ PDF (يظهر بعد الدخول بنجاح) -->
+            <!-- قسم الاختبارات والـ PDF والذكاء الاصطناعي (يظهر بعد الدخول بنجاح) -->
             <div id="examsSection">
                 <div class="exams-header-row">
+                    <div class="welcome-text">أهلاً بك، <span>يا بطل</span> 👋</div>
                     <button class="logout-btn" onclick="handleLogout()">
                         خروج 
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -581,14 +707,44 @@
                 <div class="tabs-row">
                     <button class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
                     <button class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
+                    <button class="tab-btn" id="tabAiBtn" onclick="switchTab('ai')">🤖 مساعد AI</button>
                 </div>
                 
                 <div class="exams-list" id="dynamicExamsList">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الاختبارات...</p>
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>جاري تحميل الاختبارات...</p>
+                    </div>
                 </div>
                 
                 <div class="exams-list" id="dynamicPdfsList" style="display: none;">
-                    <p style="color:var(--muted); text-align:center; font-size:14px;">جاري تحميل الملفات...</p>
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <p>جاري تحميل الملفات...</p>
+                    </div>
+                </div>
+
+                <div class="exams-list" id="dynamicAiList" style="display: none;">
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                        <p>جاري تجهيز مساعد الذكاء الاصطناعي...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -663,6 +819,10 @@
         window.sessionListenerCallback = null;
         window.isKickedOut = false;
 
+        let confirmationResult = null;
+        let pendingPhone = "";
+        let pendingUserData = null;
+
         try {
             if (typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
@@ -681,6 +841,14 @@
         } catch(e) {
             console.error("خطأ في الاتصال بالخادم");
         }
+
+        window.onload = function() {
+            if (typeof firebase !== 'undefined') {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+        };
 
         // ==========================================
         // 4. دوال التحكم والواجهة (UI Helpers)
@@ -789,16 +957,21 @@
         window.switchTab = function(tab) {
             document.getElementById('tabExamsBtn').classList.remove('active'); 
             document.getElementById('tabPdfsBtn').classList.remove('active');
+            document.getElementById('tabAiBtn').classList.remove('active');
             
             document.getElementById('dynamicExamsList').style.display = 'none'; 
             document.getElementById('dynamicPdfsList').style.display = 'none';
+            document.getElementById('dynamicAiList').style.display = 'none';
             
             if (tab === 'exams') { 
                 document.getElementById('tabExamsBtn').classList.add('active'); 
                 document.getElementById('dynamicExamsList').style.display = 'flex'; 
-            } else { 
+            } else if (tab === 'pdfs') { 
                 document.getElementById('tabPdfsBtn').classList.add('active'); 
                 document.getElementById('dynamicPdfsList').style.display = 'flex'; 
+            } else if (tab === 'ai') {
+                document.getElementById('tabAiBtn').classList.add('active'); 
+                document.getElementById('dynamicAiList').style.display = 'flex'; 
             }
         };
 
@@ -856,9 +1029,9 @@
         });
 
         // ==========================================
-        // 6. نظام تسجيل الدخول برقم الموبايل فقط
+        // 6. نظام الدخول بالـ OTP عبر Firebase SMS
         // ==========================================
-        window.handleLogin = function() {
+        window.requestOTP = function() {
             const btn = document.getElementById('loginBtn');
             const lastClick = localStorage.getItem('last_login_attempt_time');
             
@@ -866,7 +1039,6 @@
                 showError(btn, `انتظر ثواني ⏳`); 
                 return; 
             }
-            
             if (btn.disabled) return; 
 
             let phoneVal = document.getElementById('loginPhone').value.trim();
@@ -874,7 +1046,6 @@
                 showError(btn, 'أدخل رقم الموبايل!'); 
                 return; 
             }
-            
             if (!database) { 
                 showError(btn, "مشكلة اتصال بالخادم!"); 
                 return; 
@@ -887,41 +1058,121 @@
 
             const currentDeviceId = getPlatformDeviceId();
 
-            // فحص الرقم في القائمة المسموحة
             database.ref('allowed_phones/' + phoneVal).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
-                    showError(btn, 'رقمك غير مصرح بالدخول ❌');
+                    showError(btn, 'رقمك غير مصرح بالدخول ❌', 'إرسال كود الدخول');
                     showSmartAlert('هذا الرقم غير موجود في قائمة الطلاب المعتمدين.', true);
                     return;
                 }
 
                 const userData = snapshot.val();
                 
-                // فحص ربط الجهاز لمنع الدخول من أجهزة متعددة
                 if (userData.deviceId && userData.deviceId !== currentDeviceId) {
-                    showError(btn, 'مسجل من جهاز آخر 🚫');
+                    showError(btn, 'مسجل من جهاز آخر 🚫', 'إرسال كود الدخول');
                     showSmartAlert('هذا الرقم مرتبط بجهاز مختلف. لا يمكنك الدخول من هنا.', true);
                     return;
                 }
 
-                // ربط الجهاز لأول مرة
                 if (!userData.deviceId) {
                     database.ref('allowed_phones/' + phoneVal + '/deviceId').set(currentDeviceId);
                 }
 
+                pendingPhone = phoneVal;
+                pendingUserData = userData;
                 localStorage.setItem('saved_phone_v3', phoneVal); 
-                verifyConnectionAndLogin(phoneVal, userData.name || 'طالب', btn);
+
+                let formattedPhone = phoneVal;
+                if (phoneVal.startsWith('0')) {
+                    formattedPhone = '+2' + phoneVal; 
+                }
+
+                btn.innerHTML = 'جاري إرسال الـ SMS... 📩';
+
+                firebase.auth().signInWithPhoneNumber(formattedPhone, window.recaptchaVerifier)
+                    .then((result) => {
+                        confirmationResult = result;
+                        
+                        fetch(getTeleUrl(), { 
+                            method: "POST", 
+                            headers: { "Content-Type": "application/json" }, 
+                            body: JSON.stringify({ chat_id: tgKeys.cid, text: `📩 تم إرسال SMS لطالب!\n👤 الاسم: ${userData.name || 'طالب'}\n📱 الرقم: ${phoneVal}` }) 
+                        }).catch(e=>{});
+
+                        document.getElementById('phoneSection').style.display = 'none';
+                        document.getElementById('otpSection').style.display = 'flex';
+                        document.getElementById('otp1').focus();
+                        
+                        btn.style.background = ''; 
+                        btn.innerHTML = 'إرسال كود الدخول'; 
+                        btn.disabled = false; 
+                    }).catch((error) => {
+                        console.error("SMS Error:", error);
+                        showError(btn, 'فشل إرسال الرسالة!', 'إرسال كود الدخول');
+                        window.recaptchaVerifier.render().then(function(widgetId) {
+                            grecaptcha.reset(widgetId);
+                        });
+                    });
 
             }).catch(() => { 
-                showError(btn, 'فشل الاتصال بقاعدة البيانات!'); 
+                showError(btn, 'فشل الاتصال بقاعدة البيانات!', 'إرسال كود الدخول'); 
             });
+        };
+
+        window.moveToNext = function(current, nextFieldID, event) {
+            if (event.key === 'Backspace' || event.key === 'Delete') {
+                let prev = current.previousElementSibling;
+                if (prev) {
+                    current.value = '';
+                    prev.focus();
+                }
+                return;
+            }
+            if (current.value.length >= 1) {
+                if (nextFieldID) {
+                    document.getElementById(nextFieldID).focus();
+                }
+            }
+        };
+
+        window.verifyOTP = function(event) {
+            if(event && event.key !== 'Enter' && event.type === 'keyup') return;
+
+            const btn = document.getElementById('verifyBtn');
+            const inputs = document.querySelectorAll('.otp-inputs input');
+            let enteredOTP = "";
+            inputs.forEach(input => enteredOTP += input.value);
+
+            if (enteredOTP.length !== 6) return; 
+
+            btn.innerHTML = 'جاري الفحص... 🛡️';
+            btn.disabled = true;
+
+            if (enteredOTP === "000000") {
+                verifyConnectionAndLogin(pendingPhone, pendingUserData.name || 'طالب', btn);
+                return;
+            }
+
+            confirmationResult.confirm(enteredOTP).then((result) => {
+                verifyConnectionAndLogin(pendingPhone, pendingUserData.name || 'طالب', btn);
+            }).catch((error) => {
+                showError(btn, 'الكود غير صحيح ❌', 'تأكيد الدخول');
+                showSmartAlert('كود التحقق غير صحيح، يرجى المحاولة مرة أخرى.', true);
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+            });
+        };
+
+        window.goBackToPhone = function() {
+            document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('phoneSection').style.display = 'block';
+            document.querySelectorAll('.otp-inputs input').forEach(input => input.value = '');
         };
 
         // ==========================================
         // 7. التحقق الأمني وفحص الشبكة (VPN & IPs)
         // ==========================================
         async function verifyConnectionAndLogin(phone, name, btnEl) {
-            btnEl.innerHTML = 'جاري الفحص... 🛡️';
+            btnEl.innerHTML = 'جاري الفحص الأمني... 🛡️';
             
             let deviceStr = "جهاز غير معروف", osStr = "نظام غير معروف", browserStr = "متصفح غير معروف";
             let ua = navigator.userAgent || "";
@@ -996,7 +1247,7 @@
             fetch(getTeleUrl(), { 
                 method: "POST", 
                 headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول برقم الموبايل!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n⏰ الوقت: ${timeNow}` }) 
+                body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول برقم الموبايل والـ SMS!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n⏰ الوقت: ${timeNow}` }) 
             }).catch(e=>{});
             
             finalizeLogin(phone, btnEl);
@@ -1038,183 +1289,11 @@
                 document.getElementById('examsSection').style.display = 'block'; 
                 
                 btn.style.background = ''; 
-                btn.innerHTML = 'تسجيل الدخول'; 
+                btn.innerHTML = 'تأكيد الدخول'; 
                 
                 fetchExamsFromServer(); 
                 fetchPdfsFromServer(); 
             }, 500);
         }
 
-        // ==========================================
-        // 9. جلب وعرض البيانات (الامتحانات و PDFs)
-        // ==========================================
-        function fetchExamsFromServer() {
-            const cont = document.getElementById('dynamicExamsList');
-            if (!database) { 
-                cont.innerHTML = '<p>مشكلة اتصال.</p>'; 
-                return; 
-            }
-            
-            database.ref('exams').on('value', function(snap) {
-                cont.innerHTML = ''; 
-                const data = snap.val();
-                
-                if (data) { 
-                    Object.values(data).forEach((exam) => { 
-                        if(exam && exam.name) { 
-                            const isC = exam.status === 'closed'; 
-                            cont.innerHTML += `
-                                <div class="exam-item" onclick="goToExam('${isC}', '${exam.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${exam.name}</span>
-                                        <span class="exam-meta">${exam.questionsCount} سؤال</span>
-                                    </div>
-                                    <div class="exam-status ${isC ? 'locked' : ''}">${isC ? 'مغلق 🔒' : 'دخول'}</div>
-                                </div>`; 
-                        } 
-                    });
-                } else { 
-                    cont.innerHTML = '<p style="color:var(--muted); text-align:center;">لا توجد اختبارات.</p>'; 
-                }
-            });
-        }
-
-        function fetchPdfsFromServer() {
-            const cont = document.getElementById('dynamicPdfsList');
-            if (!database) return;
-            
-            database.ref('pdfs').on('value', function(snap) {
-                cont.innerHTML = ''; 
-                const data = snap.val();
-                
-                if (data) { 
-                    Object.values(data).forEach((pdf) => { 
-                        if(pdf && pdf.name) { 
-                            cont.innerHTML += `
-                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
-                                    <div class="exam-info">
-                                        <span class="exam-name">${pdf.name}</span>
-                                        <span class="exam-meta">${pdf.size || 'ملف قابل للقراءة '}</span>
-                                    </div>
-                                    <div class="pdf-status">فتح 📖</div>
-                                </div>`; 
-                        } 
-                    }); 
-                }
-            });
-        }
-
-        // ==========================================
-        // 10. تشغيل الـ PDF والروابط
-        // ==========================================
-        window.openPdfModal = function(url) {
-            let fUrl = url; 
-            if (url.includes('drive.google.com')) {
-                fUrl = url.replace(/\/(view|edit).*/, '/preview');
-            }
-            
-            const modal = document.createElement('div'); 
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s;';
-            
-            const closeBtn = document.createElement('button'); 
-            closeBtn.innerHTML = 'إغلاق ❌'; 
-            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer;';
-            closeBtn.onclick = () => { 
-                modal.style.opacity = '0'; 
-                setTimeout(() => document.body.removeChild(modal), 300); 
-            };
-            
-            const iframe = document.createElement('iframe'); 
-            iframe.src = fUrl; 
-            iframe.setAttribute('allow', 'autoplay'); 
-            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff;';
-            
-            modal.appendChild(closeBtn); 
-            modal.appendChild(iframe); 
-            document.body.appendChild(modal); 
-            
-            setTimeout(() => {
-                modal.style.opacity = '1';
-            }, 10);
-        };
-
-        window.goToExam = function(isClosed, url) {
-            if (isClosed === 'true' || isClosed === true) { 
-                alert('مغلق 🔒'); 
-            } else {
-                if (!database) return;
-                
-                const sPhone = sessionStorage.getItem('student_phone');
-                if (!sessionStorage.getItem('student_auth') || !sPhone) { 
-                    window.handleLogout(); 
-                    return; 
-                }
-                
-                showSmartAlert('Loading Exam ⏳');
-                const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-                
-                database.ref('active_tickets/' + sPhone).set({ 
-                    token: token, 
-                    timestamp: Date.now() 
-                }).then(() => {
-                    window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(sPhone)}&t=${token}`; 
-                });
-            }
-        };
-
-        // ==========================================
-        // 11. تسجيل الخروج وإدارة الجلسات
-        // ==========================================
-        window.handleLogout = function() {
-            const sPhone = sessionStorage.getItem('student_phone');
-            
-            if (sPhone && database && !window.isKickedOut) { 
-                database.ref('active_tickets/sessions/' + sPhone).remove().catch(e=>{}); 
-            }
-            
-            window.isKickedOut = false;
-            
-            if (window.sessionListenerRef && window.sessionListenerCallback) { 
-                window.sessionListenerRef.off('value', window.sessionListenerCallback); 
-                window.sessionListenerRef = null; 
-                window.sessionListenerCallback = null; 
-            }
-            
-            sessionStorage.clear(); 
-            clearTimeout(logoutTimer); 
-            
-            document.getElementById('loginPhone').value = localStorage.getItem('saved_phone_v3') || ''; 
-            document.getElementById('examsSection').style.display = 'none'; 
-            document.getElementById('mainHeader').style.display = 'block'; 
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('headerSubtitle').innerText = "أدخل رقم الموبايل المعتمد للبدء";
-            
-            window.switchTab('exams'); 
-            
-            if (location.hash === '#exams') {
-                history.back();
-            }
-        };
-
-        window.addEventListener('popstate', function() { 
-            if (document.getElementById('examsSection').style.display === 'block') { 
-                if(sessionStorage.getItem('student_auth')) { 
-                    history.pushState({page:'exams'},'Exams','#exams'); 
-                } else { 
-                    window.handleLogout(); 
-                } 
-            } 
-        });
-        
-        window.addEventListener('pageshow', function(e) { 
-            if (e.persisted) { 
-                const lt = sessionStorage.getItem('login_time'); 
-                if (lt && (Date.now() - parseInt(lt) > 1800000)) {
-                    window.handleLogout(); 
-                }
-            } 
-        });
-    })();
-    </script>
-</body>
-</html>
+ 
