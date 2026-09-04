@@ -759,6 +759,12 @@
 
     <!-- كود الجافاسكريبت بالكامل -->
     <script>
+    // رادار الأخطاء المخفية (مهم جداً للتشخيص)
+    window.onerror = function(message, source, lineno, colno, error) {
+        alert("خطأ مخفي في الكود!\nالسطر: " + lineno + "\nالسبب: " + message);
+        return true;
+    };
+
     (function() {
         // ==========================================
         // 1. نظام الحماية ضد الفحص والتعديل
@@ -1279,8 +1285,4 @@
             
             setTimeout(() => { 
                 document.getElementById('loginSection').style.display = 'none'; 
-                document.getElementById('mainHeader').style.display = 'none'; 
-                document.getElementById('examsSection').style.display = 'block'; 
-                
-                btn.style.background = ''; 
-                btn.inner
+                docu
