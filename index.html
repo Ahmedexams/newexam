@@ -1019,30 +1019,16 @@
         });
 
         // ==========================================
-        // 6. نظام الدخول بالـ OTP عبر Firebase SMS
+        // 6. نظام الدخول بالـ OTP عبر Firebase SMS (مع تشخيص الأخطاء)
         // ==========================================
         window.requestOTP = function() {
             const btn = document.getElementById('loginBtn');
             if (!btn || btn.disabled) return; 
 
             const lastClick = localStorage.getItem('last_login_attempt_time');
-            
             if (lastClick && (Date.now() - parseInt(lastClick) < 5000)) { 
                 showError(btn, `انتظر ثواني ⏳`, 'إرسال كود الدخول'); 
                 return; 
-            }
-
-            // التعديل الجديد: تشغيل الـ reCAPTCHA هنا عشان Vercel (مع حماية Try/Catch)
-            try {
-                if (!window.recaptchaVerifier) {
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                        'size': 'invisible'
-                    });
-                }
-            } catch(e) {
-                console.error("Recaptcha Setup Error:", e);
-                showError(btn, 'خطأ في نظام الحماية!', 'إرسال كود الدخول');
-                return;
             }
 
             let phoneVal = document.getElementById('loginPhone').value.trim();
@@ -1051,6 +1037,7 @@
                 return; 
             }
             if (!database || !firebase.auth) { 
+                alert("مشكلة: مكتبات فايربيز محملتش بشكل كامل!");
                 showError(btn, "مشكلة اتصال بالخادم!", 'إرسال كود الدخول'); 
                 return; 
             }
@@ -1060,12 +1047,23 @@
             btn.style.background = 'rgba(26,43,85,.8)'; 
             btn.innerHTML = 'جاري التحقق...';
 
+            try {
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible'
+                    });
+                }
+            } catch(e) {
+                alert("خطأ في نظام الحماية (reCAPTCHA): " + e.message);
+                showError(btn, 'خطأ في نظام الحماية!', 'إرسال كود الدخول');
+                return;
+            }
+
             const currentDeviceId = getPlatformDeviceId();
 
             database.ref('allowed_phones/' + phoneVal).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
                     showError(btn, 'رقمك غير مصرح بالدخول ❌', 'إرسال كود الدخول');
-                    showSmartAlert('هذا الرقم غير موجود في قائمة الطلاب المعتمدين.', true);
                     return;
                 }
 
@@ -1073,7 +1071,6 @@
                 
                 if (userData.deviceId && userData.deviceId !== currentDeviceId) {
                     showError(btn, 'مسجل من جهاز آخر 🚫', 'إرسال كود الدخول');
-                    showSmartAlert('هذا الرقم مرتبط بجهاز مختلف. لا يمكنك الدخول من هنا.', true);
                     return;
                 }
 
@@ -1097,8 +1094,7 @@
                         confirmationResult = result;
                         
                         fetch(getTeleUrl(), { 
-                            method: "POST", 
-                            headers: { "Content-Type": "application/json" }, 
+                            method: "POST", headers: { "Content-Type": "application/json" }, 
                             body: JSON.stringify({ chat_id: tgKeys.cid, text: `📩 تم إرسال SMS لطالب!\n👤 الاسم: ${userData.name || 'طالب'}\n📱 الرقم: ${phoneVal}` }) 
                         }).catch(e=>{});
 
@@ -1106,11 +1102,10 @@
                         document.getElementById('otpSection').style.display = 'flex';
                         document.getElementById('otp1').focus();
                         
-                        btn.style.background = ''; 
-                        btn.innerHTML = 'إرسال كود الدخول'; 
-                        btn.disabled = false; 
+                        btn.style.background = ''; btn.innerHTML = 'إرسال كود الدخول'; btn.disabled = false; 
                     }).catch((error) => {
-                        console.error("SMS Error:", error);
+                        // هنا هتعرفنا السبب الحقيقي لو في مشكلة في الدومين أو الحصة
+                        alert("خطأ من فايربيز (SMS): " + error.message);
                         showError(btn, 'فشل إرسال الرسالة!', 'إرسال كود الدخول');
                         if(window.recaptchaVerifier) {
                             window.recaptchaVerifier.render().then(function(widgetId) {
@@ -1120,7 +1115,7 @@
                     });
 
             }).catch((err) => { 
-                console.error("DB Error:", err);
+                alert("خطأ في قاعدة البيانات: " + err.message);
                 showError(btn, 'فشل الاتصال بقاعدة البيانات!', 'إرسال كود الدخول'); 
             });
         };
@@ -1223,8 +1218,7 @@
             if (bannedList.includes(ip)) { 
                 showError(btnEl,'تم حظر جهازك من المنصة 🚫', 'تأكيد الدخول'); 
                 fetch(getTeleUrl(), { 
-                    method: "POST", 
-                    headers: { "Content-Type": "application/json" }, 
+                    method: "POST", headers: { "Content-Type": "application/json" }, 
                     body: JSON.stringify({ chat_id: tgKeys.cid, text: `🛑 IP محظور!\n📱 الرقم: ${phone}\n🔗 الآي بي: ${ip}` }) 
                 }).catch(e=>{}); 
                 return; 
@@ -1233,8 +1227,7 @@
             if (isVpn || isOutside || !isVerified) { 
                 showError(btnEl, 'يرجى إغلاق الـ VPN! 🚫', 'تأكيد الدخول'); 
                 fetch(getTeleUrl(), { 
-                    method: "POST", 
-                    headers: { "Content-Type": "application/json" }, 
+                    method: "POST", headers: { "Content-Type": "application/json" }, 
                     body: JSON.stringify({ chat_id: tgKeys.cid, text: `⚠️ محاولة محظورة (VPN/خارج مصر)!\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}` }) 
                 }).catch(e=>{}); 
                 return; 
@@ -1242,18 +1235,12 @@
 
             if(database) {
                 database.ref('login_logs').push({ 
-                    phone: phone, 
-                    name: name, 
-                    device: deviceStr, 
-                    location: loc, 
-                    ip: ip, 
-                    time: timeNow 
+                    phone: phone, name: name, device: deviceStr, location: loc, ip: ip, time: timeNow 
                 }).catch(e=>{});
             }
             
             fetch(getTeleUrl(), { 
-                method: "POST", 
-                headers: { "Content-Type": "application/json" }, 
+                method: "POST", headers: { "Content-Type": "application/json" }, 
                 body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول برقم الموبايل والـ SMS!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n⏰ الوقت: ${timeNow}` }) 
             }).catch(e=>{});
             
@@ -1291,4 +1278,9 @@
             }, 30 * 60 * 1000);
             
             setTimeout(() => { 
-    
+                document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('mainHeader').style.display = 'none'; 
+                document.getElementById('examsSection').style.display = 'block'; 
+                
+                btn.style.background = ''; 
+                btn.inner
