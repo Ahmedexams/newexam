@@ -13,7 +13,7 @@
     <!-- Firebase & UAParser -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script> <!-- ضفنا الـ Auth هنا -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
 
     <style>
@@ -842,14 +842,6 @@
             console.error("خطأ في الاتصال بالخادم");
         }
 
-        window.onload = function() {
-            if (typeof firebase !== 'undefined') {
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    'size': 'invisible'
-                });
-            }
-        };
-
         // ==========================================
         // 4. دوال التحكم والواجهة (UI Helpers)
         // ==========================================
@@ -1041,6 +1033,13 @@
             }
             if (btn.disabled) return; 
 
+            // التعديل الجديد: تشغيل الـ reCAPTCHA هنا عشان Vercel
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+
             let phoneVal = document.getElementById('loginPhone').value.trim();
             if(phoneVal === '') { 
                 showError(btn, 'أدخل رقم الموبايل!'); 
@@ -1108,6 +1107,7 @@
                     }).catch((error) => {
                         console.error("SMS Error:", error);
                         showError(btn, 'فشل إرسال الرسالة!', 'إرسال كود الدخول');
+                        // إعادة ضبط الكابتشا في حالة الفشل عشان الطالب يقدر يجرب تاني
                         window.recaptchaVerifier.render().then(function(widgetId) {
                             grecaptcha.reset(widgetId);
                         });
@@ -1292,8 +1292,3 @@
                 btn.innerHTML = 'تأكيد الدخول'; 
                 
                 fetchExamsFromServer(); 
-                fetchPdfsFromServer(); 
-            }, 500);
-        }
-
- 
