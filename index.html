@@ -190,6 +190,19 @@
             cursor: not-allowed; 
         }
 
+        .text-link {
+            color: var(--glow1);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .text-link:hover {
+            color: var(--glow2);
+        }
+
         .exams-header-row { 
             display: flex; 
             justify-content: flex-end; 
@@ -563,6 +576,43 @@
                     <input type="tel" id="loginPhone" placeholder="رقم الموبايل (مثال: 01012345678)" autocomplete="off">
                 </div>
                 <button class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+                <div style="text-align: center; margin-top: 20px;">
+                    <span style="color: var(--muted); font-size: 14px;">طالب جديد؟</span> 
+                    <a class="text-link" onclick="toggleViews('register')">إنشاء حساب جديد</a>
+                </div>
+            </div>
+
+            <!-- قسم إنشاء حساب جديد (تليجرام) -->
+            <div id="registerSection" style="display: none; text-align: center;">
+                <h3 style="color: var(--glow1); margin-bottom: 20px; font-weight: 900;">حساب جديد (تليجرام)</h3>
+                
+                <div id="regStep1">
+                    <div class="input-group">
+                        <input type="text" id="regName" placeholder="الاسم ثلاثي" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <input type="tel" id="regPhone" placeholder="رقم الموبايل" autocomplete="off">
+                    </div>
+                    <button class="btn-primary" id="sendOtpBtn" onclick="startTelegramVerification()">تسجيل وتفعيل الحساب</button>
+                </div>
+
+                <div id="regStep2" style="display: none;">
+                    <p style="color: var(--text); font-size: 15px; margin-bottom: 15px; line-height: 1.6;">تم تجهيز بياناتك ⏳<br>اضغط على الزر التالي ليتم تحويلك لبوت المنصة، ثم اضغط <b>Start (بدء)</b> ليتم التفعيل تلقائياً.</p>
+                    
+                    <button class="btn-primary" id="tgVerifyBtn" style="background: linear-gradient(90deg, #3b82f6, #06b6d4); margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        توثيق الحساب
+                    </button>
+                    
+                    <p style="color: var(--good); font-size: 13px; font-weight:bold; animation: pulse 1.5s infinite;">نحن في انتظارك... المنصة ستفتح تلقائياً فور ضغطك على Start.</p>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <a href="#" style="color: var(--muted); text-decoration: none;" onclick="toggleViews('login')">رجوع لتسجيل الدخول</a>
+                </div>
             </div>
             
             <!-- قسم الاختبارات والـ PDF (يظهر بعد الدخول بنجاح) -->
@@ -651,6 +701,9 @@
         };
         
         const getTeleUrl = () => tgKeys.p1 + tgKeys.p2 + tgKeys.p3 + tgKeys.p4;
+
+        // يوزرنيم البوت (كما طلبته)
+        const BOT_USERNAME = "Newexamuni_bot";
 
         // ==========================================
         // 3. تهيئة المتغيرات والاتصال بقاعدة البيانات
@@ -813,6 +866,17 @@
             }, 2500);
         }
 
+        window.toggleViews = function(view) {
+            document.getElementById('loginSection').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('registerSection').style.display = view === 'register' ? 'block' : 'none';
+            if(view === 'register') {
+                document.getElementById('regStep1').style.display = 'block';
+                document.getElementById('regStep2').style.display = 'none';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regName').value = '';
+            }
+        };
+
         // ==========================================
         // 5. التحقق التلقائي عند فتح الصفحة
         // ==========================================
@@ -839,6 +903,7 @@
                 }
                 
                 document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('registerSection').style.display = 'none';
                 document.getElementById('mainHeader').style.display = 'none'; 
                 document.getElementById('examsSection').style.display = 'block';
                 
@@ -850,13 +915,111 @@
                     alert("انتهت الجلسة."); 
                     window.handleLogout(); 
                 }, (30 * 60 * 1000) - (Date.now() - parseInt(loginTime)));
-            } else { 
-                window.handleLogout(); 
             }
         });
 
         // ==========================================
-        // 6. نظام تسجيل الدخول برقم الموبايل فقط
+        // 6. نظام تليجرام السحري للتسجيل
+        // ==========================================
+        let magicCode = "";
+        let pendingPhone = "";
+        let pendingName = "";
+        let magicListener = null;
+
+        window.startTelegramVerification = function() {
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const btn = document.getElementById('sendOtpBtn');
+
+            if (name.length < 3 || phone.length < 10) { 
+                showSmartAlert('أدخل الاسم ورقم الموبايل بشكل صحيح!', true); 
+                return; 
+            }
+
+            if (!database) { 
+                showSmartAlert('مشكلة اتصال بالخادم', true); 
+                return; 
+            }
+
+            btn.disabled = true; 
+            btn.innerHTML = 'جاري التحضير...';
+
+            database.ref('allowed_phones/' + phone).once('value').then((snap) => {
+                if (snap.exists()) {
+                    showSmartAlert('هذا الرقم مسجل بالفعل، قم بتسجيل الدخول.', true);
+                    toggleViews('login'); 
+                    document.getElementById('loginPhone').value = phone;
+                    btn.disabled = false; 
+                    btn.innerHTML = 'تسجيل وتفعيل الحساب'; 
+                    return;
+                }
+
+                // إنشاء كود سري وتخزينه في فايربيز
+                magicCode = Math.floor(10000 + Math.random() * 90000).toString();
+                pendingPhone = phone; 
+                pendingName = name;
+
+                database.ref('pending_verifications/' + magicCode).set({
+                    phone: phone, 
+                    name: name, 
+                    status: "pending"
+                }).then(() => {
+                    document.getElementById('regStep1').style.display = 'none';
+                    document.getElementById('regStep2').style.display = 'block';
+
+                    // ربط زر تليجرام بالكود
+                    const tgLink = `https://t.me/${BOT_USERNAME}?start=${magicCode}`;
+                    document.getElementById('tgVerifyBtn').onclick = () => window.open(tgLink, '_blank');
+
+                    // مراقبة فايربيز حتى يغير البوت الحالة
+                    magicListener = database.ref('pending_verifications/' + magicCode + '/status').on('value', (s) => {
+                        if(s.val() === "verified") {
+                            completeRegistration();
+                        }
+                    });
+                });
+
+            }).catch(() => { 
+                showSmartAlert('خطأ في الاتصال بقاعدة البيانات', true); 
+                btn.disabled = false; 
+                btn.innerHTML = 'تسجيل وتفعيل الحساب';
+            });
+        };
+
+        function completeRegistration() {
+            // إيقاف المراقبة
+            if(magicListener) {
+                database.ref('pending_verifications/' + magicCode + '/status').off('value', magicListener);
+            }
+
+            showSmartAlert('تم التوثيق بنجاح! جاري دخول المنصة... 🎉');
+            const currentDeviceId = getPlatformDeviceId();
+
+            const newUserData = {
+                name: pendingName,
+                deviceId: currentDeviceId,
+                registeredAt: new Date().toLocaleString('ar-EG')
+            };
+
+            database.ref('allowed_phones/' + pendingPhone).set(newUserData).then(() => {
+                localStorage.setItem('saved_phone_v3', pendingPhone);
+                
+                // إشعار للأدمن
+                fetch(getTeleUrl(), { 
+                    method: "POST", 
+                    headers: { "Content-Type": "application/json" }, 
+                    body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 طالب جديد (تليجرام)!\n👤 الاسم: ${pendingName}\n📱 الرقم: ${pendingPhone}` }) 
+                }).catch(e=>{});
+
+                // تسجيل دخول تلقائي
+                setTimeout(() => { 
+                    verifyConnectionAndLogin(pendingPhone, pendingName, document.getElementById('loginBtn')); 
+                }, 1500);
+            });
+        }
+
+        // ==========================================
+        // 7. نظام تسجيل الدخول برقم الموبايل فقط
         // ==========================================
         window.handleLogin = function() {
             const btn = document.getElementById('loginBtn');
@@ -891,7 +1054,7 @@
             database.ref('allowed_phones/' + phoneVal).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
                     showError(btn, 'رقمك غير مصرح بالدخول ❌');
-                    showSmartAlert('هذا الرقم غير موجود في قائمة الطلاب المعتمدين.', true);
+                    showSmartAlert('هذا الرقم غير موجود، يرجى إنشاء حساب جديد.', true);
                     return;
                 }
 
@@ -918,7 +1081,7 @@
         };
 
         // ==========================================
-        // 7. التحقق الأمني وفحص الشبكة (VPN & IPs)
+        // 8. التحقق الأمني وفحص الشبكة (VPN & IPs)
         // ==========================================
         async function verifyConnectionAndLogin(phone, name, btnEl) {
             btnEl.innerHTML = 'جاري الفحص... 🛡️';
@@ -1003,7 +1166,7 @@
         }
 
         // ==========================================
-        // 8. إتمام الدخول وتهيئة الواجهة
+        // 9. إتمام الدخول وتهيئة الواجهة
         // ==========================================
         function finalizeLogin(phone, btn) {
             btn.style.background = 'rgba(34,197,94,.8)'; 
@@ -1034,6 +1197,7 @@
             
             setTimeout(() => { 
                 document.getElementById('loginSection').style.display = 'none'; 
+                document.getElementById('registerSection').style.display = 'none';
                 document.getElementById('mainHeader').style.display = 'none'; 
                 document.getElementById('examsSection').style.display = 'block'; 
                 
@@ -1046,7 +1210,7 @@
         }
 
         // ==========================================
-        // 9. جلب وعرض البيانات (الامتحانات و PDFs)
+        // 10. جلب وعرض البيانات (الامتحانات و PDFs)
         // ==========================================
         function fetchExamsFromServer() {
             const cont = document.getElementById('dynamicExamsList');
@@ -1105,7 +1269,7 @@
         }
 
         // ==========================================
-        // 10. تشغيل الـ PDF والروابط
+        // 11. تشغيل الـ PDF والروابط
         // ==========================================
         window.openPdfModal = function(url) {
             let fUrl = url; 
@@ -1114,107 +1278,4 @@
             }
             
             const modal = document.createElement('div'); 
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s;';
-            
-            const closeBtn = document.createElement('button'); 
-            closeBtn.innerHTML = 'إغلاق ❌'; 
-            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer;';
-            closeBtn.onclick = () => { 
-                modal.style.opacity = '0'; 
-                setTimeout(() => document.body.removeChild(modal), 300); 
-            };
-            
-            const iframe = document.createElement('iframe'); 
-            iframe.src = fUrl; 
-            iframe.setAttribute('allow', 'autoplay'); 
-            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff;';
-            
-            modal.appendChild(closeBtn); 
-            modal.appendChild(iframe); 
-            document.body.appendChild(modal); 
-            
-            setTimeout(() => {
-                modal.style.opacity = '1';
-            }, 10);
-        };
-
-        window.goToExam = function(isClosed, url) {
-            if (isClosed === 'true' || isClosed === true) { 
-                alert('مغلق 🔒'); 
-            } else {
-                if (!database) return;
-                
-                const sPhone = sessionStorage.getItem('student_phone');
-                if (!sessionStorage.getItem('student_auth') || !sPhone) { 
-                    window.handleLogout(); 
-                    return; 
-                }
-                
-                showSmartAlert('Loading Exam ⏳');
-                const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-                
-                database.ref('active_tickets/' + sPhone).set({ 
-                    token: token, 
-                    timestamp: Date.now() 
-                }).then(() => {
-                    window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(sPhone)}&t=${token}`; 
-                });
-            }
-        };
-
-        // ==========================================
-        // 11. تسجيل الخروج وإدارة الجلسات
-        // ==========================================
-        window.handleLogout = function() {
-            const sPhone = sessionStorage.getItem('student_phone');
-            
-            if (sPhone && database && !window.isKickedOut) { 
-                database.ref('active_tickets/sessions/' + sPhone).remove().catch(e=>{}); 
-            }
-            
-            window.isKickedOut = false;
-            
-            if (window.sessionListenerRef && window.sessionListenerCallback) { 
-                window.sessionListenerRef.off('value', window.sessionListenerCallback); 
-                window.sessionListenerRef = null; 
-                window.sessionListenerCallback = null; 
-            }
-            
-            sessionStorage.clear(); 
-            clearTimeout(logoutTimer); 
-            
-            document.getElementById('loginPhone').value = localStorage.getItem('saved_phone_v3') || ''; 
-            document.getElementById('examsSection').style.display = 'none'; 
-            document.getElementById('mainHeader').style.display = 'block'; 
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('headerSubtitle').innerText = "أدخل رقم الموبايل المعتمد للبدء";
-            
-            window.switchTab('exams'); 
-            
-            if (location.hash === '#exams') {
-                history.back();
-            }
-        };
-
-        window.addEventListener('popstate', function() { 
-            if (document.getElementById('examsSection').style.display === 'block') { 
-                if(sessionStorage.getItem('student_auth')) { 
-                    history.pushState({page:'exams'},'Exams','#exams'); 
-                } else { 
-                    window.handleLogout(); 
-                } 
-            } 
-        });
-        
-        window.addEventListener('pageshow', function(e) { 
-            if (e.persisted) { 
-                const lt = sessionStorage.getItem('login_time'); 
-                if (lt && (Date.now() - parseInt(lt) > 1800000)) {
-                    window.handleLogout(); 
-                }
-            } 
-        });
-    })();
-    </script>
-</body>
-                                </html>
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; ju
