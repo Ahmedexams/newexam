@@ -10,9 +10,9 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@500;800;900&display=swap" rel="stylesheet">
     
-    <!-- Firebase & UAParser -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- تحديث روابط Firebase لـ cdnjs لتخطي حظر الـ ISP وبرامج الحماية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-database.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
 
     <style>
@@ -481,12 +481,10 @@
     </style>
 </head>
 <body>
-    <!-- Smart Alerts -->
     <div id="smartToast" class="smart-toast">
         <span id="smartToastMsg"></span>
     </div>
     
-    <!-- Kick Overlay -->
     <div id="kickOverlay">
         <div class="kick-card">
             <h2 style="color:var(--bad); margin-bottom:15px; font-weight:900;">تنبيه أمني!</h2>
@@ -496,21 +494,19 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
     <div id="adminDashboard">
         <div class="dash-card">
             <div class="live-pulse"></div>
             <h3 style="color: var(--muted); margin: 0;">متصل الآن بالمنصة</h3>
             <div class="online-count" id="onlineCounter">0</div>
-            <button type="button" onclick="closeAdminDash()" style="margin-top: 20px; padding: 10px 20px; background: red; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">إغلاق ❌</button>
+            <button type="button" onclick="window.closeAdminDash()" style="margin-top: 20px; padding: 10px 20px; background: red; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">إغلاق ❌</button>
         </div>
     </div>
     
     <div class="app-container" id="appContainer">
         
-        <!-- Header -->
         <div class="header fade-in" id="mainHeader">
-            <div class="premium-logo" onclick="handleSecretTap()">
+            <div class="premium-logo" onclick="window.handleSecretTap()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <defs>
                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -528,18 +524,16 @@
         
         <div class="card fade-in" style="animation-delay: 0.1s;">
             
-            <!-- Login Section -->
             <div id="loginSection">
                 <div class="input-group">
                     <input type="tel" id="loginPhone" placeholder="رقم الموبايل المسجل" autocomplete="off">
                 </div>
-                <button type="button" class="btn-primary" id="loginBtn" onclick="handleLogin()">تسجيل الدخول</button>
+                <button type="button" class="btn-primary" id="loginBtn" onclick="window.handleLogin()">تسجيل الدخول</button>
                 <div style="text-align: center; margin-top: 15px;">
-                    <a href="javascript:void(0);" style="color: var(--glow1); text-decoration: none; font-weight: bold;" onclick="toggleViews('register')">طالب جديد؟ إنشاء حساب</a>
+                    <a href="javascript:void(0);" style="color: var(--glow1); text-decoration: none; font-weight: bold;" onclick="window.toggleViews('register')">طالب جديد؟ إنشاء حساب</a>
                 </div>
             </div>
 
-            <!-- Telegram Registration Section -->
             <div id="registerSection" style="display: none; text-align: center;">
                 <h3 style="color: var(--glow1); margin-bottom: 20px; font-weight: 900;">حساب جديد (تليجرام)</h3>
                 
@@ -550,7 +544,7 @@
                     <div class="input-group">
                         <input type="tel" id="regPhone" placeholder="رقم الموبايل" autocomplete="off">
                     </div>
-                    <button type="button" class="btn-primary" id="sendOtpBtn" onclick="startTelegramVerification()">تسجيل وتفعيل الحساب</button>
+                    <button type="button" class="btn-primary" id="sendOtpBtn" onclick="window.startTelegramVerification()">تسجيل وتفعيل الحساب</button>
                 </div>
 
                 <div id="regStep2" style="display: none;">
@@ -564,18 +558,17 @@
                 </div>
 
                 <div style="margin-top: 20px;">
-                    <a href="javascript:void(0);" style="color: var(--muted); text-decoration: none;" onclick="toggleViews('login')">رجوع لتسجيل الدخول</a>
+                    <a href="javascript:void(0);" style="color: var(--muted); text-decoration: none;" onclick="window.toggleViews('login')">رجوع لتسجيل الدخول</a>
                 </div>
             </div>
             
-            <!-- Exams Section -->
             <div id="examsSection" style="display: none;">
                 <div class="exams-header-row">
-                    <button type="button" class="logout-btn" onclick="handleLogout()">خروج</button>
+                    <button type="button" class="logout-btn" onclick="window.handleLogout()">خروج</button>
                 </div>
                 <div class="tabs-row">
-                    <button type="button" class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">📝 الاختبارات</button>
-                    <button type="button" class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">📚 ملفات PDF</button>
+                    <button type="button" class="tab-btn active" id="tabExamsBtn" onclick="window.switchTab('exams')">📝 الاختبارات</button>
+                    <button type="button" class="tab-btn" id="tabPdfsBtn" onclick="window.switchTab('pdfs')">📚 ملفات PDF</button>
                 </div>
                 <div class="exams-list" id="dynamicExamsList">
                     <p style="color:var(--muted); text-align:center;">جاري التحميل...</p>
@@ -611,7 +604,7 @@
         };
         
         // ==========================================
-        // 2. Firebase & Telegram Keys
+        // 2. Firebase Keys & Init
         // ==========================================
         const fbKeys = {
             k: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
@@ -639,17 +632,36 @@
             if (typeof firebase !== 'undefined') { 
                 firebase.initializeApp(firebaseConfig); 
                 database = firebase.database(); 
+                
+                // Track Active Visitors
+                const sessionRef = database.ref('active_visitors').push();
+                const connectedRef = database.ref('.info/connected');
+                connectedRef.on('value', function(snap) { 
+                    if (snap.val() === true) { 
+                        sessionRef.onDisconnect().remove(); 
+                        sessionRef.set(true); 
+                    } 
+                });
             } 
         } catch(e) {
             console.error("Firebase Error:", e);
         }
 
+        const tgKeys = { 
+            p1: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA=="), 
+            p2: atob("ODkyNTYyMDU5NDo="), 
+            p3: atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc="), 
+            p4: atob("L3NlbmRNZXNzYWdl"), 
+            cid: atob("ODQ0NjUwMDk3OA==") 
+        };
+        const getTeleUrl = () => tgKeys.p1 + tgKeys.p2 + tgKeys.p3 + tgKeys.p4;
+
         const BOT_USERNAME = "Newexamuni_bot";
 
         // ==========================================
-        // 3. Helper Functions
+        // 3. Global Helper Functions
         // ==========================================
-        function getPlatformDeviceId() {
+        window.getPlatformDeviceId = function() {
             try {
                 let deviceId = localStorage.getItem('platform_device_id');
                 if (!deviceId) { 
@@ -660,10 +672,10 @@
             } catch(e) {
                 return 'dev_' + Math.random().toString(36).substring(2); 
             }
-        }
+        };
 
         let alertTimeout;
-        function showSmartAlert(msg, isError = false) {
+        window.showSmartAlert = function(msg, isError = false) {
             const toast = document.getElementById('smartToast');
             if(!toast) return;
             toast.className = 'smart-toast' + (isError ? ' error' : '');
@@ -673,9 +685,9 @@
             alertTimeout = setTimeout(() => { 
                 toast.classList.remove('show'); 
             }, 5000); 
-        }
+        };
 
-        function showError(btn, msg, originalText = 'تسجيل الدخول') {
+        window.showError = function(btn, msg, originalText = 'تسجيل الدخول') {
             if(!btn) return;
             btn.style.background = 'rgba(239,68,68,.8)'; 
             btn.innerHTML = msg;
@@ -684,7 +696,7 @@
                 btn.innerHTML = originalText; 
                 btn.disabled = false; 
             }, 2500);
-        }
+        };
 
         window.toggleViews = function(view) {
             try {
@@ -693,6 +705,8 @@
                 if(view === 'register') {
                     document.getElementById('regStep1').style.display = 'block'; 
                     document.getElementById('regStep2').style.display = 'none';
+                    document.getElementById('regPhone').value = '';
+                    document.getElementById('regName').value = '';
                 }
             } catch(e) { 
                 console.error("Toggle Error", e); 
@@ -713,11 +727,11 @@
             const btn = document.getElementById('sendOtpBtn');
 
             if (name.length < 3 || phone.length < 10) { 
-                showSmartAlert('أدخل الاسم ورقم الموبايل بشكل صحيح!', true); 
+                window.showSmartAlert('أدخل الاسم ورقم الموبايل بشكل صحيح!', true); 
                 return; 
             }
             if(!database) { 
-                showSmartAlert('لا يوجد اتصال بقاعدة البيانات', true); 
+                window.showSmartAlert('لا يوجد اتصال بقاعدة البيانات', true); 
                 return; 
             }
             
@@ -726,8 +740,8 @@
 
             database.ref('allowed_phones/' + phone).once('value').then((snap) => {
                 if (snap.exists()) {
-                    showSmartAlert('هذا الرقم مسجل بالفعل، قم بتسجيل الدخول.', true);
-                    toggleViews('login'); 
+                    window.showSmartAlert('هذا الرقم مسجل بالفعل، قم بتسجيل الدخول.', true);
+                    window.toggleViews('login'); 
                     document.getElementById('loginPhone').value = phone;
                     btn.disabled = false; 
                     btn.innerHTML = 'تسجيل وتفعيل الحساب'; 
@@ -751,39 +765,46 @@
 
                     magicListener = database.ref('pending_verifications/' + magicCode + '/status').on('value', (s) => {
                         if(s.val() === "verified") {
-                            completeRegistration();
+                            window.completeRegistration();
                         }
                     });
                 });
             }).catch((e) => { 
                 console.error(e); 
-                showSmartAlert('خطأ اتصال', true); 
+                window.showSmartAlert('خطأ اتصال', true); 
                 btn.disabled=false; 
                 btn.innerHTML='تسجيل وتفعيل الحساب'; 
             });
         };
 
-        function completeRegistration() {
+        window.completeRegistration = function() {
             if(magicListener) {
                 database.ref('pending_verifications/' + magicCode + '/status').off('value', magicListener);
             }
-            showSmartAlert('تم التوثيق بنجاح! جاري دخول المنصة... 🎉');
+            window.showSmartAlert('تم التوثيق بنجاح! جاري دخول المنصة... 🎉');
             
-            const currentDeviceId = getPlatformDeviceId();
+            const currentDeviceId = window.getPlatformDeviceId();
             database.ref('allowed_phones/' + pendingPhone).set({ 
                 name: pendingName, 
                 deviceId: currentDeviceId, 
-                registeredAt: Date.now() 
+                registeredAt: new Date().toLocaleString('ar-EG') 
             }).then(() => {
                 try { localStorage.setItem('saved_phone_v3', pendingPhone); } catch(e){}
+                
+                fetch(getTeleUrl(), { 
+                    method: "POST", 
+                    headers: { "Content-Type": "application/json" }, 
+                    body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 طالب جديد (تليجرام)!\n👤 الاسم: ${pendingName}\n📱 الرقم: ${pendingPhone}` }) 
+                }).catch(e=>{});
+
                 setTimeout(() => { 
-                    verifyConnectionAndLogin(pendingPhone, pendingName, document.getElementById('sendOtpBtn')); 
+                    window.verifyConnectionAndLogin(pendingPhone, pendingName, document.getElementById('sendOtpBtn')); 
                 }, 1500);
             });
-        }
+        };
 
         // ==========================================
-        // 5. Login Logic
+        // 5. Login & VPN Validation Logic
         // ==========================================
         window.handleLogin = function() {
             const btn = document.getElementById('loginBtn');
@@ -791,18 +812,18 @@
             try { lastClick = localStorage.getItem('last_login_attempt_time'); } catch(e){}
             
             if (lastClick && (Date.now() - parseInt(lastClick) < 5000)) {
-                showError(btn, `انتظر ثواني ⏳`); 
+                window.showError(btn, `انتظر ثواني ⏳`); 
                 return; 
             }
             if (btn.disabled) return; 
 
             let phoneVal = document.getElementById('loginPhone').value.trim();
             if(phoneVal === '') { 
-                showError(btn, 'أدخل رقم الموبايل!'); 
+                window.showError(btn, 'أدخل رقم الموبايل!'); 
                 return; 
             }
             if (!database) { 
-                showError(btn, "مشكلة اتصال بالخادم!"); 
+                window.showError(btn, "مشكلة اتصال بالخادم!"); 
                 return; 
             }
 
@@ -811,19 +832,19 @@
             btn.disabled = true; 
             btn.style.background = 'rgba(26,43,85,.8)'; 
             btn.innerHTML = 'جاري التحقق...';
-            const currentDeviceId = getPlatformDeviceId();
+            const currentDeviceId = window.getPlatformDeviceId();
 
             database.ref('allowed_phones/' + phoneVal).once('value').then((snapshot) => {
                 if (!snapshot.exists()) {
-                    showError(btn, 'رقمك غير مسجل ❌');
-                    showSmartAlert('هذا الرقم غير مسجل، يرجى إنشاء حساب جديد أولاً.', true); 
+                    window.showError(btn, 'رقمك غير مسجل ❌');
+                    window.showSmartAlert('هذا الرقم غير مسجل، يرجى إنشاء حساب جديد أولاً.', true); 
                     return;
                 }
 
                 const userData = snapshot.val();
                 if (userData.deviceId && userData.deviceId !== currentDeviceId) {
-                    showError(btn, 'مسجل من جهاز آخر 🚫');
-                    showSmartAlert('لا يمكنك الدخول من هذا الجهاز.', true); 
+                    window.showError(btn, 'مسجل من جهاز آخر 🚫');
+                    window.showSmartAlert('لا يمكنك الدخول من هذا الجهاز.', true); 
                     return;
                 }
 
@@ -832,17 +853,73 @@
                 }
                 try { localStorage.setItem('saved_phone_v3', phoneVal); } catch(e){}
                 
-                verifyConnectionAndLogin(phoneVal, userData.name || 'طالب', btn);
+                window.processVpnAndLogin(phoneVal, userData.name || 'طالب', btn);
             }).catch((err) => { 
                 console.error(err); 
-                showError(btn, 'فشل الاتصال بقاعدة البيانات!'); 
+                window.showError(btn, 'فشل الاتصال بقاعدة البيانات!'); 
             });
+        };
+
+        window.processVpnAndLogin = async function(phone, name, btnEl) {
+            btnEl.innerHTML = 'جاري الفحص... 🛡️';
+            let deviceStr = "جهاز غير معروف", osStr = "نظام غير معروف", browserStr = "متصفح غير معروف";
+            let loc = "غير معروف", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false, isVerified = false;
+            
+            try { 
+                const parser = new UAParser(); 
+                const res = parser.getResult(); 
+                if (res.os.name) osStr = res.os.name + (res.os.version ? " " + res.os.version : "");
+                if (res.browser.name) browserStr = res.browser.name + (res.browser.version ? " " + res.browser.version : "");
+                if (res.device.model) deviceStr = (res.device.vendor ? res.device.vendor + " " : "") + res.device.model; 
+            } catch(e) {}
+            
+            try { 
+                let r2 = await fetch('https://ipapi.co/json/'); 
+                let d2 = await r2.json(); 
+                if (!d2.error) { 
+                    loc = d2.city + ", " + d2.country_name; 
+                    isp = d2.org || isp; 
+                    ip = d2.ip; 
+                    if (d2.country_code !== "EG") isOutside = true; 
+                    isVerified = true; 
+                } 
+            } catch(e) {}
+
+            let bannedList = [];
+            if(database) { 
+                try { 
+                    let bSnap = await database.ref('banned_ips').once('value'); 
+                    if (bSnap.exists()) bannedList = Object.values(bSnap.val()); 
+                } catch(e) {} 
+            }
+
+            const timeNow = new Date().toLocaleString('ar-EG');
+            
+            if (bannedList.includes(ip)) { 
+                window.showError(btnEl,'تم حظر جهازك من المنصة 🚫'); 
+                fetch(getTeleUrl(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: `🛑 IP محظور!\n📱 الرقم: ${phone}\n🔗 الآي بي: ${ip}` }) }).catch(e=>{}); 
+                return; 
+            }
+            
+            if (isVpn || isOutside || !isVerified) { 
+                window.showError(btnEl, 'يرجى إغلاق الـ VPN! 🚫'); 
+                fetch(getTeleUrl(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: `⚠️ محاولة محظورة (VPN/خارج مصر)!\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}` }) }).catch(e=>{}); 
+                return; 
+            }
+
+            if(database) {
+                database.ref('login_logs').push({ phone: phone, name: name, device: deviceStr, location: loc, ip: ip, time: timeNow }).catch(e=>{});
+            }
+            
+            fetch(getTeleUrl(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: `🟢 دخول للمنصة!\n👤 الاسم: ${name}\n📱 الرقم: ${phone}\n📍 الموقع: ${loc}` }) }).catch(e=>{});
+            
+            window.verifyConnectionAndLogin(phone, name, btnEl);
         };
 
         // ==========================================
         // 6. Auth Session Setup
         // ==========================================
-        async function verifyConnectionAndLogin(phone, name, btnEl) {
+        window.verifyConnectionAndLogin = function(phone, name, btnEl) {
             btnEl.innerHTML = 'تم بنجاح ✓'; 
             btnEl.style.background = 'rgba(34,197,94,.8)';
             const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -858,23 +935,27 @@
                 const sessionRef = database.ref('active_tickets/sessions/' + phone);
                 sessionRef.set(sessionToken).then(() => { 
                     sessionRef.onDisconnect().remove(); 
-                    monitorSession(phone); 
+                    window.monitorSession(phone); 
                 }).catch(e=>{});
             }
+            
+            clearTimeout(logoutTimer); 
+            logoutTimer = setTimeout(() => { alert("انتهت الجلسة."); window.handleLogout(); }, 30 * 60 * 1000);
+
             setTimeout(() => { 
                 document.getElementById('loginSection').style.display = 'none'; 
                 document.getElementById('registerSection').style.display = 'none'; 
                 document.getElementById('mainHeader').style.display = 'none'; 
                 document.getElementById('examsSection').style.display = 'block'; 
-                fetchExamsFromServer(); 
-                fetchPdfsFromServer(); 
+                window.fetchExamsFromServer(); 
+                window.fetchPdfsFromServer(); 
             }, 500);
-        }
+        };
 
         // ==========================================
         // 7. Exams & App Logic
         // ==========================================
-        function monitorSession(phone) {
+        window.monitorSession = function(phone) {
             let localToken = "";
             try { localToken = sessionStorage.getItem('session_token'); } catch(e){}
             
@@ -893,7 +974,7 @@
                     }, 3500);
                 }
             });
-        }
+        };
 
         window.switchTab = function(tab) {
             document.getElementById('tabExamsBtn').classList.remove('active'); 
@@ -909,7 +990,7 @@
             }
         };
 
-        function fetchExamsFromServer() {
+        window.fetchExamsFromServer = function() {
             database.ref('exams').on('value', function(snap) {
                 const cont = document.getElementById('dynamicExamsList'); 
                 cont.innerHTML = ''; 
@@ -918,7 +999,7 @@
                         if(exam && exam.name) {
                             const isC = exam.status === 'closed'; 
                             cont.innerHTML += `
-                                <div class="exam-item" onclick="goToExam('${isC}', '${exam.url}')">
+                                <div class="exam-item" onclick="window.goToExam('${isC}', '${exam.url}')">
                                     <div class="exam-info">
                                         <span class="exam-name">${exam.name}</span>
                                         <span class="exam-meta">${exam.questionsCount} سؤال</span>
@@ -932,9 +1013,9 @@
                     cont.innerHTML = '<p style="color:var(--muted); text-align:center;">لا توجد اختبارات.</p>';
                 }
             });
-        }
+        };
 
-        function fetchPdfsFromServer() {
+        window.fetchPdfsFromServer = function() {
             database.ref('pdfs').on('value', function(snap) {
                 const cont = document.getElementById('dynamicPdfsList'); 
                 cont.innerHTML = ''; 
@@ -942,7 +1023,7 @@
                     Object.values(snap.val()).forEach((pdf) => { 
                         if(pdf && pdf.name) {
                             cont.innerHTML += `
-                                <div class="exam-item" onclick="openPdfModal('${pdf.url}')">
+                                <div class="exam-item" onclick="window.openPdfModal('${pdf.url}')">
                                     <div class="exam-info">
                                         <span class="exam-name">${pdf.name}</span>
                                         <span class="exam-meta">فتح الملف</span>
@@ -954,10 +1035,35 @@
                     }); 
                 }
             });
-        }
+        };
 
         window.openPdfModal = function(url) { 
-            window.open(url, '_blank'); 
+            let fUrl = url; 
+            if (url.includes('drive.google.com')) {
+                fUrl = url.replace(/\/(view|edit).*/, '/preview');
+            }
+            
+            const modal = document.createElement('div'); 
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(7,9,18,0.92); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(8px); opacity:0; transition: opacity 0.3s;';
+            
+            const closeBtn = document.createElement('button'); 
+            closeBtn.innerHTML = 'إغلاق ❌'; 
+            closeBtn.style.cssText = 'margin-bottom:15px; padding:12px 25px; border-radius:12px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer;';
+            closeBtn.onclick = () => { 
+                modal.style.opacity = '0'; 
+                setTimeout(() => document.body.removeChild(modal), 300); 
+            };
+            
+            const iframe = document.createElement('iframe'); 
+            iframe.src = fUrl; 
+            iframe.setAttribute('allow', 'autoplay'); 
+            iframe.style.cssText = 'width:100%; max-width:600px; height:80%; border:1px solid rgba(110,231,255,0.3); border-radius:16px; background:#fff;';
+            
+            modal.appendChild(closeBtn); 
+            modal.appendChild(iframe); 
+            document.body.appendChild(modal); 
+            
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
         }; 
 
         window.goToExam = function(isClosed, url) {
@@ -971,6 +1077,7 @@
                     window.handleLogout(); 
                     return; 
                 }
+                window.showSmartAlert('Loading Exam ⏳');
                 const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
                 database.ref('active_tickets/' + sPhone).set({ 
                     token: token, 
@@ -1001,11 +1108,11 @@
             
             document.getElementById('examsSection').style.display = 'none'; 
             document.getElementById('mainHeader').style.display = 'block'; 
-            toggleViews('login');
+            window.toggleViews('login');
         };
 
         // ==========================================
-        // 8. Event Listeners
+        // 8. Event Listeners & Admin
         // ==========================================
         document.addEventListener("DOMContentLoaded", function() {
             try {
@@ -1019,9 +1126,9 @@
                     document.getElementById('loginSection').style.display = 'none'; 
                     document.getElementById('mainHeader').style.display = 'none'; 
                     document.getElementById('examsSection').style.display = 'block';
-                    fetchExamsFromServer(); 
-                    fetchPdfsFromServer(); 
-                    monitorSession(sessionStorage.getItem('student_phone'));
+                    window.fetchExamsFromServer(); 
+                    window.fetchPdfsFromServer(); 
+                    window.monitorSession(sessionStorage.getItem('student_phone'));
                 }
             } catch(e) {}
         });
