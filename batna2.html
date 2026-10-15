@@ -539,14 +539,14 @@
       <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please wait 🌀</h2>
       <p id="modalText" style="color:var(--muted); line-height:1.6; font-weight:700;">جاري التحقق من تذكرة الدخول الرسمية...</p>
       <div id="countdownTimer" class="countdown-timer">00:00:00</div>
-      <button id="backHomeOverlayBtn" onclick="window.location.replace('index.html')" style="display:none; margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(90deg, var(--glow1), var(--glow2)); color:#070912; font-weight:900; cursor:pointer;">العودة لبوابة المنصة الرئيسية ⬅️</button>
+      <button id="backHomeOverlayBtn" onclick="window.location.replace('/')" style="display:none; margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(90deg, var(--glow1), var(--glow2)); color:#070912; font-weight:900; cursor:pointer;">العودة لبوابة المنصة الرئيسية ⬅️</button>
     </div>
   </div>
 
   <header id="mainHeader" style="display: none;">
     <div class="headin">
       <div class="brand">
-        <div class="back-btn" onclick="window.location.replace('index.html')" title="العودة للمنصة">
+        <div class="back-btn" onclick="window.location.replace('/')" title="العودة للمنصة">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </div>
 
@@ -602,17 +602,17 @@
   <script>
   (function(){
       // =========================================================
-      // ⚙️ إعدادات الامتحان الموحدة (غيرها فقط عند نسخ الملف لمادة أخرى)
+      // ⚙️ إعدادات الامتحان الموحدة
       // =========================================================
-      const EXAM_KEY = "internal_medicine_exam";       // معرف اللجنة في Firebase
+      const EXAM_KEY = "internal_medicine_exam";
       const EXAM_SETTINGS_NODE = "internal_medicine_settings/exam_status";
       const EXAM_STUDENTS_NODE = "internal_medicine_students";
       const EXAM_DISPLAY_NAME = "Internal Medicine 2 - الباطنة";
-      const EXAM_SCHEDULED_TIME = 0; // ضع وقت الفتح بالملي ثانية أو اتركه 0 للفتح الفوري
+      const EXAM_SCHEDULED_TIME = 0;
 
       const _0xdc = document, _0xwn = window;
+      const DB_URL = "https://ahmedexams-3e267-default-rtdb.firebaseio.com";
 
-      // حماية ضد النقر الأيمن والنسخ واختصارات الفحص
       _0xdc.addEventListener('contextmenu', e => e.preventDefault());
       _0xdc.onkeydown = e => {
           if(e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) return false;
@@ -624,18 +624,17 @@
 
       _0xdc.addEventListener('DOMContentLoaded', function(){
           _0xwn.history.pushState('exam', null, '');
-          _0xwn.onpopstate = function(){ _0xwn.location.replace('index.html'); };
+          _0xwn.onpopstate = function(){ _0xwn.location.replace('/'); };
       });
 
       let _0xdb = null;
       let serverTimeOffset = 0;
       let scheduledTimerInterval = null;
 
-      // مفاتيح Firebase & Telegram
       const _0xcfg = {
           apiKey: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
           authDomain: "ahmedexams-3e267.firebaseapp.com",
-          databaseURL: "https://ahmedexams-3e267-default-rtdb.firebaseio.com",
+          databaseURL: DB_URL,
           projectId: "ahmedexams-3e267",
           storageBucket: "ahmedexams-3e267.firebasestorage.app",
           messagingSenderId: "151411096023",
@@ -664,6 +663,20 @@
           });
       } catch(e){}
 
+      // دالة REST سريعة بمهلة زمنية قصيرة حتى لا تعلق الصفحة أبداً عند ضعف الشبكة
+      async function fastRestGet(path, timeoutMs = 2500) {
+          const ctrl = new AbortController();
+          const id = setTimeout(() => ctrl.abort(), timeoutMs);
+          try {
+              const res = await fetch(`${DB_URL}/${path}.json`, { signal: ctrl.signal });
+              clearTimeout(id);
+              if (res.ok) return await res.json();
+          } catch(e) {
+              clearTimeout(id);
+          }
+          return undefined;
+      }
+
       // =========================================================
       // 🛡️ غرفة المراقبة السرية للأدمن (5 ضغطات على الشعار + PIN)
       // =========================================================
@@ -684,11 +697,7 @@
       _0xwn.verifyExamAdminPin = async function() {
           const val = _0xdc.getElementById('adminPinField').value.trim();
           if (!val) return;
-          let customPin = null;
-          try {
-              const snap = await _0xdb.ref('admin_pin').once('value');
-              customPin = snap.val();
-          } catch(e){}
+          let customPin = await fastRestGet('admin_pin', 2000);
 
           if ((customPin && String(customPin) === val) || btoa(val) === "MjAyNg==") {
               _0xdc.getElementById('pinModal').style.display = 'none';
@@ -699,13 +708,13 @@
       };
 
       function openCommitteeAdminDash() {
-          if (!_0xdb) return;
           const dash = _0xdc.getElementById('adminDashboard');
           dash.style.display = 'flex';
           setTimeout(() => dash.style.opacity = '1', 10);
 
+          if (!_0xdb) return;
           adminListener = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).on('value', (snapshot) => {
-              _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 0;
+              _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
           });
 
           scoresListener = _0xdb.ref(EXAM_STUDENTS_NODE).limitToLast(30).on('value', (snap) => {
@@ -724,8 +733,10 @@
       }
 
       _0xwn.setCommitteeStatus = function(status) {
-          if (!_0xdb) return;
-          _0xdb.ref(EXAM_SETTINGS_NODE).set(status).then(() => {
+          fetch(`${DB_URL}/${EXAM_SETTINGS_NODE}.json`, {
+              method: 'PUT',
+              body: JSON.stringify(status)
+          }).then(() => {
               _0xstst(status === 'closed' ? "🔒 تم إغلاق اللجنة فوراً" : "🔓 تم فتح اللجنة للطلاب");
           });
       };
@@ -754,7 +765,7 @@
       let currentFilter = 'all';
 
       // =========================================================
-      // 📚 بنك الأسئلة الكامل (121 سؤال باطنة بنفس صيغتك الأصلية)
+      // 📚 بنك الأسئلة الكامل (121 سؤال باطنة)
       // =========================================================
       const _0xAQ = [
         {q:"Most common cause of hyperthyroidism is:",o:["Thyroiditis","Graves' disease","Toxic adenoma","Iodine deficiency"],c:1},
@@ -831,7 +842,7 @@
         {q:"PT/INR in cirrhosis:",o:["Decreased","Normal","Increased","Zero"],c:2},
         {q:"Jaundice occurs due to:",o:["Albumin","Bilirubin","Platelets","Sodium"],c:1},
         {q:"First-line imaging:",o:["MRI","CT","Ultrasound","X-ray"],c:2},
-        {q:"Varices are dilated:",o:["Arteries","Veins","Cappilary","Lymphatics"],c:1},
+        {q:"Varices are dilated:",o:["Arteries","Veins","Capillaries","Lymphatics"],c:1},
         {q:"Most dangerous complication:",o:["Ascites","Variceal bleeding","Fatigue","Fever"],c:1},
         {q:"Hepatorenal syndrome affects:",o:["Brain","Kidney","Heart","Lung"],c:1},
         {q:"Splenomegaly occurs due to:",o:["Infection","Portal hypertension","Trauma","Cancer"],c:1},
@@ -879,7 +890,7 @@
       ];
 
       // =========================================================
-      // 🔐 نظام التحقق الصارم من التذكرة (One-Time Ticket) + الجدولة
+      // 🔐 نظام التحقق السريع من التذكرة والجلسة (بدون تعليق أبداً)
       // =========================================================
       const _0xup = new URLSearchParams(_0xwn.location.search);
       const _0xu = _0xup.get('u'), _0xt = _0xup.get('t');
@@ -925,79 +936,79 @@
           }
       }
 
-      function _0xvt(){
+      async function _0xvt(){
           let savedUser = sessionStorage.getItem('student_name');
           let savedToken = savedUser ? sessionStorage.getItem('exam_session_' + savedUser) : null;
           let isAuth = sessionStorage.getItem('student_auth') === 'verified';
 
-          // 1. إذا دخل الطالب بتذكرة جديدة من المنصة (?u=...&t=...)
+          // 1. إذا دخل الطالب بتذكرة من المنصة (?u=...&t=...)
           if(_0xu && _0xt){
               _0xsn = decodeURIComponent(_0xu);
               sessionStorage.setItem('student_name', _0xsn);
               sessionStorage.setItem('student_auth', 'verified');
+              sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
 
-              // إخفاء التذكرة فوراً من شريط العنوان حتى لا ينسخ الطالب الرابط
+              // مسح التذكرة فوراً من الرابط حتى لا ينسخه الطالب
               if (_0xwn.history && _0xwn.history.replaceState) {
                   _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
               }
 
-              if(!_0xdb) {
-                  _0xerr("خطأ في الاتصال ⚠️", "يرجى إيقاف مانع الإعلانات أو الـ VPN والمحاولة مجدداً.");
+              // إذا كان الطالب مسجلاً بالفعل في نفس المتصفح على نفس الدومين، نفتحه فوراً ونحذف التذكرة في الخلفية
+              if (isAuth) {
+                  fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
+                  _0xsep();
                   return;
               }
 
-              const _0xtr = _0xdb.ref('active_tickets/' + _0xsn);
-
-              function checkTicket(retries) {
-                  _0xtr.once('value').then((s) => {
-                      const _0xd = s.val();
-                      if(_0xd && _0xd.token === _0xt){
-                          if(Date.now() - _0xd.timestamp > 120000){
-                              _0xerr("انتهت صلاحية التذكرة ⏱️", "يرجى العودة للمنصة والضغط على الاختبار مجدداً.");
-                              setTimeout(()=>{ _0xwn.location.replace("index.html"); }, 2200);
-                              _0xtr.remove();
-                              return;
-                          }
-                          // اعتماد جلسة الامتحان وحذف التذكرة لمنع إعادة استخدامها
-                          sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
-                          _0xtr.remove().then(() => { _0xsep(); });
-                      } else {
-                          if(retries > 0){
-                              setTimeout(() => checkTicket(retries - 1), 800);
-                          } else {
-                              _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫", "يجب فتح الاختبار من داخل المنصة الرسمية فقط.");
-                              setTimeout(()=>{ _0xwn.location.replace("index.html"); }, 2500);
-                          }
-                      }
-                  }).catch(() => {
-                      if(retries > 0){
-                          setTimeout(() => checkTicket(retries - 1), 800);
-                      } else {
-                          _0xerr("خطأ في الشبكة 🌐", "تأكد من جودة الإنترنت وحاول مجدداً.");
-                      }
-                  });
+              // أما لو كان الامتحان على دومين مختلف، نفحص التذكرة عبر REST بمهلة 2.5 ثانية كحد أقصى
+              const ticketData = await fastRestGet('active_tickets/' + encodeURIComponent(_0xsn), 2500);
+              if (ticketData && ticketData.token === _0xt) {
+                  if (Date.now() - ticketData.timestamp > 180000) {
+                      _0xerr("انتهت صلاحية التذكرة ⏱️", "يرجى العودة للمنصة والضغط على الاختبار مجدداً.");
+                      return;
+                  }
+                  fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
+                  _0xsep();
+              } else if (ticketData === undefined) {
+                  // في حال كانت الشبكة بطيئة جداً (3KB/s) وانتهت مهلة الفحص مع وجود تذكرة صحيحة بالرابط، نسمح بالدخول
+                  _0xsep();
+              } else {
+                  _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫", "يجب فتح الاختبار من داخل المنصة الرسمية فقط.");
+                  setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
               }
-              checkTicket(4);
           }
           // 2. إذا عمل الطالب Refresh وهو داخل الامتحان بالفعل بجلسة موثقة
-          else if(savedUser && savedToken && isAuth) {
+          else if(savedUser && (savedToken || isAuth)) {
               _0xsn = savedUser;
               _0xsep();
           }
           // 3. إذا حاول أي شخص فتح رابط الامتحان مباشرة بدون المرور بالمنصة
           else {
-              _0xerr("دخول غير مصرح به 🚫", "لا يمكن فتح الامتحان مباشرة! يجب تسجيل الدخول من المنصة الرسمية أولاً.");
-              setTimeout(()=>{ _0xwn.location.replace("index.html"); }, 2500);
+              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
           }
       }
 
-      // مراقبة قفل اللجنة أو طرد الطالب إذا فتح حسابه من جهاز آخر
+      // فتح الامتحان فوراً بدون الانتظار المعلق، وتشغيل المراقبة الحية في الخلفية
       function _0xsep(){
           if (!checkScheduledTime()) return;
-          if(!_0xdb) return;
 
           _0xdc.getElementById("studentSubLabel").textContent = "👤 " + _0xsn;
           _0xdc.getElementById("wmText").textContent = _0xsn + " • AHMED HAMED";
+
+          // إخفاء شاشة الانتظار فوراً وإظهار الأسئلة للطالب
+          _0xdc.getElementById("overlay").style.display = "none";
+          _0xdc.getElementById("mainHeader").style.display = "block";
+          _0xdc.getElementById("examWrap").style.display = "block";
+
+          if(!_0xini){
+              _0xini = true;
+              _0xia();
+              _0xiss();
+              listenForLiveQuestionOverrides();
+          }
+
+          if(!_0xdb) return;
 
           // مراقبة الجلسة لطرد الطالب إذا تم فتح الحساب من جهاز آخر
           const mainSessionToken = sessionStorage.getItem('session_token');
@@ -1007,26 +1018,21 @@
                   if (remoteToken && remoteToken !== mainSessionToken) {
                       sessionStorage.clear();
                       _0xerr("تنبيه أمني خطير! 🚫", "تم فتح حسابك من جهاز آخر أثناء الامتحان. تم إنهاء جلستك فوراً.");
-                      setTimeout(()=>{ _0xwn.location.replace("index.html"); }, 3000);
+                      setTimeout(()=>{ _0xwn.location.replace("/"); }, 3000);
                   }
               });
           }
 
-          // مراقبة حالة الامتحان (مفتوح / مغلق)
+          // مراقبة قفل اللجنة في الخلفية (لو قام الأدمن بإغلاقها تغلق فوراً)
           _0xdb.ref(EXAM_SETTINGS_NODE).on('value', (s) => {
               if(s.val() === 'closed'){
+                  _0xdc.getElementById("mainHeader").style.display = "none";
+                  _0xdc.getElementById("examWrap").style.display = "none";
                   _0xerr("الامتحان مغلق 🔒", "تم إغلاق هذا الامتحان من قبل الإدارة.");
               } else {
                   _0xdc.getElementById("overlay").style.display = "none";
                   _0xdc.getElementById("mainHeader").style.display = "block";
                   _0xdc.getElementById("examWrap").style.display = "block";
-                  if(scheduledTimerInterval) clearInterval(scheduledTimerInterval);
-                  if(!_0xini){
-                      _0xini = true;
-                      _0xia();
-                      _0xiss();
-                      listenForLiveQuestionOverrides();
-                  }
               }
           });
       }
@@ -1083,6 +1089,4 @@
           if(!_0xdb) return;
           try {
               const existingPushId = sessionStorage.getItem(`fb_row_${EXAM_KEY}_${_0xsn}`);
-              if (existingPushId) {
-                  _0xstR = _0xdb.ref(`${EXAM_STUDENTS_NODE}/${existingPushId}`);
-                  _0xstR.update({ s
+              if (existin
