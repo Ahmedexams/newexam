@@ -1,629 +1,150 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head>
+ <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#070912">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Online Exam - بنك الباطنة 2026</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg0: #070912;
-      --bg1: #0b1020;
-      --stroke: #1a2b55;
-      --text: #e9efff;
-      --muted: #a8b3d9;
-      --good: #22c55e;
-      --bad: #ef4444;
-      --warn: #f59e0b;
-      --glow1: #6ee7ff;
-      --glow2: #a78bfa;
-      --glow3: #22c55e;
-      --glow4: #fb7185;
-    }
-
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-      margin: 0;
-      font-family: 'Tajawal', system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%),
-        radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%),
-        radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      min-height: 100vh;
-      overflow-x: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    /* العلامة المائية لحماية الأسئلة */
-    #watermarkLayer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 40;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .wm-stamp {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(24px, 6vw, 48px);
-      font-weight: 900;
-      color: rgba(255, 255, 255, 0.03);
-      transform: rotate(-25deg);
-      white-space: nowrap;
-      letter-spacing: 3px;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      background: linear-gradient(180deg, rgba(7,9,18,.92), rgba(7,9,18,.65));
-      border-bottom: 1px solid rgba(26,43,85,.7);
-    }
-    .headin {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 12px 14px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .back-btn {
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(26,43,85,.45);
-      border: 1px solid rgba(110,231,255,.25);
-      transition: 0.2s;
-    }
+    :root{ --bg0:#070912; --bg1:#0b1020; --stroke:#1a2b55; --text:#e9efff; --muted:#a8b3d9; --good:#22c55e; --bad:#ef4444; --glow1:#6ee7ff; --glow2:#a78bfa; --glow3:#22c55e; --glow4:#fb7185; }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial; color:var(--text); background: radial-gradient(1200px 600px at 80% -10%, rgba(167,139,250,.22), transparent 60%), radial-gradient(1000px 500px at 10% 0%, rgba(110,231,255,.18), transparent 55%), radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.12), transparent 60%), linear-gradient(180deg, var(--bg0), var(--bg1)); min-height:100vh; overflow-x:hidden; user-select:none; -webkit-user-select:none; }
+    header{ position:sticky; top:0; z-index:50; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(7,9,18,.85), rgba(7,9,18,.35)); border-bottom:1px solid rgba(26,43,85,.6); }
+    .headin{ max-width:1100px;margin:0 auto; padding:14px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .brand{display:flex; align-items:center; gap:12px;}
+    .back-btn { cursor: pointer; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(26,43,85,.4); border: 1px solid rgba(110,231,255,.2); transition: 0.2s; }
     .back-btn:hover { background: rgba(110,231,255,.15); transform: scale(1.05); }
-
-    .premium-logo {
-      position: relative;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #16203a, #0b1020);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
-      cursor: pointer;
-    }
-    .premium-logo::before, .premium-logo::after {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1));
-      z-index: -1;
-      animation: spin 4s linear infinite;
-    }
+    
+    .premium-logo { position: relative; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: linear-gradient(135deg, #16203a, #0b1020); box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent;}
+    .premium-logo::before, .premium-logo::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(from 0deg, var(--glow1), var(--glow2), var(--glow3), var(--glow1)); z-index: -1; animation: spin 4s linear infinite; }
     .premium-logo::after { filter: blur(8px); opacity: 0.8; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .premium-logo svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(110,231,255,0.8)); }
-
-    h1 { margin: 0; font-size: 17px; font-weight: 900; letter-spacing: .2px; }
-    .sub { margin: 0; color: var(--glow1); font-size: 12px; font-weight: 800; }
-
-    .pillbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(26,43,85,.9);
-      background: rgba(15,23,48,.6);
-      box-shadow: inset 0 0 0 1px rgba(110,231,255,.06);
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--muted);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .pill b { color: var(--text); font-weight: 900; }
-
-    .finish-btn {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(90deg, var(--glow1), var(--glow2));
-      color: #070912;
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .finish-btn:active { transform: scale(0.96); }
-
-    .progress {
-      width: 220px;
-      max-width: 70vw;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(26,43,85,.55);
-      border: 1px solid rgba(26,43,85,.8);
-      overflow: hidden;
-      position: relative;
-    }
-    .progress > span {
-      position: absolute;
-      inset: 0;
-      width: 0%;
-      background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3));
-      box-shadow: 0 0 14px rgba(110,231,255,.22);
-      transition: width .35s ease;
-    }
-
-    /* شريط الفلترة السريع */
-    .filter-bar {
-      max-width: 1100px;
-      margin: 14px auto 0;
-      padding: 0 14px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .f-group { display: flex; gap: 6px; flex-wrap: wrap; }
-    .f-btn {
-      padding: 7px 13px;
-      border-radius: 999px;
-      border: 1px solid rgba(26,43,85,.9);
-      background: rgba(15,23,48,.5);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .f-btn.active {
-      border-color: var(--glow1);
-      background: rgba(110,231,255,.15);
-      color: var(--text);
-    }
-
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 14px 40px; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 10px; }
-    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
-
-    .card {
-      background: linear-gradient(180deg, rgba(15,23,48,.75), rgba(15,23,48,.45));
-      border: 1px solid rgba(26,43,85,.85);
-      border-radius: 22px;
-      padding: 16px 14px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04);
-      position: relative;
-      overflow: hidden;
-    }
-    .card:before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%);
-      pointer-events: none;
-    }
-
-    .qtop { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-    .qno {
-      min-width: 44px;
-      height: 30px;
-      border-radius: 12px;
-      background: rgba(26,43,85,.55);
-      border: 1px solid rgba(26,43,85,.9);
-      display: grid;
-      place-items: center;
-      color: var(--text);
-      font-weight: 900;
-      box-shadow: 0 0 20px rgba(167,139,250,.10);
-      flex: 0 0 auto;
-    }
-    .qtext {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.6;
-      color: var(--text);
-      direction: ltr;
-      text-align: left;
-      unicode-bidi: plaintext;
-      flex: 1;
-    }
-    .tts-btn {
-      background: rgba(26,43,85,.55);
-      border: 1px solid rgba(110,231,255,.25);
-      border-radius: 9px;
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      transition: 0.2s;
-      flex: 0 0 auto;
-    }
-    .tts-btn:hover { background: rgba(110,231,255,.18); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
-
-    .opts { display: grid; gap: 10px; margin-top: 10px; }
-    .opt {
-      border-radius: 16px;
-      border: 1px solid rgba(26,43,85,.85);
-      background: rgba(7,9,18,.38);
-      padding: 12px;
-      cursor: pointer;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      transition: transform .08s ease, border-color .15s ease, background .15s ease;
-      direction: ltr;
-    }
-    .opt:hover { transform: translateY(-1px); border-color: rgba(110,231,255,.35); }
-    .badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 10px;
-      background: rgba(26,43,85,.55);
-      border: 1px solid rgba(26,43,85,.85);
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      color: var(--muted);
-      flex: 0 0 auto;
-    }
-    .opt .txt { color: var(--text); font-size: 13px; line-height: 1.55; direction: ltr; text-align: left; }
-    .opt.correct { border-color: rgba(34,197,94,.65); background: rgba(34,197,94,.14); box-shadow: 0 0 18px rgba(34,197,94,.15); }
-    .opt.wrong { border-color: rgba(239,68,68,.65); background: rgba(239,68,68,.14); box-shadow: 0 0 18px rgba(239,68,68,.15); }
-    .opt.locked { cursor: not-allowed; opacity: .95; }
-
-    .admin-edit-btn {
-      display: none;
-      margin-top: 10px;
-      padding: 5px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(245,158,11,0.5);
-      background: rgba(245,158,11,0.15);
-      color: #fde68a;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    body.admin-edit-mode .admin-edit-btn { display: inline-block; }
-
-    .toast {
-      position: fixed;
-      top: 84px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15,23,48,.92);
-      border: 1px solid rgba(110,231,255,.4);
-      border-radius: 16px;
-      padding: 10px 16px;
-      color: var(--text);
-      font-weight: 800;
-      opacity: 0;
-      transition: .25s ease;
-      z-index: 9999;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(6px); }
-
-    /* شاشة الحظر (تظهر فقط عند محاولة الدخول غير المصرح به) */
-    #overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(7,9,18,0.98);
-      z-index: 1000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      padding: 16px;
-    }
-    .modal {
-      background: var(--bg1);
-      border: 1px solid var(--stroke);
-      padding: 30px 22px;
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(239,68,68,0.15);
-      width: 92%;
-      max-width: 400px;
-    }
-    .countdown-timer {
-      font-size: 32px;
-      font-weight: 900;
-      font-family: 'Outfit', monospace;
-      color: var(--glow1);
-      margin-top: 15px;
-      display: none;
-    }
-
-    /* غرفة مراقبة اللجنة للأدمن */
-    #adminDashboard {
-      position: fixed;
-      inset: 0;
-      background: rgba(7,9,18,0.95);
-      z-index: 99999;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      backdrop-filter: blur(16px);
-      opacity: 0;
-      transition: 0.3s;
-    }
-    .dash-card {
-      background: linear-gradient(180deg, rgba(15,23,48,.96), rgba(11,16,32,.96));
-      border: 1px solid rgba(110,231,255,.35);
-      border-radius: 28px;
-      padding: 24px 18px;
-      text-align: center;
-      box-shadow: 0 0 50px rgba(0,0,0,.8);
-      width: 100%;
-      max-width: 430px;
-      max-height: 88vh;
-      overflow-y: auto;
-    }
-    .live-pulse {
-      width: 14px;
-      height: 14px;
-      background: #fb7185;
-      border-radius: 50%;
-      margin: 0 auto 10px;
-      box-shadow: 0 0 15px #fb7185;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
-    }
-    .online-count {
-      font-size: 64px;
-      font-weight: 900;
-      font-family: 'Outfit', sans-serif;
-      background: linear-gradient(90deg, var(--glow4), var(--glow2));
-      -webkit-background-clip: text;
-      color: transparent;
-      line-height: 1;
-      margin: 6px 0;
-    }
-    .stu-score-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
-      margin-bottom: 6px;
-      font-size: 12px;
-    }
-    .adm-btn {
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(110,231,255,.35);
-      background: rgba(15,23,48,.8);
-      color: var(--glow1);
-      font-weight: 800;
-      font-size: 12px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 8px;
-    }
-    .close-dash {
-      margin-top: 14px;
-      width: 100%;
-      background: rgba(239,68,68,.15);
-      color: var(--bad);
-      border: 1px solid rgba(239,68,68,.4);
-      padding: 11px;
-      border-radius: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .custom-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(7,9,18,0.92);
-      z-index: 100000;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      backdrop-filter: blur(12px);
-    }
-    .adm-input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(110,231,255,.3);
-      background: rgba(0,0,0,.5);
-      color: #fff;
-      font-size: 13px;
-      margin-bottom: 8px;
-      outline: none;
-      user-select: text;
-      -webkit-user-select: text;
-    }
+    
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:12px}
+    .pillbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .pill{ padding:10px 12px; border-radius:999px; border:1px solid rgba(26,43,85,.9); background: rgba(15,23,48,.55); box-shadow: inset 0 0 0 1px rgba(110,231,255,.06); font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .pill b{color:var(--text);font-weight:900}
+    .progress{ width:260px; max-width:75vw; height:10px; border-radius:999px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.8); overflow:hidden; position:relative; }
+    .progress > span{ position:absolute; inset:0; width:0%; background: linear-gradient(90deg, var(--glow1), var(--glow2), var(--glow3)); box-shadow: 0 0 14px rgba(110,231,255,.22); transition:width .35s ease; }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 24px;}
+    .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:14px; }
+    @media (min-width: 900px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{ background: linear-gradient(180deg, rgba(15,23,48,.72), rgba(15,23,48,.45)); border:1px solid rgba(26,43,85,.85); border-radius:22px; padding:16px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.28), inset 0 0 0 1px rgba(110,231,255,.04); position:relative; overflow:hidden; }
+    .card:before{ content:""; position:absolute; inset:-2px; background: radial-gradient(700px 180px at 20% 0%, rgba(110,231,255,.12), transparent 60%); pointer-events:none; }
+    .qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .qno{ min-width:44px;height:30px;border-radius:12px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.9); display:grid; place-items:center; color:var(--text); font-weight:1000; box-shadow: 0 0 20px rgba(167,139,250,.10); flex:0 0 auto; }
+    .qtext{ margin:0; font-size:14px; line-height:1.6; color:var(--text); direction:ltr; text-align:left; unicode-bidi: plaintext; flex: 1; }
+    .tts-btn { background: rgba(26,43,85,.55); border: 1px solid rgba(110,231,255,.2); border-radius: 8px; width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer; transition: 0.2s; flex: 0 0 auto; margin-left: 10px; }
+    .tts-btn:hover { background: rgba(110,231,255,.15); border-color: rgba(110,231,255,.5); transform: scale(1.05); }
+    .opts{display:grid; gap:10px; margin-top:10px}
+    .opt{ border-radius:16px; border:1px solid rgba(26,43,85,.85); background: rgba(7,9,18,.35); padding:12px 12px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; transition: transform .08s ease, border-color .15s ease, background .15s ease; user-select:none; -webkit-user-select:none; }
+    .opt:hover{transform: translateY(-1px); border-color: rgba(110,231,255,.30)}
+    .badge{ width:28px;height:28px;border-radius:10px; background: rgba(26,43,85,.55); border:1px solid rgba(26,43,85,.85); display:grid;place-items:center; font-weight:1000; color:var(--muted); flex:0 0 auto; }
+    .opt .txt{color:var(--text); font-size:13px; line-height:1.55; direction:ltr; text-align:left;}
+    .opt.correct{ border-color: rgba(34,197,94,.55); background: rgba(34,197,94,.12); box-shadow: 0 0 18px rgba(34,197,94,.15); }
+    .opt.wrong{ border-color: rgba(239,68,68,.55); background: rgba(239,68,68,.12); box-shadow: 0 0 18px rgba(239,68,68,.15); }
+    .opt.locked{cursor:not-allowed; opacity:.95}
+    .toast{ position:fixed; top:84px; left:50%; transform:translateX(-50%); background: rgba(15,23,48,.75); border:1px solid rgba(26,43,85,.85); border-radius:16px; padding:10px 12px; color:var(--text); opacity:0; transition: .25s ease; z-index:99; pointer-events:none; }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(6px);}
+    
+    #overlay { position: fixed; inset: 0; background: rgba(7,9,18,0.98); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+    .modal { background: var(--bg1); border: 1px solid var(--stroke); padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 40px rgba(239,68,68,0.1); width: 90%; max-width: 400px; }
+    .countdown-timer { font-size: 32px; font-weight: bold; font-family: monospace; color: var(--glow2); margin-top: 15px; display: none;}
+    
+    #adminDashboard { position: fixed; inset: 0; background: rgba(7,9,18,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); opacity: 0; transition: 0.3s; }
+    .dash-card { background: linear-gradient(180deg, rgba(15,23,48,.9), rgba(15,23,48,.6)); border: 1px solid rgba(110,231,255,.3); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(110,231,255,.1); width: 90%; max-width: 350px; }
+    .live-pulse { width: 15px; height: 15px; background: #fb7185; border-radius: 50%; margin: 0 auto 20px; box-shadow: 0 0 15px #fb7185; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 113, 133, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); } }
+    .online-count { font-size: 80px; font-weight: 900; font-family: 'Outfit', sans-serif; background: linear-gradient(90deg, var(--glow4), var(--glow2)); -webkit-background-clip: text; color: transparent; line-height: 1; margin: 10px 0; }
+    .close-dash { margin-top: 30px; background: rgba(239,68,68,.15); color: var(--bad); border: 1px solid rgba(239,68,68,.4); padding: 12px 30px; border-radius: 16px; font-weight: 900; cursor: pointer; font-size: 16px; }
   </style>
-</head>
-<body>
-
-  <!-- العلامة المائية الشفافة بكود الطالب -->
-  <div id="watermarkLayer">
-    <div class="wm-stamp" id="wmText">AHMED HAMED PLATFORM</div>
-  </div>
-
-  <!-- نافذة التحقق من شفرة الأدمن (5 ضغطات على الشعار) -->
-  <div id="pinModal" class="custom-modal">
-    <div class="modal" style="max-width: 330px;">
-      <div style="font-size: 28px; margin-bottom: 6px;">🛡️</div>
-      <h3 style="margin: 0 0 6px 0; font-size: 16px;">مراقبة اللجنة وإدارة الأسئلة</h3>
-      <p style="color: var(--muted); font-size: 12px; margin-bottom: 14px;">أدخل شفرة الإدارة للمتابعة</p>
-      <input type="password" id="adminPinField" class="adm-input" placeholder="••••" inputmode="numeric" style="text-align:center; font-size:20px; letter-spacing:6px;">
-      <div style="display:flex; gap:8px;">
-        <button class="finish-btn" style="flex:1; padding:11px;" onclick="verifyExamAdminPin()">دخول</button>
-        <button class="adm-btn" style="flex:1; margin:0; color:var(--bad); border-color:var(--bad);" onclick="document.getElementById('pinModal').style.display='none'">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- غرفة مراقبة اللجنة للأدمن -->
+ </head>
+ <body>
   <div id="adminDashboard">
-    <div class="dash-card">
-      <div class="live-pulse"></div>
-      <h3 style="color: var(--muted); margin: 0; font-size: 14px;">متصل باللجنة الآن</h3>
-      <div class="online-count" id="onlineCounter">1</div>
-      <p style="color: var(--muted); font-size: 12px; margin-bottom: 14px;">طالب داخل الامتحان حالياً</p>
-
-      <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <button class="adm-btn" style="margin:0; color:var(--good); border-color:var(--good);" onclick="setCommitteeStatus('open')">فتح اللجنة 🔓</button>
-        <button class="adm-btn" style="margin:0; color:var(--bad); border-color:var(--bad);" onclick="setCommitteeStatus('closed')">إغلاق اللجنة 🔒</button>
-      </div>
-
-      <button class="adm-btn" style="color:#fde68a; border-color:rgba(245,158,11,0.5);" onclick="enableLiveQuestionEditing()">✏️ تفعيل تعديل الأسئلة والأجوبة لايف</button>
-      <button class="adm-btn" onclick="copyQuestionsArrayForGithub()">📋 نسخ مصفوفة الأسئلة (_0xAQ) لـ GitHub</button>
-
-      <div style="text-align:right; margin-top:14px;">
-        <h4 style="margin:0 0 8px 0; font-size:12px; color:var(--glow1);">📊 درجات الطلاب في اللجنة لحظياً:</h4>
-        <div id="liveStudentsScoresList" style="max-height:160px; overflow-y:auto; font-size:12px; color:var(--muted);">جاري التحميل...</div>
-      </div>
-
-      <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
-    </div>
+   <div class="dash-card">
+       <div class="live-pulse"></div>
+       <h3 style="color: var(--muted); margin: 0;">متصل باللجنة الآن</h3>
+       <div class="online-count" id="onlineCounter">1</div>
+       <p style="color: var(--muted); font-size: 13px;">طالب داخل الامتحان حالياً</p>
+       <button class="close-dash" onclick="closeAdminDash()">إغلاق المراقبة ❌</button>
+   </div>
   </div>
 
-  <!-- نافذة تعديل السؤال الفوري للأدمن -->
-  <div id="editQModal" class="custom-modal">
-    <div class="modal" style="max-width: 440px; text-align: right;">
-      <h3 style="margin: 0 0 10px 0; font-size: 15px; color: var(--glow1);">✏️ تعديل السؤال رقم #<span id="edQNum">1</span></h3>
-      <textarea id="edQText" class="adm-input" rows="3" style="direction:ltr; text-align:left;"></textarea>
-      <div id="edOptsBox"></div>
-      <label style="font-size:12px; color:var(--good); font-weight:800; display:block; margin:6px 0 4px;">الإجابة الصحيحة:</label>
-      <select id="edQCorrect" class="adm-input" style="color:var(--good); font-weight:900;"></select>
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button class="finish-btn" style="flex:2; padding:11px;" onclick="saveLiveQuestionEdit()">حفظ وتحديث للطلاب فوراً 🚀</button>
-        <button class="adm-btn" style="flex:1; margin:0;" onclick="document.getElementById('editQModal').style.display='none'">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- شاشة الحظر (مخفية افتراضياً ولا تظهر إلا لمن يدخل بدون تسجيل) -->
   <div id="overlay">
-    <div class="modal" id="modalContent">
-      <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">دخول غير مصرح به 🚫</h2>
-      <p id="modalText" style="color:var(--muted); line-height:1.6; font-weight:700;">يجب تسجيل الدخول وفتح الامتحان من خلال المنصة الرسمية فقط.</p>
-      <div id="countdownTimer" class="countdown-timer">00:00:00</div>
-      <button id="backHomeOverlayBtn" onclick="window.location.replace('/')" style="margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(90deg, var(--glow1), var(--glow2)); color:#070912; font-weight:900; cursor:pointer;">العودة لبوابة المنصة الرئيسية ⬅️</button>
-    </div>
+   <div class="modal" id="modalContent">
+    <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">دخول غير مصرح به 🚫</h2>
+    <p id="modalText" style="color:var(--muted)">يجب الدخول للامتحان من خلال المنصة الرسمية فقط.</p>
+    <div id="countdownTimer" class="countdown-timer">00:00:00</div>
+   </div>
   </div>
 
-  <header id="mainHeader">
-    <div class="headin">
-      <div class="brand">
-        <div class="back-btn" onclick="window.location.replace('/')" title="العودة للمنصة">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        </div>
-
-        <div class="premium-logo" onclick="handleSecretTap()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <header id="mainHeader" style="display: none;">
+   <div class="headin">
+    <div class="brand">
+     <div class="back-btn" onclick="window.location.replace('/')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--glow1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+     </div>
+        
+     <div class="premium-logo" onclick="handleSecretTap()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#6ee7ff" />
-                <stop offset="100%" stop-color="#a78bfa" />
-              </linearGradient>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6ee7ff" />
+                    <stop offset="100%" stop-color="#a78bfa" />
+                </linearGradient>
             </defs>
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-        </div>
-        <div>
-          <h1 id="examHeaderTitle" style="margin-bottom: 2px;">Internal Medicine 2</h1>
-          <p class="sub" id="studentSubLabel">👤 طالب</p>
-        </div>
-      </div>
-
-      <div class="pillbar">
-        <div class="pill">
-          تم الحل: <b id="answered">0</b> / <b id="total">0</b>
-        </div>
-        <div class="pill">
-          النتيجة: <b id="score" style="color:var(--good);">0</b>
-        </div>
-        <div class="progress">
-          <span id="bar"></span>
-        </div>
-        <button class="finish-btn" onclick="finishAndSendResult()">إنهاء وتوثيق 🏆</button>
-      </div>
+        </svg>
+     </div>
+     <div>
+      <h1 style="margin-bottom: 4px;">internal medicine2 </h1>
+      <p id="studentNameSub" class="sub" style="color: var(--glow1); font-weight: 900; font-family: 'Tajawal', sans-serif; font-size: 14px; text-shadow: 0 0 5px rgba(110,231,255,0.3);"></p>
+     </div>
     </div>
+    <div class="pillbar">
+     <div class="pill">
+      تم الحل: <b id="answered">0</b> / <b id="total">0</b>
+     </div>
+     <div class="pill">
+      النتيجة: <b id="score">0</b>
+     </div>
+     <div class="progress">
+      <span id="bar"></span>
+     </div>
+    </div>
+   </div>
   </header>
 
-  <div class="wrap" id="examWrap">
-    <div class="filter-bar">
-      <div class="f-group">
-        <button class="f-btn active" id="fBtnAll" onclick="setExamFilter('all')">الكل</button>
-        <button class="f-btn" id="fBtnUnanswered" onclick="setExamFilter('unanswered')">لم يتم حلها ⏳</button>
-        <button class="f-btn" id="fBtnWrong" onclick="setExamFilter('wrong')">أخطائي ❌</button>
-      </div>
-      <button class="f-btn" style="color:var(--warn);" onclick="resetMyExamAnswers()">🔄 إعادة تصفير إجاباتي</button>
-    </div>
-
-    <div class="grid" id="grid"></div>
+  <div class="wrap" id="examWrap" style="display: none;">
+   <div class="grid" id="grid"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <!-- تحميل Firebase في نهاية الصفحة حتى لا يعطل فتح الأسئلة عند ضعف الشبكة -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script>
   (function(){
-      // =========================================================
-      // ⚙️ إعدادات الامتحان الموحدة
-      // =========================================================
-      const EXAM_KEY = "internal_medicine_exam";
-      const EXAM_SETTINGS_NODE = "internal_medicine_settings/exam_status";
-      const EXAM_STUDENTS_NODE = "internal_medicine_students";
-      const EXAM_DISPLAY_NAME = "Internal Medicine 2 - الباطنة";
-      const EXAM_SCHEDULED_TIME = 0;
-
-      const _0xdc = document, _0xwn = window;
+      const EXAM_SCHEDULED_TIME = 0; 
       const DB_URL = "https://ahmedexams-3e267-default-rtdb.firebaseio.com";
-
+      const _0xdc = document, _0xwn = window;
+      
       _0xdc.addEventListener('contextmenu', e => e.preventDefault());
       _0xdc.onkeydown = e => {
-          if(e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) return false;
+          if(e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===67||e.keyCode===74))||(e.ctrlKey&&e.keyCode===85)) return false;
       };
-      _0xdc.addEventListener('copy', e => {
-          if(!_0xdc.body.classList.contains('admin-edit-mode')) e.preventDefault();
-      });
+      _0xdc.addEventListener('copy', e => e.preventDefault());
       _0xdc.addEventListener('dragstart', e => e.preventDefault());
+      
+      _0xdc.addEventListener('DOMContentLoaded', function(){
+          _0xwn.history.pushState('exam', null, '');
+          _0xwn.onpopstate = function(){ _0xwn.location.replace('/'); };
+      });
 
-      let _0xstR = null, _0xsn = "طالب", _0xini = false, _0xeq = [], _0xst = { a: 0, s: 0, l: [], so: [] };
-      let currentFilter = 'all';
+      let _0xdb = null;
+      let _0xstR = null, _0xsn = "طالب مجهول", _0xini = false, _0xeq = [], _0xst = { a: 0, s: 0, l: [], so: [] };
 
-      // =========================================================
-      // 📚 بنك الأسئلة الكامل (121 سؤال باطنة)
-      // =========================================================
       const _0xAQ = [
         {q:"Most common cause of hyperthyroidism is:",o:["Thyroiditis","Graves' disease","Toxic adenoma","Iodine deficiency"],c:1},
         {q:"Which antibody is characteristic of Graves' disease?",o:["Anti-TPO","Anti-thyroglobulin","TSH receptor antibody","ANA"],c:2},
@@ -750,16 +271,9 @@
           _0xdc.getElementById("mainHeader").style.display = "none";
           _0xdc.getElementById("examWrap").style.display = "none";
           _0xdc.getElementById("modalTitle").innerText = _0x1;
+          _0xdc.getElementById("modalTitle").style.color = "var(--bad)";
           _0xdc.getElementById("modalText").innerText = _0x2;
           _0xdc.getElementById("overlay").style.display = "flex";
-      }
-
-      function getSavedProgressKey() {
-          return `saved_exam_state_${EXAM_KEY}_${_0xsn}`;
-      }
-
-      function saveProgressToSession() {
-          try { sessionStorage.setItem(getSavedProgressKey(), JSON.stringify(_0xst)); } catch(e){}
       }
 
       const _0xG = _0xdc.getElementById("grid"),
@@ -771,140 +285,42 @@
       function _0xstst(_0xM){
           _0xTst.textContent = _0xM;
           _0xTst.classList.add("show");
-          setTimeout(() => _0xTst.classList.remove("show"), 1400);
-      }
-
-      function recalcScore() {
-          let a = 0, s = 0;
-          _0xst.l.forEach((locked, idx) => {
-              if (locked && _0xst.so[idx] !== null) {
-                  a++;
-                  if (_0xst.so[idx] === Number(_0xeq[idx].c)) s++;
-              }
-          });
-          _0xst.a = a;
-          _0xst.s = s;
+          setTimeout(() => _0xTst.classList.remove("show"), 1200);
       }
 
       function _0xuhd(){
-          recalcScore();
           _0xA.textContent = _0xst.a;
           _0xS.textContent = _0xst.s;
           _0xB.style.width = (_0xst.a / _0xeq.length * 100) + "%";
-          if(_0xstR) {
-              try { _0xstR.update({ score: _0xst.s }); } catch(e){}
-          }
-      }
-
-      _0xwn.setExamFilter = function(f) {
-          currentFilter = f;
-          _0xdc.getElementById('fBtnAll').classList.toggle('active', f === 'all');
-          _0xdc.getElementById('fBtnUnanswered').classList.toggle('active', f === 'unanswered');
-          _0xdc.getElementById('fBtnWrong').classList.toggle('active', f === 'wrong');
-          applyFilterDisplay();
-      };
-
-      function applyFilterDisplay() {
-          const cards = _0xG.querySelectorAll('.card');
-          cards.forEach(c => {
-              const idx = Number(c.getAttribute('data-idx'));
-              const isLocked = _0xst.l[idx];
-              const isRight = _0xst.so[idx] === Number(_0xeq[idx].c);
-              let visible = true;
-              if (currentFilter === 'unanswered') visible = !isLocked;
-              else if (currentFilter === 'wrong') visible = (isLocked && !isRight);
-              c.style.display = visible ? 'block' : 'none';
-          });
       }
 
       _0xwn.speakText = function(_0xT){
-          try {
+          try{
               if('speechSynthesis' in _0xwn){
                   _0xwn.speechSynthesis.cancel();
                   const _0xU = new SpeechSynthesisUtterance(_0xT);
                   _0xU.lang = 'en-US';
-                  _0xU.rate = 0.8;
+                  _0xU.rate = 0.7;
                   _0xwn.speechSynthesis.speak(_0xU);
               } else {
-                  _0xstst("النطق الصوتي غير مدعوم");
+                  _0xstst("غير مدعوم");
               }
           } catch(e){}
       };
 
-      function _0xrnd(){
-          _0xG.innerHTML = '';
-          _0xeq.forEach((_0xi, _0xidx) => {
-              const _0xc = _0xdc.createElement("section");
-              _0xc.className = "card";
-              _0xc.setAttribute("data-idx", _0xidx);
-
-              const _0xqt = _0xdc.createElement("div");
-              _0xqt.className = "qtop";
-              const _0xsT = _0xi.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-              _0xqt.innerHTML = `
-                <p class="qtext">${_0xi.q}</p>
-                <div class="tts-btn" onclick="speakText('${_0xsT}')" title="نطق السؤال">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                </div>
-                <div class="qno">${_0xidx + 1}</div>`;
-
-              const _0xod = _0xdc.createElement("div");
-              _0xod.className = "opts";
-
-              _0xi.o.forEach((_0xot, _0xoid) => {
-                  const _0xo = _0xdc.createElement("div");
-                  _0xo.className = "opt";
-                  _0xo.innerHTML = `<div class="badge">${String.fromCharCode(65 + _0xoid)}</div><div class="txt">${_0xot}</div>`;
-
-                  if(_0xst.l[_0xidx]){
-                      _0xo.classList.add("locked");
-                      if(_0xoid === Number(_0xi.c)) _0xo.classList.add("correct");
-                      if(_0xoid === _0xst.so[_0xidx] && _0xoid !== Number(_0xi.c)) _0xo.classList.add("wrong");
-                  }
-
-                  _0xo.onclick = () => {
-                      if(_0xst.l[_0xidx]) return;
-                      _0xst.l[_0xidx] = true;
-                      _0xst.so[_0xidx] = _0xoid;
-
-                      if(_0xoid === Number(_0xi.c)){
-                          _0xo.classList.add("correct");
-                          _0xstst("✅ إجابة صحيحة");
-                      } else {
-                          _0xo.classList.add("wrong");
-                          if(_0xod.children[_0xi.c]) _0xod.children[_0xi.c].classList.add("correct");
-                          _0xstst("❌ إجابة خاطئة");
-                      }
-
-                      _0xod.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
-                      _0xuhd();
-                      saveProgressToSession();
-                      applyFilterDisplay();
-                  };
-                  _0xod.appendChild(_0xo);
-              });
-
-              const editBtn = _0xdc.createElement("button");
-              editBtn.className = "admin-edit-btn";
-              editBtn.innerText = "✏️ تعديل السؤال / الإجابة لايف";
-              editBtn.onclick = () => openLiveEditModal(_0xidx);
-
-              _0xc.appendChild(_0xqt);
-              _0xc.appendChild(_0xod);
-              _0xc.appendChild(editBtn);
-              _0xG.appendChild(_0xc);
-          });
-          _0xuhd();
-          applyFilterDisplay();
+      function saveProgress() {
+          try {
+              sessionStorage.setItem('batna2_progress_' + _0xsn, JSON.stringify(_0xst));
+          } catch(e){}
       }
 
       function _0xia(){
           _0xeq = _0xAQ;
-          const cached = sessionStorage.getItem(getSavedProgressKey());
-          if (cached) {
+          const saved = sessionStorage.getItem('batna2_progress_' + _0xsn);
+          if (saved) {
               try {
-                  const parsed = JSON.parse(cached);
-                  if (parsed && Array.isArray(parsed.l) && parsed.l.length === _0xeq.length) {
+                  const parsed = JSON.parse(saved);
+                  if (parsed && parsed.l && parsed.l.length === _0xeq.length) {
                       _0xst = parsed;
                   } else {
                       _0xst = { a: 0, s: 0, l: Array(_0xeq.length).fill(false), so: Array(_0xeq.length).fill(null) };
@@ -919,182 +335,176 @@
           _0xrnd();
       }
 
-      // =========================================================
-      // ⚡ التحقق الفوري الذاتي في 0.001 ثانية (بدون أي انتظار للشبكة)
-      // =========================================================
-      const _0xup = new URLSearchParams(_0xwn.location.search);
-      const _0xu = _0xup.get('u'), _0xt = _0xup.get('t');
-      const savedSessionUser = sessionStorage.getItem('student_name') || localStorage.getItem('saved_username_v2');
-      const isAlreadyVerified = sessionStorage.getItem('student_auth') === 'verified';
-
-      let authorized = false;
-
-      if (_0xu && _0xt) {
-          // فحص التوقيت المشفر داخل التذكرة نفسها ذاتياً بدون انتظار السيرفر
-          const ticketTime = parseInt(_0xt.slice(-8), 36);
-          const ageMs = Date.now() - ticketTime;
-          if (!isNaN(ticketTime) && ageMs > -60000 && ageMs < 600000) {
-              authorized = true;
-          } else {
-              authorized = true; // السماح في حال اختلاف توقيت ساعة هاتف الطالب
-          }
-          _0xsn = decodeURIComponent(_0xu);
-          sessionStorage.setItem('student_name', _0xsn);
-          sessionStorage.setItem('student_auth', 'verified');
-          sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
-
-          // إخفاء التذكرة فوراً من شريط العنوان لمنع نسخ الرابط
-          if (_0xwn.history && _0xwn.history.replaceState) {
-              _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
-          }
-          // حذف التذكرة من Firebase في الخلفية
-          fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
-      } else if (savedSessionUser && isAlreadyVerified) {
-          authorized = true;
-          _0xsn = savedSessionUser;
+      function _0xrnd(){
+          _0xG.innerHTML = '';
+          _0xeq.forEach((_0xi, _0xidx) => {
+              const _0xc = _0xdc.createElement("section");
+              _0xc.className = "card";
+              const _0xqt = _0xdc.createElement("div");
+              _0xqt.className = "qtop";
+              const _0xsT = _0xi.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+              _0xqt.innerHTML = `<p class="qtext">${_0xi.q}</p><div class="tts-btn" onclick="speakText('${_0xsT}')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div><div class="qno">${_0xidx + 1}</div>`;
+              const _0xod = _0xdc.createElement("div");
+              _0xod.className = "opts";
+              
+              _0xi.o.forEach((_0xot, _0xoid) => {
+                  const _0xo = _0xdc.createElement("div");
+                  _0xo.className = "opt";
+                  _0xo.innerHTML = `<div class="badge">${String.fromCharCode(65 + _0xoid)}</div><div class="txt">${_0xot}</div>`;
+                  
+                  if(_0xst.l[_0xidx]){
+                      _0xo.classList.add("locked");
+                      if(_0xoid === _0xi.c) _0xo.classList.add("correct");
+                      if(_0xoid === _0xst.so[_0xidx] && _0xoid !== _0xi.c) _0xo.classList.add("wrong");
+                  }
+                  
+                  _0xo.onclick = () => {
+                      if(_0xst.l[_0xidx]) return;
+                      _0xst.l[_0xidx] = true;
+                      _0xst.so[_0xidx] = _0xoid;
+                      _0xst.a++;
+                      if(_0xoid === _0xi.c){
+                          _0xo.classList.add("correct");
+                          _0xst.s++;
+                          _0xstst("✅ إجابة صحيحة");
+                      } else {
+                          _0xo.classList.add("wrong");
+                          _0xod.children[_0xi.c].classList.add("correct");
+                          _0xstst("❌ إجابة خاطئة");
+                      }
+                      
+                      saveProgress();
+                      if(_0xstR) try { _0xstR.update({ score: _0xst.s }); } catch(e){}
+                      _0xod.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
+                      _0xuhd();
+                  };
+                  _0xod.appendChild(_0xo);
+              });
+              _0xc.appendChild(_0xqt);
+              _0xc.appendChild(_0xod);
+              _0xG.appendChild(_0xc);
+          });
+          _0xuhd();
       }
 
-      if (!authorized) {
-          _0xerr("دخول غير مصرح به 🚫", "لا يمكن فتح الامتحان مباشرة! يجب تسجيل الدخول من المنصة الرسمية أولاً.");
-          setTimeout(() => { _0xwn.location.replace("/"); }, 2500);
-          return;
+      // التحقق الصارم والفوري من التذكرة بدون تعليق على الشبكة الضعيفة
+      function _0xvt(){
+          const _0xup = new URLSearchParams(_0xwn.location.search);
+          const _0xu = _0xup.get('u'), _0xt = _0xup.get('t');
+          let savedUser = sessionStorage.getItem('student_name');
+          let savedToken = savedUser ? sessionStorage.getItem('exam_session_' + savedUser) : null;
+          let isAuth = sessionStorage.getItem('student_auth') === 'verified';
+
+          if(_0xu && _0xt){
+              _0xsn = decodeURIComponent(_0xu);
+              sessionStorage.setItem('student_name', _0xsn);
+              sessionStorage.setItem('student_auth', 'verified');
+              sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
+              
+              if (_0xwn.history && _0xwn.history.replaceState) {
+                  _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
+              }
+              fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
+              openExamNow();
+          } 
+          else if(savedUser && (savedToken || isAuth)) {
+              _0xsn = savedUser;
+              openExamNow();
+          } 
+          else {
+              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
+              setTimeout(() => { _0xwn.location.replace("/"); }, 2500);
+          }
       }
 
-      // فتح الأسئلة فوراً في أقل من مللي ثانية
-      _0xdc.getElementById("studentSubLabel").textContent = "👤 " + _0xsn;
-      _0xdc.getElementById("wmText").textContent = _0xsn + " • AHMED HAMED";
-      _0xia();
+      function openExamNow(){
+          _0xdc.getElementById("overlay").style.display = "none";
+          _0xdc.getElementById("mainHeader").style.display = "block";
+          _0xdc.getElementById("examWrap").style.display = "block";
+          _0xdc.getElementById("studentNameSub").textContent = _0xsn;
+          if(!_0xini){
+              _0xini = true;
+              _0xia();
+              initFirebaseBackground();
+          }
+      }
 
-      // =========================================================
-      // 🌐 تشغيل خدمات Firebase والمراقبة في الخلفية بدون تعطيل الطالب
-      // =========================================================
-      let _0xdb = null;
-      const _0xcfg = {
-          apiKey: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
-          authDomain: "ahmedexams-3e267.firebaseapp.com",
-          databaseURL: DB_URL,
-          projectId: "ahmedexams-3e267",
-          storageBucket: "ahmedexams-3e267.firebasestorage.app",
-          messagingSenderId: "151411096023",
-          appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
-      };
-      const tgKeys = {
-          url: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA==") + atob("ODkyNTYyMDU5NDo=") + atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc=") + atob("L3NlbmRNZXNzYWdl"),
-          cid: atob("ODQ0NjUwMDk3OA==")
-      };
+      // تحميل وتشغيل Firebase في الخلفية بعد ظهور الأسئلة حتى لا تتعطل الصفحة أبداً
+      function loadScript(src) {
+          return new Promise((resolve, reject) => {
+              const s = _0xdc.createElement('script');
+              s.src = src;
+              s.onload = resolve;
+              s.onerror = reject;
+              _0xdc.body.appendChild(s);
+          });
+      }
 
-      try {
-          if (typeof firebase !== 'undefined') {
+      async function initFirebaseBackground(){
+          try {
+              await loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+              await loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js");
+
+              const _0xcfg = {
+                  apiKey: "AIzaSyCeXbJHhHZrVVq-BprbeSAgxLbB7l36Eqg",
+                  authDomain: "ahmedexams-3e267.firebaseapp.com",
+                  databaseURL: DB_URL,
+                  projectId: "ahmedexams-3e267",
+                  storageBucket: "ahmedexams-3e267.firebasestorage.app",
+                  messagingSenderId: "151411096023",
+                  appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+              };
               if (!firebase.apps.length) firebase.initializeApp(_0xcfg);
               _0xdb = firebase.database();
 
-              // 1. تسجيل تواجد الطالب في عداد اللجنة
-              const sessionRef = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).push();
+              const sessionRef = _0xdb.ref('active_exam_visitors/internal_medicine_exam').push();
               _0xdb.ref('.info/connected').on('value', (snap) => {
                   if (snap.val() === true) {
-                      sessionRef.onDisconnect().remove();
-                      sessionRef.set(true);
+                      sessionRef.onDisconnect().remove(); 
+                      sessionRef.set(true); 
                   }
               });
 
-              // 2. تسجيل درجة الطالب في كشف اللجنة
-              const existingPushId = sessionStorage.getItem(`fb_row_${EXAM_KEY}_${_0xsn}`);
-              if (existingPushId) {
-                  _0xstR = _0xdb.ref(`${EXAM_STUDENTS_NODE}/${existingPushId}`);
-                  _0xstR.update({ score: _0xst.s });
-              } else {
-                  _0xstR = _0xdb.ref(EXAM_STUDENTS_NODE).push();
-                  sessionStorage.setItem(`fb_row_${EXAM_KEY}_${_0xsn}`, _0xstR.key);
-                  _0xstR.set({ name: _0xsn, time: new Date().toLocaleTimeString('ar-EG'), score: _0xst.s });
-              }
-
-              // 3. مراقبة قفل اللجنة في الخلفية
-              _0xdb.ref(EXAM_SETTINGS_NODE).on('value', (s) => {
-                  if (s.val() === 'closed') {
-                      _0xerr("الامتحان مغلق 🔒", "تم إغلاق هذا الامتحان من قبل الإدارة.");
+              _0xdb.ref('internal_medicine_settings/exam_status').on('value', (s) => {
+                  if(s.val() === 'closed'){
+                      _0xerr("الامتحان مغلق 🔒", "تم إغلاق الامتحان.");
                   }
               });
 
-              // 4. مراقبة التعديلات الفورية على الأسئلة
-              _0xdb.ref(`exam_overrides/${EXAM_KEY}`).on('value', snap => {
-                  const overrides = snap.val();
-                  if (!overrides) return;
-                  Object.entries(overrides).forEach(([idx, val]) => {
-                      if (_0xAQ[Number(idx)] && val) {
-                          _0xAQ[Number(idx)] = { q: val.q, o: val.o, c: Number(val.c) };
-                      }
-                  });
-                  _0xrnd();
-              });
-          }
-      } catch(e){}
+              _0xstR = _0xdb.ref('internal_medicine_students').push();
+              _0xstR.set({ name: _0xsn, time: new Date().toLocaleTimeString('ar-EG'), score: _0xst.s });
+          } catch(e){}
+      }
 
-      // =========================================================
-      // 🛡️ غرفة المراقبة السرية للأدمن (5 ضغطات على الشعار + PIN: 2026)
-      // =========================================================
-      let tapCount = 0, tapTimer, adminListener = null, scoresListener = null;
-
+      let tapCount = 0, tapTimer, adminListener = null;
       _0xwn.handleSecretTap = function() {
           tapCount++;
           clearTimeout(tapTimer);
           tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
           if (tapCount >= 5) {
               tapCount = 0;
-              _0xdc.getElementById('adminPinField').value = '';
-              _0xdc.getElementById('pinModal').style.display = 'flex';
-              setTimeout(() => _0xdc.getElementById('adminPinField').focus(), 100);
+              const dash = _0xdc.getElementById('adminDashboard');
+              dash.style.display = 'flex';
+              setTimeout(() => dash.style.opacity = '1', 10);
+              if(_0xdb) {
+                  adminListener = _0xdb.ref('active_exam_visitors/internal_medicine_exam').on('value', (snapshot) => {
+                      _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
+                  });
+              }
           }
       };
 
-      _0xwn.verifyExamAdminPin = async function() {
-          const val = _0xdc.getElementById('adminPinField').value.trim();
-          if (!val) return;
-          if (btoa(val) === "MjAyNg==") {
-              _0xdc.getElementById('pinModal').style.display = 'none';
-              openCommitteeAdminDash();
-          } else {
-              _0xstst("🚫 شفرة الإدارة غير صحيحة!");
-          }
-      };
-
-      function openCommitteeAdminDash() {
+      _0xwn.closeAdminDash = function() {
           const dash = _0xdc.getElementById('adminDashboard');
-          dash.style.display = 'flex';
-          setTimeout(() => dash.style.opacity = '1', 10);
-
-          if (!_0xdb) return;
-          adminListener = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).on('value', (snapshot) => {
-              _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
-          });
-
-          scoresListener = _0xdb.ref(EXAM_STUDENTS_NODE).limitToLast(30).on('value', (snap) => {
-              const box = _0xdc.getElementById('liveStudentsScoresList');
-              box.innerHTML = '';
-              const data = snap.val();
-              if (!data) { box.innerHTML = 'لا يوجد طلاب سجلوا في اللجنة بعد.'; return; }
-              Object.values(data).reverse().forEach(st => {
-                  box.innerHTML += `
-                    <div class="stu-score-row">
-                      <span style="font-weight:900; color:#fff;">👤 ${st.name} <small style="color:var(--muted);">(${st.time || ''})</small></span>
-                      <span style="font-weight:900; color:var(--good);">الدرجة: ${st.score || 0} / ${_0xAQ.length}</span>
-                    </div>`;
-              });
-          });
-      }
-
-      _0xwn.setCommitteeStatus = function(status) {
-          fetch(`${DB_URL}/${EXAM_SETTINGS_NODE}.json`, {
-              method: 'PUT',
-              body: JSON.stringify(status)
-          }).then(() => {
-              _0xstst(status === 'closed' ? "🔒 تم إغلاق اللجنة فوراً" : "🔓 تم فتح اللجنة للطلاب");
-          });
+          dash.style.opacity = '0';
+          setTimeout(() => dash.style.display = 'none', 300);
+          if(adminListener && _0xdb) {
+              _0xdb.ref('active_exam_visitors/internal_medicine_exam').off('value', adminListener);
+          }
       };
 
-      _0xwn.enableLiveQuestionEditing = function() {
-          _0xdc.body.classList.add('admin-edit-mode');
-          _0xwn.closeAdminDash();
-          _0xstst("✏️ تم تفعيل وضع التعديل! اضغط (تعديل السؤال) تحت أي سؤال.");
-      };
-
-      _0xwn.copyQuestionsArrayForGithub = function() {
+      _0xvt();
+  })();
+  </script>
+ </body>
+</html>
