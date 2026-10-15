@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#04060d">
-  <title>منصة الاختبارات الذكية | V5.5</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&amp;family=Tajawal:wght@500;700;800;900&amp;display=swap" rel="stylesheet">
+  <title>منصة الاختبارات الذكية | V6.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.37/ua-parser.min.js"></script>
@@ -144,6 +144,23 @@
       width: 100%;
     }
 
+    /* تنبيه وضع المنصة في صفحة الدخول */
+    .mode-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
     /* حقول الإدخال */
     .input-group { margin-bottom: 14px; position: relative; z-index: 2; }
     .input-icon {
@@ -239,16 +256,13 @@
       cursor: pointer;
       transition: all 0.25s ease;
       margin-top: 10px;
-      display: flex;
+      display: none; /* مخفي افتراضياً لمنع إنشاء حسابات عشوائية */
       justify-content: center;
       align-items: center;
       gap: 8px;
       position: relative;
       z-index: 5;
     }
-    .btn-secondary:hover { background: rgba(56, 189, 248, 0.12); border-color: var(--glow1); }
-    .btn-secondary:active { transform: scale(0.97); }
-    .btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
 
     /* شريط حالة الطالب */
     .student-statusbar {
@@ -674,6 +688,7 @@
     }
     .mini-btn.send { background: var(--glow1); color: #04060d; }
     .mini-btn.good { background: var(--good); color: #04060d; }
+    .mini-btn.warn { background: var(--warn); color: #04060d; }
     .mini-btn.clear { background: rgba(239,68,68,0.18); color: var(--bad); border: 1px solid rgba(239,68,68,0.4); }
     .log-item {
       font-size: 12px;
@@ -687,237 +702,336 @@
       align-items: center;
       gap: 6px;
     }
+    .mode-option-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 11px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 12px;
+      text-align: right;
+      margin-bottom: 7px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mode-option-btn.selected {
+      border-color: var(--good);
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--good);
+    }
   </style>
- </head>
- <body>
+</head>
+<body>
+
   <!-- إشعار التنبيهات الذكي -->
   <div id="smartToast" class="smart-toast">
-   <span id="smartToastMsg" style="line-height: 1.5;"></span>
+    <span id="smartToastMsg" style="line-height: 1.5;"></span>
   </div>
+
   <!-- نافذة التحقق السري للأدمن (مخفية بالأقنعة بدون أي تلميح) -->
   <div id="adminPinModal">
-   <div class="pin-card">
-    <div style="font-size:28px; margin-bottom:6px;">🛡️</div>
-    <h3 style="font-size:16px; font-weight:900; color:#fff; margin-bottom:4px;">منطقة محظورة - للإدارة فقط</h3>
-    <p style="font-size:12px; color:var(--muted); font-weight:700;">أدخل شفرة المرور السرية للمتابعة</p>
-    <input type="password" id="secretPinInput" class="pin-input" placeholder="••••" inputmode="numeric" maxlength="12">
-    <div class="admin-btn-row">
-     <button class="mini-btn send" id="verifyPinBtn">تحقق ودخول</button>
-     <button class="mini-btn clear" id="cancelPinBtn">إلغاء</button>
+    <div class="pin-card">
+      <div style="font-size:28px; margin-bottom:6px;">🛡️</div>
+      <h3 style="font-size:16px; font-weight:900; color:#fff; margin-bottom:4px;">منطقة محظورة - للإدارة فقط</h3>
+      <p style="font-size:12px; color:var(--muted); font-weight:700;">أدخل شفرة المرور السرية للمتابعة</p>
+      <input type="password" id="secretPinInput" class="pin-input" placeholder="••••" inputmode="numeric" maxlength="12">
+      <div class="admin-btn-row">
+        <button class="mini-btn send" id="verifyPinBtn">تحقق ودخول</button>
+        <button class="mini-btn clear" id="cancelPinBtn">إلغاء</button>
+      </div>
     </div>
-   </div>
   </div>
+
   <!-- شاشة الحماية عند فتح الحساب من جهاز آخر -->
   <div id="kickOverlay">
-   <div class="kick-card">
-    <svg style="margin-bottom:16px; color:var(--bad);" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path> <line x1="12" y1="9" x2="12" y2="13"></line> <line x1="12" y1="17" x2="12.01" y2="17"></line>
-    </svg>
-    <h2 style="color:var(--bad); margin-bottom:12px; font-weight:900;">تنبيه أمني خطير!</h2>
-    <p style="color:var(--text); font-size:15px; font-weight:800; line-height:1.6;">تم تسجيل الدخول إلى هذا الحساب من جهاز أو متصفح آخر.
-     <br>
-     <br>
-     تم إنهاء جلستك الحالية تلقائياً لحماية حسابك.</p>
-   </div>
+    <div class="kick-card">
+      <svg style="margin-bottom:16px; color:var(--bad);" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <h2 style="color:var(--bad); margin-bottom:12px; font-weight:900;">تنبيه أمني خطير!</h2>
+      <p style="color:var(--text); font-size:15px; font-weight:800; line-height:1.6;">
+        تم تسجيل الدخول إلى هذا الحساب من جهاز أو متصفح آخر.<br><br>
+        تم إنهاء جلستك الحالية تلقائياً لحماية حسابك.
+      </p>
+    </div>
   </div>
+
   <!-- غرفة عمليات الأدمن الشاملة -->
   <div id="adminDashboard">
-   <div class="dash-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-     <div style="display:flex; align-items:center; gap:8px;">
-      <span class="online-dot"></span> <span style="font-weight:900; font-size:15px;">لوحة القيادة المركزية</span>
-     </div>
-     <button id="closeAdminBtn" style="background:rgba(239,68,68,0.15); color:var(--bad); border:1px solid rgba(239,68,68,0.35); padding:6px 14px; border-radius:10px; font-weight:900; cursor:pointer; font-size:12px;">إغلاق ✕</button>
+    <div class="dash-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="online-dot"></span>
+          <span style="font-weight:900; font-size:15px;">لوحة القيادة المركزية</span>
+        </div>
+        <button id="closeAdminBtn" style="background:rgba(239,68,68,0.15); color:var(--bad); border:1px solid rgba(239,68,68,0.35); padding:6px 14px; border-radius:10px; font-weight:900; cursor:pointer; font-size:12px;">إغلاق ✕</button>
+      </div>
+
+      <div class="dash-tabs">
+        <button class="dash-tab-btn active" onclick="switchAdminTab('radar', this)">📡 الرادار</button>
+        <button class="dash-tab-btn" onclick="switchAdminTab('tickets', this)">🎟️ التذاكر والوضع</button>
+        <button class="dash-tab-btn" onclick="switchAdminTab('exams', this)">📝 الاختبارات</button>
+        <button class="dash-tab-btn" onclick="switchAdminTab('pdfs', this)">📚 المذكرات</button>
+      </div>
+
+      <div class="dash-body">
+        <!-- 1. قسم الرادار والبث -->
+        <div id="adminTabRadar">
+          <div style="text-align:center; padding:12px 0; margin-bottom:10px; background:rgba(255,255,255,0.02); border-radius:16px; border:1px solid rgba(255,255,255,0.06);">
+            <p style="color:var(--muted); font-size:12px; font-weight:800;">الأجهزة المتصلة بالمنصة الآن</p>
+            <div class="online-count" id="onlineCounter">1</div>
+            <p id="dbConnStatusText" style="color:var(--good); font-size:11px; font-weight:800;">● متصل بقاعدة البيانات</p>
+          </div>
+
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>📢 بث إشعار فوري للطلاب (Live Broadcast)</h4>
+            <input type="text" id="adminBroadcastInput" class="admin-input" placeholder="اكتب تنبيهاً يظهر لكل الطلاب الآن...">
+            <div class="admin-btn-row">
+              <button class="mini-btn send" onclick="sendAdminBroadcast()">إرسال للكل 🚀</button>
+              <button class="mini-btn clear" onclick="clearAdminBroadcast()">مسح الإشعار 🗑️</button>
+            </div>
+          </div>
+
+          <div class="admin-box">
+            <h4>🛡️ آخر عمليات الدخول وحظر الـ IP</h4>
+            <div id="adminRecentLogs" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <!-- 2. قسم التحكم في وضع المنصة وتوليد تذاكر الدخول -->
+        <div id="adminTabTickets" style="display:none;">
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>🔒 التحكم في وضع فتح المنصة الآن</h4>
+            <button class="mode-option-btn selected" id="modeBtnAdminOnly" onclick="changePlatformMode('admin_only')">
+              <span>🛡️ للأدمن فقط (قفل الدخول وإنشاء الحسابات للطلاب)</span>
+              <span>●</span>
+            </button>
+            <button class="mode-option-btn" id="modeBtnTicketsOnly" onclick="changePlatformMode('tickets_only')">
+              <span>🎟️ دخول بالتذاكر فقط (إغلاق إنشاء الحسابات العشوائية)</span>
+              <span>●</span>
+            </button>
+            <button class="mode-option-btn" id="modeBtnOpenAll" onclick="changePlatformMode('open')">
+              <span>🔓 مفتوح للجميع (السماح بإنشاء حسابات جديدة)</span>
+              <span>●</span>
+            </button>
+          </div>
+
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>🎟️ توليد تذاكر تسجيل دخول للطلاب (تُنسخ تلقائياً)</h4>
+            <div class="admin-btn-row" style="margin-bottom:8px;">
+              <button class="mini-btn good" onclick="generateTicketsBatch(1)">➕ توليد تذكرة واحدة</button>
+              <button class="mini-btn warn" onclick="generateTicketsBatch(10)">⚡ توليد 10 تذاكر دفعة واحدة</button>
+            </div>
+            <textarea id="generatedTicketsOutput" class="admin-input" rows="4" readonly placeholder="ستظهر هنا التذاكر المولدة (الكود + كلمة السر) جاهزة للنسخ..." style="font-family:monospace; font-size:12px;"></textarea>
+          </div>
+
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>👤 إنشاء تذكرة مخصصة يدوياً</h4>
+            <input type="text" id="customStuUser" class="admin-input" placeholder="كود التذكرة أو الطالب (مثال: stu5500)">
+            <input type="text" id="customStuPass" class="admin-input" placeholder="كلمة المرور">
+            <button class="mini-btn send" style="width:100%;" onclick="createCustomStudent()">حفظ وتفعيل التذكرة ✓</button>
+          </div>
+
+          <div class="admin-box">
+            <h4>🔐 تغيير الرقم السري للأدمن (الحالي: 2026)</h4>
+            <input type="password" id="newAdminPinInput" class="admin-input" placeholder="أدخل الرقم السري الجديد للأدمن">
+            <button class="mini-btn clear" style="width:100%;" onclick="updateAdminPin()">حفظ الرقم السري الجديد ✓</button>
+          </div>
+        </div>
+
+        <!-- 3. قسم إدارة الاختبارات -->
+        <div id="adminTabExams" style="display:none;">
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>➕ إضافة اختبار جديد للمنصة</h4>
+            <input type="text" id="newExamName" class="admin-input" placeholder="اسم الاختبار (مثال: بنك الباطنة 2026)">
+            <input type="number" id="newExamCount" class="admin-input" placeholder="عدد الأسئلة (مثال: 121)">
+            <input type="text" id="newExamUrl" class="admin-input" placeholder="اسم ملف الامتحان (مثال: batna2.html)">
+            <button class="mini-btn good" style="width:100%;" onclick="addNewExamFromAdmin()">حفظ ونشر الاختبار ✓</button>
+          </div>
+          <div class="admin-box">
+            <h4>⚙️ التحكم في الاختبارات الحالية</h4>
+            <div id="adminExamsControlList" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <!-- 4. قسم إدارة المذكرات PDF -->
+        <div id="adminTabPdfs" style="display:none;">
+          <div class="admin-box" style="margin-bottom:10px;">
+            <h4>➕ إضافة ملف PDF جديد</h4>
+            <input type="text" id="newPdfName" class="admin-input" placeholder="اسم المذكرة أو الكتاب">
+            <input type="text" id="newPdfSize" class="admin-input" placeholder="الوصف أو الحجم (مثال: 30 صفحة - PDF)">
+            <input type="url" id="newPdfUrl" class="admin-input" placeholder="رابط Google Drive أو رابط مباشر">
+            <button class="mini-btn send" style="width:100%;" onclick="addNewPdfFromAdmin()">إضافة الملف للمنصة ✓</button>
+          </div>
+          <div class="admin-box">
+            <h4>📚 الملفات المرفوعة حالياً</h4>
+            <div id="adminPdfsControlList" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="dash-tabs">
-     <button class="dash-tab-btn active" onclick="switchAdminTab('radar', this)">📡 الرادار</button>
-     <button class="dash-tab-btn" onclick="switchAdminTab('exams', this)">📝 الاختبارات</button>
-     <button class="dash-tab-btn" onclick="switchAdminTab('pdfs', this)">📚 المذكرات</button>
-     <button class="dash-tab-btn" onclick="switchAdminTab('students', this)">⚙️ الإعدادات</button>
-    </div>
-    <div class="dash-body">
-     <!-- 1. قسم الرادار والبث -->
-     <div id="adminTabRadar">
-      <div style="text-align:center; padding:12px 0; margin-bottom:10px; background:rgba(255,255,255,0.02); border-radius:16px; border:1px solid rgba(255,255,255,0.06);">
-       <p style="color:var(--muted); font-size:12px; font-weight:800;">الأجهزة المتصلة بالمنصة الآن</p>
-       <div class="online-count" id="onlineCounter">0</div>
-       <p id="dbConnStatusText" style="color:var(--good); font-size:11px; font-weight:800;">● متصل بقاعدة البيانات</p>
-      </div>
-      <div class="admin-box" style="margin-bottom:10px;">
-       <h4>📢 بث إشعار فوري للطلاب (Live Broadcast)</h4>
-       <input type="text" id="adminBroadcastInput" class="admin-input" placeholder="اكتب تنبيهاً يظهر لكل الطلاب الآن...">
-       <div class="admin-btn-row">
-        <button class="mini-btn send" onclick="sendAdminBroadcast()">إرسال للكل 🚀</button>
-        <button class="mini-btn clear" onclick="clearAdminBroadcast()">مسح الإشعار 🗑️</button>
-       </div>
-      </div>
-      <div class="admin-box">
-       <h4>🛡️ آخر عمليات الدخول وحظر الـ IP</h4>
-       <div id="adminRecentLogs" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
-      </div>
-     </div>
-     <!-- 2. قسم إدارة الاختبارات -->
-     <div id="adminTabExams" style="display:none;">
-      <div class="admin-box" style="margin-bottom:10px;">
-       <h4>➕ إضافة اختبار جديد للمنصة</h4>
-       <input type="text" id="newExamName" class="admin-input" placeholder="اسم الاختبار (مثال: اختبار الفيزياء الأول)"> <input type="number" id="newExamCount" class="admin-input" placeholder="عدد الأسئلة (مثال: 25)"> <input type="url" id="newExamUrl" class="admin-input" placeholder="رابط الاختبار (URL)">
-       <button class="mini-btn good" style="width:100%;" onclick="addNewExamFromAdmin()">حفظ ونشر الاختبار ✓</button>
-      </div>
-      <div class="admin-box">
-       <h4>⚙️ التحكم في الاختبارات الحالية</h4>
-       <div id="adminExamsControlList" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
-      </div>
-     </div>
-     <!-- 3. قسم إدارة المذكرات PDF -->
-     <div id="adminTabPdfs" style="display:none;">
-      <div class="admin-box" style="margin-bottom:10px;">
-       <h4>➕ إضافة ملف PDF جديد</h4>
-       <input type="text" id="newPdfName" class="admin-input" placeholder="اسم المذكرة أو الكتاب"> <input type="text" id="newPdfSize" class="admin-input" placeholder="الوصف أو الحجم (مثال: 30 صفحة - PDF)"> <input type="url" id="newPdfUrl" class="admin-input" placeholder="رابط Google Drive أو رابط مباشر">
-       <button class="mini-btn send" style="width:100%;" onclick="addNewPdfFromAdmin()">إضافة الملف للمنصة ✓</button>
-      </div>
-      <div class="admin-box">
-       <h4>📚 الملفات المرفوعة حالياً</h4>
-       <div id="adminPdfsControlList" style="font-size:12px; color:var(--muted);">جاري التحميل...</div>
-      </div>
-     </div>
-     <!-- 4. قسم إدارة الطلاب وتغيير شفرة الأدمن -->
-     <div id="adminTabStudents" style="display:none;">
-      <div class="admin-box" style="margin-bottom:10px;">
-       <h4>👤 إنشاء أو تعديل حساب طالب يدوياً</h4>
-       <input type="text" id="customStuUser" class="admin-input" placeholder="كود الطالب (مثال: stu5500)"> <input type="text" id="customStuPass" class="admin-input" placeholder="كلمة المرور">
-       <button class="mini-btn good" style="width:100%;" onclick="createCustomStudent()">حفظ حساب الطالب ✓</button>
-      </div>
-      <div class="admin-box" style="margin-bottom:10px;">
-       <h4>🔐 تغيير الرقم السري للوحة الإدارة</h4>
-       <input type="password" id="newAdminPinInput" class="admin-input" placeholder="أدخل الرقم السري الجديد للأدمن">
-       <button class="mini-btn send" style="width:100%;" onclick="updateAdminPin()">حفظ الرقم السري الجديد ✓</button>
-      </div>
-      <div class="admin-box">
-       <h4>🔓 تصفير قفل هذا الجهاز للتجربة</h4>
-       <button class="mini-btn clear" style="width:100%;" onclick="resetLocalDeviceLock()">مسح الحساب المحفوظ وإنشاء حساب جديد 🔄</button>
-      </div>
-     </div>
-    </div>
-   </div>
   </div>
+
   <!-- الواجهة الرئيسية للمنصة -->
   <div class="app-container" id="appContainer">
-   <div class="header">
-    <div class="premium-logo" id="logoSecretBtn" title="منصة الاختبارات الذكية">
-     <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <defs>
-       <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#38bdf8" /> <stop offset="100%" stop-color="#818cf8" />
-       </linearGradient>
-      </defs>
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path> <polyline points="9 12 11 14 15 10"></polyline>
-     </svg>
+    <div class="header">
+      <div class="premium-logo" id="logoSecretBtn" title="منصة الاختبارات الذكية">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" />
+              <stop offset="100%" stop-color="#818cf8" />
+            </linearGradient>
+          </defs>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
+      </div>
+      <div class="platform-badge">⚡ البوابة الرسمية المؤمّنة V6.0</div>
+      <h1>منصة الاختبارات الذكية</h1>
+      <p id="headerSubtitle">بوابة التقييم الإلكتروني والمحتوى الدراسي</p>
     </div>
-    <div class="platform-badge">⚡ الإصدار المؤمّن V5.5</div>
-    <h1>منصة الاختبارات الذكية</h1>
-    <p id="headerSubtitle">بوابة التقييم الإلكتروني والمحتوى الدراسي</p>
-   </div>
-   <div class="card">
-    <!-- قسم تسجيل الدخول -->
-    <div id="loginSection">
-     <div class="input-group">
-      <span class="input-icon"> 
-       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
-       </svg> 
-      </span> <input type="text" id="username" placeholder="كود الطالب (مثال: stu1234)" autocomplete="off" autocorrect="off" autocapitalize="none">
-     </div>
-     <div class="input-group">
-      <span class="input-icon"> 
-       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-       </svg> 
-      </span> <input type="password" id="password" placeholder="كلمة المرور"> <span class="toggle-pass" id="togglePassBtn" title="إظهار/إخفاء كلمة المرور"> 
-       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
-       </svg> 
-      </span>
-     </div>
-     <!-- شريط التقدم الأمني -->
-     <div id="securityScanBox">
-      <div class="scan-header">
-       <span id="scanStepText">جاري الاتصال بالخادم...</span> <span id="scanPercentText">0%</span>
+
+    <div class="card">
+      <!-- قسم تسجيل الدخول -->
+      <div id="loginSection">
+        <div class="mode-banner" id="loginModeNotice">
+          <span>🔒 المنصة في وضع الإعداد الخاص بالإدارة حالياً</span>
+        </div>
+
+        <div class="input-group">
+          <span class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          <input type="text" id="username" placeholder="كود التذكرة أو اسم المستخدم" autocomplete="off" autocorrect="off" autocapitalize="none">
+        </div>
+
+        <div class="input-group">
+          <span class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          <input type="password" id="password" placeholder="كلمة المرور">
+          <span class="toggle-pass" id="togglePassBtn" title="إظهار/إخفاء كلمة المرور">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </span>
+        </div>
+
+        <!-- شريط التقدم الأمني -->
+        <div id="securityScanBox">
+          <div class="scan-header">
+            <span id="scanStepText">جاري الاتصال بالخادم...</span>
+            <span id="scanPercentText">0%</span>
+          </div>
+          <div class="scan-bar-bg">
+            <div class="scan-bar-fill" id="scanBarFill"></div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary" id="loginBtn">
+          <span>تسجيل الدخول للمنصة</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+
+        <!-- زر إنشاء الحساب مخفي ومقفل تماماً إلا إذا فتحه الأدمن من اللوحة -->
+        <button type="button" class="btn-secondary" id="genBtn">
+          <span>✨ إنشاء حساب طالب جديد</span>
+        </button>
       </div>
-      <div class="scan-bar-bg">
-       <div class="scan-bar-fill" id="scanBarFill"></div>
+
+      <!-- قسم الاختبارات والملفات بعد الدخول -->
+      <div id="examsSection" style="display: none;">
+        <div class="student-statusbar">
+          <div class="stu-badge">
+            <span class="online-dot"></span>
+            <span id="activeStudentName">ADMIN</span>
+          </div>
+          <div class="session-open-pill" title="الوقت مفتوح طوال بقاء المتصفح مفتوحاً">
+            <span>جلسة مفتوحة</span>
+            <span style="font-size:15px; line-height:1;">∞</span>
+          </div>
+          <button type="button" class="logout-btn" id="logoutBtn">
+            <span>خروج</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+        </div>
+
+        <!-- بانر تنبيه الأدمن المثبت -->
+        <div id="pinnedAnnouncement">
+          <span id="pinnedAnnouncementText"></span>
+          <button onclick="document.getElementById('pinnedAnnouncement').style.display='none'" style="background:none; border:none; color:#fde68a; cursor:pointer; font-weight:900;">✕</button>
+        </div>
+
+        <!-- التبويبات الثلاثة -->
+        <div class="tabs-row">
+          <button type="button" class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')">
+            <span>📝 الاختبارات</span>
+            <span class="count-badge" id="examsCountBadge">0</span>
+          </button>
+          <button type="button" class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')">
+            <span>📚 المذكرات</span>
+            <span class="count-badge" id="pdfsCountBadge">0</span>
+          </button>
+          <button type="button" class="tab-btn" id="tabProfileBtn" onclick="switchTab('profile')">
+            <span>🛡️ بطاقتي</span>
+          </button>
+        </div>
+
+        <!-- البحث الفوري -->
+        <div class="search-box" id="searchContainer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="contentSearchInput" placeholder="ابحث باسم الاختبار أو المذكرة..." oninput="filterContentList()">
+        </div>
+
+        <!-- قائمة الاختبارات -->
+        <div class="exams-list" id="dynamicExamsList">
+          <p style="color:var(--muted); text-align:center; font-size:14px; padding:20px 0;">جاري تحميل الاختبارات...</p>
+        </div>
+
+        <!-- قائمة ملفات الـ PDF -->
+        <div class="exams-list" id="dynamicPdfsList" style="display: none;">
+          <p style="color:var(--muted); text-align:center; font-size:14px; padding:20px 0;">جاري تحميل الملفات...</p>
+        </div>
+
+        <!-- تبويب بطاقة الطالب الرقمية -->
+        <div id="studentProfileTab" style="display: none;">
+          <div class="id-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-weight:900; color:var(--glow1); font-size:14px;">بطاقة العضوية الرقمية</span>
+              <span style="background:rgba(16,185,129,0.15); color:var(--good); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:900;">جلسة مفتوحة ✓</span>
+            </div>
+            <div class="id-row">
+              <span class="id-label">كود الحساب:</span>
+              <span class="id-val" id="profUser">-</span>
+            </div>
+            <div class="id-row">
+              <span class="id-label">كلمة المرور:</span>
+              <span class="id-val" id="profPass" style="cursor:pointer; color:var(--glow1);" onclick="toggleProfilePass()">•••• (اضغط للعرض)</span>
+            </div>
+            <div class="id-row">
+              <span class="id-label">نظام الخروج التلقائي:</span>
+              <span class="id-val" style="color:var(--good);">عند إغلاق المتصفح</span>
+            </div>
+            <button type="button" class="btn-secondary" style="display:flex; margin-top:6px; padding:11px; font-size:13px;" onclick="copyStudentCreds()">
+              📋 نسخ بيانات تذكرتي
+            </button>
+          </div>
+        </div>
       </div>
-     </div>
-     <button type="button" class="btn-primary" id="loginBtn"><span>تسجيل الدخول للمنصة</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-       <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
-      </svg></button>
-     <button type="button" class="btn-secondary" id="genBtn"><span>✨ إنشاء حساب طالب جديد</span></button>
     </div>
-    <!-- قسم الاختبارات والملفات بعد الدخول -->
-    <div id="examsSection" style="display: none;">
-     <div class="student-statusbar">
-      <div class="stu-badge">
-       <span class="online-dot"></span> <span id="activeStudentName">stu0000</span>
-      </div>
-      <!-- شارة الجلسة المفتوحة بلا حدود زمنية -->
-      <div class="session-open-pill" title="الوقت مفتوح طوال بقاء المتصفح مفتوحاً">
-       <span>جلسة مفتوحة</span> <span style="font-size:15px; line-height:1;">∞</span>
-      </div>
-      <button type="button" class="logout-btn" id="logoutBtn"><span>خروج</span>
-       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
-       </svg></button>
-     </div>
-     <!-- بانر تنبيه الأدمن المثبت -->
-     <div id="pinnedAnnouncement">
-      <span id="pinnedAnnouncementText"></span>
-      <button onclick="document.getElementById('pinnedAnnouncement').style.display='none'" style="background:none; border:none; color:#fde68a; cursor:pointer; font-weight:900;">✕</button>
-     </div>
-     <!-- التبويبات الثلاثة -->
-     <div class="tabs-row">
-      <button type="button" class="tab-btn active" id="tabExamsBtn" onclick="switchTab('exams')"><span>📝 الاختبارات</span> <span class="count-badge" id="examsCountBadge">0</span></button>
-      <button type="button" class="tab-btn" id="tabPdfsBtn" onclick="switchTab('pdfs')"><span>📚 المذكرات</span> <span class="count-badge" id="pdfsCountBadge">0</span></button>
-      <button type="button" class="tab-btn" id="tabProfileBtn" onclick="switchTab('profile')"><span>🛡️ بطاقتي</span></button>
-     </div>
-     <!-- البحث الفوري -->
-     <div class="search-box" id="searchContainer">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-       <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="text" id="contentSearchInput" placeholder="ابحث باسم الاختبار أو المذكرة..." oninput="filterContentList()">
-     </div>
-     <!-- قائمة الاختبارات -->
-     <div class="exams-list" id="dynamicExamsList">
-      <p style="color:var(--muted); text-align:center; font-size:14px; padding:20px 0;">جاري تحميل الاختبارات...</p>
-     </div>
-     <!-- قائمة ملفات الـ PDF -->
-     <div class="exams-list" id="dynamicPdfsList" style="display: none;">
-      <p style="color:var(--muted); text-align:center; font-size:14px; padding:20px 0;">جاري تحميل الملفات...</p>
-     </div>
-     <!-- تبويب بطاقة الطالب الرقمية -->
-     <div id="studentProfileTab" style="display: none;">
-      <div class="id-card">
-       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-        <span style="font-weight:900; color:var(--glow1); font-size:14px;">بطاقة الطالب الرقمية</span> <span style="background:rgba(16,185,129,0.15); color:var(--good); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:900;">جلسة مفتوحة ✓</span>
-       </div>
-       <div class="id-row">
-        <span class="id-label">كود الطالب:</span> <span class="id-val" id="profUser">-</span>
-       </div>
-       <div class="id-row">
-        <span class="id-label">كلمة المرور:</span> <span class="id-val" id="profPass" style="cursor:pointer; color:var(--glow1);" onclick="toggleProfilePass()" title="اضغط للإظهار/الإخفاء">•••• (اضغط للعرض)</span>
-       </div>
-       <div class="id-row">
-        <span class="id-label">نظام الخروج التلقائي:</span> <span class="id-val" style="color:var(--good);">عند إغلاق المتصفح</span>
-       </div>
-       <button type="button" class="btn-secondary" style="margin-top:6px; padding:11px; font-size:13px;" onclick="copyStudentCreds()">📋 نسخ بيانات حسابي</button>
-      </div>
-     </div>
+
+    <div class="footer">
+      <a href="https://wa.me/201016781843" target="_blank" class="glass-box">
+        <span class="neon">DEVELOPED BY AHMED HAMED</span>
+      </a>
     </div>
-   </div>
-   <div class="footer">
-    <a href="https://wa.me/201016781843" target="_blank" class="glass-box"> <span class="neon">DEVELOPED BY AHMED HAMED</span> </a>
-   </div>
   </div>
+
   <script>
     (function() {
       // محرك الصوتيات التفاعلي
@@ -970,6 +1084,8 @@
 
       let database = null;
       let adminListener = null;
+      // الوضع الافتراضي الآن هو 'admin_only' كما طلبت (مغلق للطلاب ومفتوح للأدمن فقط)
+      let currentPlatformMode = 'admin_only';
 
       window.sessionListenerRef = null;
       window.sessionListenerCallback = null;
@@ -993,10 +1109,10 @@
         }
       } catch(e) {}
 
-      // محرك قراءة وكتابة مضمون 100%
+      // محرك قراءة وكتابة مضمون
       function getLocalStore(path) {
         try {
-          const all = JSON.parse(localStorage.getItem('local_db_cache_v5') || '{}');
+          const all = JSON.parse(localStorage.getItem('local_db_cache_v6') || '{}');
           const parts = path.split('/').filter(Boolean);
           let cur = all;
           for (const p of parts) {
@@ -1009,7 +1125,7 @@
 
       function setLocalStore(path, val) {
         try {
-          const all = JSON.parse(localStorage.getItem('local_db_cache_v5') || '{}');
+          const all = JSON.parse(localStorage.getItem('local_db_cache_v6') || '{}');
           const parts = path.split('/').filter(Boolean);
           let cur = all;
           for (let i = 0; i < parts.length - 1; i++) {
@@ -1017,14 +1133,14 @@
             cur = cur[parts[i]];
           }
           cur[parts[parts.length - 1]] = val;
-          localStorage.setItem('local_db_cache_v5', JSON.stringify(all));
+          localStorage.setItem('local_db_cache_v6', JSON.stringify(all));
         } catch(e) {}
       }
 
       async function dbGet(path) {
         try {
           const ctrl = new AbortController();
-          const tid = setTimeout(() => ctrl.abort(), 7000);
+          const tid = setTimeout(() => ctrl.abort(), 5000);
           const res = await fetch(`${DB_URL}/${path}.json`, { signal: ctrl.signal });
           clearTimeout(tid);
           if (res.ok) {
@@ -1038,70 +1154,131 @@
           try {
             const snap = await Promise.race([
               database.ref(path).once('value'),
-              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7000))
+              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
             ]);
             const val = snap.val();
             if (val !== null) setLocalStore(path, val);
             return val !== null ? val : getLocalStore(path);
           } catch(e) {}
         }
-
         return getLocalStore(path);
       }
 
       async function dbSet(path, data) {
         setLocalStore(path, data);
         let synced = false;
-
         if (database) {
           try {
             await Promise.race([
               database.ref(path).set(data),
-              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000))
+              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
             ]);
             synced = true;
           } catch(e) {}
         }
-
         if (!synced) {
           try {
             const ctrl = new AbortController();
-            const tid = setTimeout(() => ctrl.abort(), 7000);
+            const tid = setTimeout(() => ctrl.abort(), 5000);
             const res = await fetch(`${DB_URL}/${path}.json`, {
               method: 'PUT',
               body: JSON.stringify(data),
               signal: ctrl.signal
             });
             clearTimeout(tid);
-            if (res.ok) synced = true;
           } catch(e) {}
         }
-
         return true;
       }
 
       async function dbPush(path, data) {
         const randKey = 'item_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
         setLocalStore(`${path}/${randKey}`, data);
-
         if (database) {
           try {
             await Promise.race([
               database.ref(path).push(data),
-              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
+              new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4500))
             ]);
             return true;
           } catch(e) {}
         }
-
         try {
-          await fetch(`${DB_URL}/${path}.json`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-          });
+          await fetch(`${DB_URL}/${path}.json`, { method: 'POST', body: JSON.stringify(data) });
         } catch(e) {}
         return true;
       }
+
+      // تحديث واجهة وضع المنصة (للأدمن فقط / تذاكر فقط / مفتوح)
+      function applyPlatformModeUI(mode) {
+        currentPlatformMode = mode || 'admin_only';
+        const genBtn = document.getElementById('genBtn');
+        const notice = document.getElementById('loginModeNotice');
+
+        document.getElementById('modeBtnAdminOnly')?.classList.toggle('selected', currentPlatformMode === 'admin_only');
+        document.getElementById('modeBtnTicketsOnly')?.classList.toggle('selected', currentPlatformMode === 'tickets_only');
+        document.getElementById('modeBtnOpenAll')?.classList.toggle('selected', currentPlatformMode === 'open');
+
+        if (currentPlatformMode === 'admin_only') {
+          genBtn.style.display = 'none';
+          notice.style.display = 'flex';
+          notice.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          notice.style.color = '#fde68a';
+          notice.innerHTML = '<span>🔒 المنصة في وضع الإعداد الخاص بالإدارة حالياً</span>';
+        } else if (currentPlatformMode === 'tickets_only') {
+          genBtn.style.display = 'none';
+          notice.style.display = 'flex';
+          notice.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+          notice.style.color = '#38bdf8';
+          notice.innerHTML = '<span>🎟️ الدخول متاح لحاملي تذاكر الدخول الرسمية فقط</span>';
+        } else {
+          genBtn.style.display = 'flex';
+          notice.style.display = 'none';
+        }
+      }
+
+      function syncPlatformMode() {
+        dbGet('platform_settings/access_mode').then(m => {
+          if (m) applyPlatformModeUI(m);
+        });
+        if (database) {
+          database.ref('platform_settings/access_mode').on('value', snap => {
+            if (snap.val()) applyPlatformModeUI(snap.val());
+          });
+        }
+      }
+      syncPlatformMode();
+
+      window.changePlatformMode = async function(newMode) {
+        applyPlatformModeUI(newMode);
+        await dbSet('platform_settings/access_mode', newMode);
+        if (newMode === 'admin_only') showSmartAlert('🔒 تم قفل المنصة (الدخول متاح لك كأدمن فقط)');
+        else if (newMode === 'tickets_only') showSmartAlert('🎟️ تم تفعيل نظام تذاكر الدخول فقط (إنشاء الحسابات مغلق)');
+        else showSmartAlert('🔓 تم فتح المنصة وإنشاء الحسابات للجميع');
+      };
+
+      // توليد تذاكر الدخول للطلاب (تذكرة واحدة أو دفعة تذاكر)
+      window.generateTicketsBatch = async function(count = 1) {
+        const outBox = document.getElementById('generatedTicketsOutput');
+        outBox.value = 'جاري توليد وحفظ التذاكر في قاعدة البيانات... ⏳';
+        const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+        let listText = '';
+
+        for (let i = 0; i < count; i++) {
+          const ticketUser = 'stu' + Math.floor(1000 + Math.random() * 9000);
+          let ticketPass = '';
+          for (let j = 0; j < 4; j++) {
+            ticketPass += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          await dbSet('credentials/' + ticketUser, { password: ticketPass });
+          listText += `🎟️ كود التذكرة: ${ticketUser} | 🔑 كلمة السر: ${ticketPass}\n`;
+        }
+
+        outBox.value = listText.trim();
+        try { navigator.clipboard?.writeText(listText.trim()); } catch(e) {}
+        playTone(760, 'sine', 0.18);
+        showSmartAlert(`✅ تم توليد ${count} تذكرة دخول وحفظها ونسخها للحافظة!`);
+      };
 
       // الإشعار الذكي
       let alertTimeout;
@@ -1125,6 +1302,7 @@
 
       // مراقبة الجلسة لمنع فتح الحساب من جهازين
       function monitorSession(username) {
+        if (username === 'ADMIN') return; // الأدمن لا يُطرد
         const localToken = sessionStorage.getItem('session_token');
         if (!localToken || !database) return;
 
@@ -1165,757 +1343,6 @@
         });
       }
 
-      // 1. دالة إنشاء حساب طالب جديد
+      // منع إنشاء الحسابات إلا إذا كان الوضع مفتوحاً من الأدمن
       window.generateAccount = async function() {
-        const btn = document.getElementById('genBtn');
-        const existingUser = localStorage.getItem('saved_username_v2');
-        const existingPass = localStorage.getItem('saved_password_v2');
-
-        if (localStorage.getItem('account_generated_v2') === 'true' && existingUser && existingPass) {
-          document.getElementById('username').value = existingUser;
-          document.getElementById('password').value = existingPass;
-          showSmartAlert(`ℹ️ تم وضع بيانات حسابك المحفوظ (${existingUser}) في الخانات! اضغط تسجيل الدخول.`);
-          return;
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = '<span>جاري تجهيز الحساب... ⏳</span>';
-
-        const username = 'stu' + Math.floor(1000 + Math.random() * 9000);
-        let password = '';
-        const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-        for (let i = 0; i < 4; i++) {
-          password += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-
-        try {
-          await dbSet('credentials/' + username, { password: password });
-
-          localStorage.setItem('account_generated_v2', 'true');
-          localStorage.setItem('saved_username_v2', username);
-          localStorage.setItem('saved_password_v2', password);
-
-          document.getElementById('username').value = username;
-          document.getElementById('password').value = password;
-
-          try {
-            navigator.clipboard?.writeText(`اسم: ${username}\nمرور: ${password}`);
-          } catch(e) {}
-
-          playTone(680, 'sine', 0.18);
-          showSmartAlert(`✅ تم إنشاء الحساب ونسخ البيانات!\n👤 الكود: ${username} | 🔑 السري: ${password}`);
-        } catch (err) {
-          showSmartAlert("⚠️ حدث خطأ غير متوقع، حاول مرة أخرى.");
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = '<span>✨ إنشاء حساب طالب جديد</span>';
-        }
-      };
-
-      // 2. دالة تسجيل الدخول والفحص الأمني
-      window.handleLogin = async function() {
-        const btn = document.getElementById('loginBtn');
-        if (btn.disabled) return;
-
-        const uVal = document.getElementById('username').value.trim();
-        const pVal = document.getElementById('password').value.trim();
-
-        if (!uVal || !pVal) {
-          showError(btn, '⚠️ يرجى إدخال الكود وكلمة المرور!');
-          return;
-        }
-
-        btn.disabled = true;
-        btn.style.background = 'rgba(26,43,85,.9)';
-        btn.style.color = '#fff';
-        btn.innerHTML = '<span>جاري التحقق... 🔍</span>';
-        updateSecurityScan(25, 'جاري مطابقة بيانات الحساب...');
-
-        try {
-          const userData = await dbGet('credentials/' + uVal);
-          const savedLocalU = localStorage.getItem('saved_username_v2');
-          const savedLocalP = localStorage.getItem('saved_password_v2');
-
-          const isMatch = (userData && String(userData.password) === pVal) || (uVal === savedLocalU && pVal === savedLocalP);
-
-          if (isMatch) {
-            localStorage.setItem('saved_username_v2', uVal);
-            localStorage.setItem('saved_password_v2', pVal);
-            await verifyConnectionAndLogin(uVal);
-          } else {
-            document.getElementById('securityScanBox').style.display = 'none';
-            showError(btn, '❌ كود الطالب أو كلمة المرور غير صحيحة!');
-          }
-        } catch (err) {
-          document.getElementById('securityScanBox').style.display = 'none';
-          showError(btn, '⚠️ تعذر التحقق، حاول مرة أخرى!');
-        }
-      };
-
-      async function verifyConnectionAndLogin(username) {
-        const btn = document.getElementById('loginBtn');
-        btn.innerHTML = '<span>جاري الفحص الأمني... 🛡️</span>';
-        updateSecurityScan(55, 'جاري فحص بصمة الجهاز...');
-
-        let deviceStr = "جهاز غير معروف";
-        let osStr = "نظام غير معروف";
-        let browserStr = "متصفح غير معروف";
-        let ua = navigator.userAgent || "";
-
-        try {
-          if (typeof UAParser !== 'undefined') {
-            const parser = new UAParser();
-            const res = parser.getResult();
-            if (res.os.name) osStr = res.os.name + (res.os.version ? " " + res.os.version : "");
-            if (res.browser.name) browserStr = res.browser.name + (res.browser.version ? " " + res.browser.version : "");
-            if (res.device.model) {
-              deviceStr = (res.device.vendor ? res.device.vendor + " " : "") + res.device.model;
-            }
-          }
-        } catch(e) {}
-
-        if (!osStr || osStr === "نظام غير معروف" || osStr.includes("Linux")) {
-          if (ua.includes("iPhone")) osStr = "iOS";
-          else if (ua.includes("iPad")) osStr = "iPadOS";
-          else if (ua.includes("Android")) {
-            let m = ua.match(/Android\s+([0-9\.]+)/);
-            osStr = m ? "Android " + m[1] : "Android";
-          } else if (ua.includes("Windows")) osStr = "Windows";
-          else if (ua.includes("Mac")) osStr = "MacOS";
-        }
-
-        if (!deviceStr || deviceStr === "جهاز غير معروف" || deviceStr === "K") {
-          if (ua.includes("iPhone")) deviceStr = "Apple iPhone";
-          else if (ua.includes("iPad")) deviceStr = "Apple iPad";
-          else if (ua.includes("Windows")) deviceStr = "كمبيوتر Windows";
-          else if (ua.includes("Mac")) deviceStr = "كمبيوتر Mac";
-          else if (ua.includes("Android")) deviceStr = "هاتف أندرويد";
-        }
-
-        const finalOsBrowser = `${osStr} | ${browserStr}`;
-        updateSecurityScan(80, 'جاري التأكد من أمان الشبكة...');
-
-        let loc = "مصر 🇪🇬", isp = "غير معروف", ip = "غير معروف", isVpn = false, isOutside = false;
-
-        const fetchWithTimeout = (url, ms = 2500) => {
-          const ctrl = new AbortController();
-          const id = setTimeout(() => ctrl.abort(), ms);
-          return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
-        };
-
-        try {
-          let cfRes = await fetchWithTimeout('https://1.1.1.1/cdn-cgi/trace', 2200);
-          let cfText = await cfRes.text();
-          let cfIp = cfText.match(/ip=([^\n]+)/);
-          let cfLoc = cfText.match(/loc=([^\n]+)/);
-          if (cfIp) ip = cfIp[1];
-          if (cfLoc && cfLoc[1] && cfLoc[1] !== "EG") {
-            loc = cfLoc[1];
-            isOutside = true;
-          }
-        } catch(e) {}
-
-        try {
-          let r1 = await fetchWithTimeout('https://ipwho.is/' + (ip !== "غير معروف" ? ip : ''), 2200);
-          let d1 = await r1.json();
-          if (d1.success) {
-            loc = (d1.city ? d1.city + ", " : "") + d1.country;
-            isp = (d1.connection && d1.connection.isp) ? d1.connection.isp : "غير معروف";
-            if (d1.security && (d1.security.vpn || d1.security.tor)) isVpn = true;
-            if (d1.country_code && d1.country_code !== "EG") isOutside = true;
-          }
-        } catch(e) {}
-
-        let bannedList = ['41.235.55.32'];
-        try {
-          const bData = await dbGet('banned_ips');
-          if (bData) bannedList = bannedList.concat(Object.values(bData));
-        } catch(e) {}
-
-        const sendTg = (txt) => fetch(getTeleUrl(), {
-          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: tgKeys.cid, text: txt })
-        }).catch(e => {});
-
-        const timeNow = new Date().toLocaleString('ar-EG');
-
-        if (bannedList.includes(ip)) {
-          document.getElementById('securityScanBox').style.display = 'none';
-          showError(btn, 'تم حظر جهازك من المنصة 🚫');
-          sendTg(`🛑 محاولة دخول من IP محظور!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`);
-          return;
-        }
-
-        if (isVpn || isOutside) {
-          document.getElementById('securityScanBox').style.display = 'none';
-          showError(btn, 'يرجى إغلاق الـ VPN للدخول! 🚫');
-          let blockReason = isVpn ? "VPN مستخدم" : "الآي بي خارج مصر";
-          sendTg(`⚠️ محاولة دخول محظورة!\nالسبب: ${blockReason}\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`);
-          return;
-        }
-
-        updateSecurityScan(100, 'تم التوثيق بنجاح ✓');
-
-        const successMsg = `🟢 طالب سجل دخول!\n👤 الاسم: ${username}\n📱 الجهاز: ${deviceStr}\n🖥 النظام: ${finalOsBrowser}\n📍 الموقع: ${loc}\n🔗 الآي بي: ${ip}\n⏰ الوقت: ${timeNow}`;
-
-        dbPush('login_logs', {
-          username: username, device: deviceStr, platform: finalOsBrowser,
-          screen: window.screen.width + "x" + window.screen.height,
-          location: loc, isp: isp, ip: ip, time: timeNow
-        }).catch(e => {});
-
-        sendTg(successMsg);
-        finalizeLogin(username);
-      }
-
-      function finalizeLogin(uVal) {
-        playTone(660, 'sine', 0.16);
-        const btn = document.getElementById('loginBtn');
-        btn.style.background = 'var(--good)';
-        btn.style.color = '#04060d';
-        btn.innerHTML = '<span>تم الدخول بنجاح ✓</span>';
-        btn.disabled = false;
-
-        const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
-        sessionStorage.setItem('session_token', sessionToken);
-
-        dbSet('active_tickets/sessions/' + uVal, sessionToken).then(() => {
-          if (database) {
-            // حذف الجلسة تلقائياً من السيرفر فور إغلاق المتصفح
-            database.ref('active_tickets/sessions/' + uVal).onDisconnect().remove();
-            monitorSession(uVal);
-          }
-        }).catch(e => {});
-
-        sessionStorage.setItem('student_auth', 'verified');
-        sessionStorage.setItem('student_name', uVal);
-        history.pushState({ page: 'exams' }, 'Exams', '#exams');
-
-        populateStudentBar(uVal);
-        listenForLiveAlerts();
-
-        setTimeout(() => {
-          document.getElementById('securityScanBox').style.display = 'none';
-          document.getElementById('loginSection').style.display = 'none';
-          document.getElementById('headerSubtitle').style.display = 'none';
-          document.getElementById('examsSection').style.display = 'block';
-          fetchExamsFromServer();
-          fetchPdfsFromServer();
-        }, 300);
-      }
-
-      let isProfilePassShown = false;
-      function populateStudentBar(sName) {
-        document.getElementById('activeStudentName').innerText = sName || 'طالب';
-        document.getElementById('profUser').innerText = sName || '-';
-        isProfilePassShown = false;
-        document.getElementById('profPass').innerText = '•••• (اضغط للعرض)';
-      }
-
-      window.toggleProfilePass = function() {
-        const el = document.getElementById('profPass');
-        isProfilePassShown = !isProfilePassShown;
-        el.innerText = isProfilePassShown ? (localStorage.getItem('saved_password_v2') || 'غير محفوظة') : '•••• (اضغط للعرض)';
-      };
-
-      // جلب الاختبارات
-      async function fetchExamsFromServer() {
-        const cont = document.getElementById('dynamicExamsList');
-        const renderExams = (data) => {
-          cont.innerHTML = '';
-          let count = 0;
-          if (data) {
-            Object.values(data).forEach((exam) => {
-              if (exam && exam.name) {
-                count++;
-                const isC = exam.status === 'closed';
-                const aClass = isC ? 'locked' : '';
-                const aText = isC ? 'مغلق 🔒' : 'ابدأ الآن ⚡';
-                cont.innerHTML += `
-                  <div class="exam-item" onclick="goToExam('${isC}', '${exam.url}')">
-                    <div class="exam-info">
-                      <span class="exam-name">${exam.name}</span>
-                      <span class="exam-meta">📋 ${exam.questionsCount || '--'} سؤال • تقييم إلكتروني</span>
-                    </div>
-                    <div class="exam-status ${aClass}">${aText}</div>
-                  </div>`;
-              }
-            });
-          } else {
-            cont.innerHTML = '<p style="color:var(--muted); text-align:center; padding:25px 0;">لا توجد اختبارات مضافة حالياً.</p>';
-          }
-          document.getElementById('examsCountBadge').innerText = count;
-        };
-
-        const initialData = await dbGet('exams');
-        renderExams(initialData);
-
-        if (database) {
-          database.ref('exams').on('value', snap => {
-            if (snap.val() !== null) renderExams(snap.val());
-          });
-        }
-      }
-
-      // جلب ملفات الـ PDF
-      async function fetchPdfsFromServer() {
-        const cont = document.getElementById('dynamicPdfsList');
-        const renderPdfs = (data) => {
-          cont.innerHTML = '';
-          let count = 0;
-          if (data) {
-            Object.values(data).forEach((pdf) => {
-              if (pdf && pdf.name) {
-                count++;
-                cont.innerHTML += `
-                  <div class="exam-item" onclick="openPdfModal('${pdf.url}', '${pdf.name}')">
-                    <div class="exam-info">
-                      <span class="exam-name">${pdf.name}</span>
-                      <span class="exam-meta">📄 ${pdf.size || 'ملف دراسي محمي'}</span>
-                    </div>
-                    <div class="pdf-status">قراءة 📖</div>
-                  </div>`;
-              }
-            });
-          } else {
-            cont.innerHTML = '<p style="color:var(--muted); text-align:center; padding:25px 0;">لا توجد مذكرات مرفوعة حالياً.</p>';
-          }
-          document.getElementById('pdfsCountBadge').innerText = count;
-        };
-
-        const initialData = await dbGet('pdfs');
-        renderPdfs(initialData);
-
-        if (database) {
-          database.ref('pdfs').on('value', snap => {
-            if (snap.val() !== null) renderPdfs(snap.val());
-          });
-        }
-      }
-
-      // عارض الـ PDF المحمي بالعلامة المائية
-      window.openPdfModal = function(url, title = 'ملف دراسي') {
-        let fUrl = url;
-        if (url.includes('drive.google.com')) {
-          fUrl = url.replace(/\/(view|edit).*/, '/preview');
-        }
-        const stuName = sessionStorage.getItem('student_name') || 'STUDENT';
-
-        const modal = document.createElement('div');
-        modal.style.cssText = 'position:fixed; inset:0; background:rgba(4,6,13,0.96); z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px; backdrop-filter:blur(14px); opacity:0; transition:opacity 0.25s;';
-
-        const topBar = document.createElement('div');
-        topBar.style.cssText = 'width:100%; max-width:800px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:10px 14px; background:rgba(14,22,45,0.95); border:1px solid rgba(56,189,248,0.35); border-radius:14px;';
-        topBar.innerHTML = `
-          <span style="font-weight:900; font-size:14px; color:#fff;">📖 ${title}</span>
-          <button id="closePdfBtn" style="padding:7px 16px; border-radius:10px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-weight:900; cursor:pointer; font-size:12px;">إغلاق ✕</button>
-        `;
-
-        const frameWrapper = document.createElement('div');
-        frameWrapper.style.cssText = 'position:relative; width:100%; max-width:800px; height:82vh; border:1px solid rgba(56,189,248,0.35); border-radius:18px; overflow:hidden; background:#fff;';
-
-        const watermark = document.createElement('div');
-        watermark.innerText = `${stuName} • منصة الاختبارات الذكية`;
-        watermark.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-28deg); font-size:26px; font-weight:900; color:rgba(0,0,0,0.12); pointer-events:none; z-index:10; white-space:nowrap;';
-
-        const iframe = document.createElement('iframe');
-        iframe.src = fUrl;
-        iframe.setAttribute('allow', 'autoplay');
-        iframe.style.cssText = 'width:100%; height:100%; border:none;';
-
-        frameWrapper.appendChild(watermark);
-        frameWrapper.appendChild(iframe);
-        modal.appendChild(topBar);
-        modal.appendChild(frameWrapper);
-        document.body.appendChild(modal);
-
-        document.getElementById('closePdfBtn').onclick = () => {
-          modal.style.opacity = '0';
-          setTimeout(() => document.body.removeChild(modal), 250);
-        };
-
-        setTimeout(() => modal.style.opacity = '1', 10);
-      };
-
-      // الانتقال إلى الاختبار
-      window.goToExam = async function(isClosed, url) {
-        if (isClosed === 'true' || isClosed === true) {
-          playTone(250, 'sawtooth', 0.15);
-          showSmartAlert('🔒 هذا الاختبار مغلق حالياً من قبل الإدارة');
-        } else {
-          const sName = sessionStorage.getItem('student_name');
-          if (!sessionStorage.getItem('student_auth') || !sName) {
-            window.handleLogout();
-            return;
-          }
-          window.isNavigatingToExam = true;
-          showSmartAlert('جاري إصدار تذكرة الأمان وفتح الاختبار... ⏳');
-          const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-          try {
-            await dbSet('active_tickets/' + sName, { token: token, timestamp: Date.now() });
-          } catch(e) {}
-          window.location.href = `${url}${url.includes('?') ? '&' : '?'}u=${encodeURIComponent(sName)}&t=${token}`;
-        }
-      };
-
-      function showError(btn, msg) {
-        playTone(250, 'sawtooth', 0.2);
-        btn.style.background = 'rgba(239,68,68,.9)';
-        btn.style.color = '#fff';
-        btn.innerHTML = `<span>${msg}</span>`;
-        setTimeout(() => {
-          btn.style.background = '';
-          btn.style.color = '#030712';
-          btn.innerHTML = '<span>تسجيل الدخول للمنصة</span>';
-          btn.disabled = false;
-        }, 2500);
-      }
-
-      // تسجيل الخروج
-      window.handleLogout = function() {
-        const sName = sessionStorage.getItem('student_name');
-        if (sName && !window.isKickedOut) {
-          fetch(`${DB_URL}/active_tickets/sessions/${sName}.json`, { method: 'DELETE', keepalive: true }).catch(e => {});
-        }
-        window.isKickedOut = false;
-
-        if (window.sessionListenerRef && window.sessionListenerCallback) {
-          window.sessionListenerRef.off('value', window.sessionListenerCallback);
-          window.sessionListenerRef = null;
-          window.sessionListenerCallback = null;
-        }
-
-        sessionStorage.clear();
-
-        document.getElementById('username').value = localStorage.getItem('saved_username_v2') || '';
-        document.getElementById('password').value = localStorage.getItem('saved_password_v2') || '';
-        const btn = document.getElementById('loginBtn');
-        btn.style.background = '';
-        btn.style.color = '#030712';
-        btn.innerHTML = '<span>تسجيل الدخول للمنصة</span>';
-        btn.disabled = false;
-
-        document.getElementById('examsSection').style.display = 'none';
-        document.getElementById('headerSubtitle').style.display = 'block';
-        document.getElementById('loginSection').style.display = 'block';
-
-        window.switchTab('exams');
-      };
-
-      // خروج تلقائي فوري عند إغلاق المتصفح أو التبويب نهائياً
-      window.addEventListener('pagehide', function() {
-        if (!window.isNavigatingToExam) {
-          const sName = sessionStorage.getItem('student_name');
-          if (sName) {
-            fetch(`${DB_URL}/active_tickets/sessions/${sName}.json`, { method: 'DELETE', keepalive: true }).catch(e => {});
-          }
-          sessionStorage.clear();
-        }
-      });
-
-      // التبويبات والبحث
-      window.switchTab = function(tab) {
-        playTone(580, 'sine', 0.05);
-        document.getElementById('tabExamsBtn').classList.remove('active');
-        document.getElementById('tabPdfsBtn').classList.remove('active');
-        document.getElementById('tabProfileBtn').classList.remove('active');
-
-        document.getElementById('dynamicExamsList').style.display = 'none';
-        document.getElementById('dynamicPdfsList').style.display = 'none';
-        document.getElementById('studentProfileTab').style.display = 'none';
-        document.getElementById('searchContainer').style.display = 'block';
-
-        if (tab === 'exams') {
-          document.getElementById('tabExamsBtn').classList.add('active');
-          document.getElementById('dynamicExamsList').style.display = 'flex';
-        } else if (tab === 'pdfs') {
-          document.getElementById('tabPdfsBtn').classList.add('active');
-          document.getElementById('dynamicPdfsList').style.display = 'flex';
-        } else {
-          document.getElementById('tabProfileBtn').classList.add('active');
-          document.getElementById('studentProfileTab').style.display = 'block';
-          document.getElementById('searchContainer').style.display = 'none';
-        }
-      };
-
-      window.filterContentList = function() {
-        const q = document.getElementById('contentSearchInput').value.trim().toLowerCase();
-        const items = document.querySelectorAll('#dynamicExamsList .exam-item, #dynamicPdfsList .exam-item');
-        items.forEach(item => {
-          const title = (item.querySelector('.exam-name')?.innerText || '').toLowerCase();
-          item.style.display = title.includes(q) ? 'flex' : 'none';
-        });
-      };
-
-      window.copyStudentCreds = function() {
-        const u = sessionStorage.getItem('student_name') || localStorage.getItem('saved_username_v2') || '';
-        const p = localStorage.getItem('saved_password_v2') || '';
-        navigator.clipboard?.writeText(`كود الطالب: ${u}\nكلمة المرور: ${p}`);
-        showSmartAlert('✅ تم نسخ بيانات حسابك بنجاح!');
-      };
-
-      // بوابة الإدارة السرية المشفرة (5 ضغطات)
-      let tapCount = 0, tapTimer;
-      document.getElementById('logoSecretBtn').addEventListener('click', function() {
-        tapCount++;
-        clearTimeout(tapTimer);
-        tapTimer = setTimeout(() => { tapCount = 0; }, 1600);
-        if (tapCount >= 5) {
-          tapCount = 0;
-          const modal = document.getElementById('adminPinModal');
-          const inp = document.getElementById('secretPinInput');
-          inp.value = '';
-          modal.style.display = 'flex';
-          setTimeout(() => inp.focus(), 100);
-        }
-      });
-
-      document.getElementById('cancelPinBtn').addEventListener('click', function() {
-        document.getElementById('adminPinModal').style.display = 'none';
-      });
-
-      async function verifyAdminPin() {
-        const entered = document.getElementById('secretPinInput').value.trim();
-        if (!entered) return;
-
-        let customPin = null;
-        try { customPin = await dbGet('admin_pin'); } catch(e) {}
-
-        const isValid = customPin ? (String(customPin) === entered) : (btoa(entered) === "MjAyNg==");
-
-        if (isValid) {
-          document.getElementById('adminPinModal').style.display = 'none';
-          playTone(880, 'sine', 0.15);
-          openAdminDash();
-        } else {
-          playTone(220, 'sawtooth', 0.25);
-          showSmartAlert("🚫 شفرة الإدارة غير صحيحة!");
-          document.getElementById('secretPinInput').value = '';
-        }
-      }
-
-      document.getElementById('verifyPinBtn').addEventListener('click', verifyAdminPin);
-      document.getElementById('secretPinInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') verifyAdminPin();
-      });
-
-      window.updateAdminPin = async function() {
-        const newPin = document.getElementById('newAdminPinInput').value.trim();
-        if (!newPin || newPin.length < 4) {
-          showSmartAlert('⚠️ يرجى إدخال رقم سري لا يقل عن 4 خانات');
-          return;
-        }
-        await dbSet('admin_pin', newPin);
-        document.getElementById('newAdminPinInput').value = '';
-        showSmartAlert('✅ تم تحديث الرقم السري للوحة الإدارة بنجاح!');
-      };
-
-      window.switchAdminTab = function(tabName, btnEl) {
-        document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.remove('active'));
-        btnEl.classList.add('active');
-        document.getElementById('adminTabRadar').style.display = tabName === 'radar' ? 'block' : 'none';
-        document.getElementById('adminTabExams').style.display = tabName === 'exams' ? 'block' : 'none';
-        document.getElementById('adminTabPdfs').style.display = tabName === 'pdfs' ? 'block' : 'none';
-        document.getElementById('adminTabStudents').style.display = tabName === 'students' ? 'block' : 'none';
-      };
-
-      async function openAdminDash() {
-        const dash = document.getElementById('adminDashboard');
-        dash.style.display = 'flex';
-        setTimeout(() => dash.style.opacity = '1', 10);
-
-        if (database) {
-          adminListener = database.ref('active_visitors').on('value', function(snapshot) {
-            document.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
-          });
-        }
-
-        // تحميل الاختبارات في لوحة الأدمن
-        const examsData = await dbGet('exams');
-        const exBox = document.getElementById('adminExamsControlList');
-        exBox.innerHTML = '';
-        if (examsData) {
-          Object.entries(examsData).forEach(([key, exam]) => {
-            if (exam && exam.name) {
-              const isClosed = exam.status === 'closed';
-              exBox.innerHTML += `
-                <div class="log-item">
-                  <span style="font-weight:800; color:#fff;">${exam.name} (${exam.questionsCount || 0} س)</span>
-                  <div style="display:flex; gap:5px;">
-                    <button onclick="toggleExamStatus('${key}', '${isClosed ? 'open' : 'closed'}')" style="padding:5px 8px; border-radius:7px; border:none; font-weight:900; cursor:pointer; font-size:11px; background:${isClosed ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.2)'}; color:${isClosed ? '#10b981' : '#fbbf24'};">
-                      ${isClosed ? 'فتح 🔓' : 'إغلاق 🔒'}
-                    </button>
-                    <button onclick="deleteAdminItem('exams/${key}')" style="padding:5px 8px; border-radius:7px; border:none; background:rgba(239,68,68,0.2); color:#ef4444; font-weight:900; cursor:pointer; font-size:11px;">حذف 🗑️</button>
-                  </div>
-                </div>`;
-            }
-          });
-        } else {
-          exBox.innerHTML = 'لا توجد اختبارات مضافة.';
-        }
-
-        // تحميل ملفات الـ PDF في لوحة الأدمن
-        const pdfsData = await dbGet('pdfs');
-        const pdfBox = document.getElementById('adminPdfsControlList');
-        pdfBox.innerHTML = '';
-        if (pdfsData) {
-          Object.entries(pdfsData).forEach(([key, pdf]) => {
-            if (pdf && pdf.name) {
-              pdfBox.innerHTML += `
-                <div class="log-item">
-                  <span style="font-weight:800; color:#fff;">${pdf.name}</span>
-                  <button onclick="deleteAdminItem('pdfs/${key}')" style="padding:5px 8px; border-radius:7px; border:none; background:rgba(239,68,68,0.2); color:#ef4444; font-weight:900; cursor:pointer; font-size:11px;">حذف 🗑️</button>
-                </div>`;
-            }
-          });
-        } else {
-          pdfBox.innerHTML = 'لا توجد ملفات مرفوعة.';
-        }
-
-        // تحميل سجل الدخول الأخير
-        const logsData = await dbGet('login_logs');
-        const logBox = document.getElementById('adminRecentLogs');
-        logBox.innerHTML = '';
-        if (logsData) {
-          Object.values(logsData).slice(-6).reverse().forEach(log => {
-            logBox.innerHTML += `
-              <div class="log-item">
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                  <span style="color:#fff; font-weight:800;">👤 ${log.username} | 📱 ${log.device}</span>
-                  <span style="color:var(--muted); font-size:10px;">🌐 ${log.ip} (${log.time || ''})</span>
-                </div>
-                <button onclick="banStudentIp('${log.ip}')" style="padding:5px 8px; border-radius:8px; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.15); color:#ef4444; font-weight:900; font-size:10px; cursor:pointer;">حظر IP 🚫</button>
-              </div>`;
-          });
-        } else {
-          logBox.innerHTML = 'لا توجد سجلات بعد.';
-        }
-      }
-
-      // وظائف الأدمن
-      window.addNewExamFromAdmin = async function() {
-        const name = document.getElementById('newExamName').value.trim();
-        const count = document.getElementById('newExamCount').value.trim() || '20';
-        const url = document.getElementById('newExamUrl').value.trim();
-        if (!name || !url) { showSmartAlert('⚠️ أدخل اسم الاختبار والرابط!'); return; }
-        await dbPush('exams', { name: name, questionsCount: count, url: url, status: 'open' });
-        document.getElementById('newExamName').value = '';
-        document.getElementById('newExamUrl').value = '';
-        showSmartAlert('✅ تم نشر الاختبار بنجاح!');
-        openAdminDash();
-        fetchExamsFromServer();
-      };
-
-      window.addNewPdfFromAdmin = async function() {
-        const name = document.getElementById('newPdfName').value.trim();
-        const size = document.getElementById('newPdfSize').value.trim() || 'ملف PDF';
-        const url = document.getElementById('newPdfUrl').value.trim();
-        if (!name || !url) { showSmartAlert('⚠️ أدخل اسم الملف والرابط!'); return; }
-        await dbPush('pdfs', { name: name, size: size, url: url });
-        document.getElementById('newPdfName').value = '';
-        document.getElementById('newPdfUrl').value = '';
-        showSmartAlert('✅ تمت إضافة المذكرة بنجاح!');
-        openAdminDash();
-        fetchPdfsFromServer();
-      };
-
-      window.createCustomStudent = async function() {
-        const u = document.getElementById('customStuUser').value.trim();
-        const p = document.getElementById('customStuPass').value.trim();
-        if (!u || !p) { showSmartAlert('⚠️ أدخل كود الطالب وكلمة المرور!'); return; }
-        await dbSet('credentials/' + u, { password: p });
-        document.getElementById('customStuUser').value = '';
-        document.getElementById('customStuPass').value = '';
-        showSmartAlert(`✅ تم تفعيل حساب الطالب (${u}) بنجاح!`);
-      };
-
-      window.resetLocalDeviceLock = function() {
-        localStorage.removeItem('account_generated_v2');
-        localStorage.removeItem('saved_username_v2');
-        localStorage.removeItem('saved_password_v2');
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-        showSmartAlert('🔄 تم مسح الحساب المحفوظ! يمكنك الآن إنشاء حساب جديد.');
-      };
-
-      window.toggleExamStatus = async function(key, status) {
-        await dbSet(`exams/${key}/status`, status);
-        showSmartAlert(status === 'closed' ? '🔒 تم إغلاق الاختبار' : '🔓 تم فتح الاختبار');
-        openAdminDash();
-        fetchExamsFromServer();
-      };
-
-      window.deleteAdminItem = async function(path) {
-        if (!confirm('هل أنت متأكد من الحذف النهائي؟')) return;
-        setLocalStore(path, null);
-        try { await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' }); } catch(e) {}
-        showSmartAlert('🗑️ تم الحذف بنجاح');
-        openAdminDash();
-        fetchExamsFromServer();
-        fetchPdfsFromServer();
-      };
-
-      window.banStudentIp = async function(ip) {
-        if (!ip || ip === 'غير معروف') return;
-        await dbPush('banned_ips', ip);
-        showSmartAlert(`🚫 تم حظر الآي بي ${ip} نهائياً`);
-      };
-
-      window.sendAdminBroadcast = async function() {
-        const val = document.getElementById('adminBroadcastInput').value.trim();
-        if (!val) return;
-        await dbSet('admin_message', val);
-        document.getElementById('adminBroadcastInput').value = '';
-        showSmartAlert('🚀 تم بث الإشعار لجميع الطلاب');
-      };
-
-      window.clearAdminBroadcast = async function() {
-        await dbSet('admin_message', '');
-        showSmartAlert('🗑️ تم مسح الإشعار المثبت');
-      };
-
-      document.getElementById('closeAdminBtn').addEventListener('click', function() {
-        const dash = document.getElementById('adminDashboard');
-        dash.style.opacity = '0';
-        setTimeout(() => dash.style.display = 'none', 250);
-        if (adminListener && database) database.ref('active_visitors').off('value', adminListener);
-      });
-
-      // ربط الأزرار
-      document.getElementById('loginBtn').addEventListener('click', window.handleLogin);
-      document.getElementById('genBtn').addEventListener('click', window.generateAccount);
-      document.getElementById('logoutBtn').addEventListener('click', window.handleLogout);
-      document.getElementById('togglePassBtn').addEventListener('click', function() {
-        const p = document.getElementById('password');
-        p.type = p.type === 'password' ? 'text' : 'password';
-        playTone(600, 'sine', 0.05);
-      });
-
-      document.getElementById('password').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') window.handleLogin();
-      });
-
-      document.addEventListener("DOMContentLoaded", function() {
-        const savedUser = localStorage.getItem('saved_username_v2');
-        const savedPass = localStorage.getItem('saved_password_v2');
-        if (savedUser && savedPass) {
-          document.getElementById('username').value = savedUser;
-          document.getElementById('password').value = savedPass;
-        }
-
-        // الجلسة تظل مفتوحة بلا حدود زمنية طالما لم يغلق المتصفح
-        const isAuth = sessionStorage.getItem('student_auth') === 'verified';
-        if (isAuth) {
-          const sName = sessionStorage.getItem('student_name');
-          populateStudentBar(sName);
-          document.getElementById('loginSection').style.display = 'none';
-          document.getElementById('headerSubtitle').style.display = 'none';
-          document.getElementById('examsSection').style.display = 'block';
-          fetchExamsFromServer();
-          fetchPdfsFromServer();
-          listenForLiveAlerts();
-        }
-      });
-    })();
-  </script>
- </body>
-           </html>
+        if (currentP
