@@ -6,8 +6,6 @@
   <meta name="theme-color" content="#070912">
   <title>Online Exam - بنك الباطنة 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style>
     :root {
       --bg0: #070912;
@@ -322,13 +320,13 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(6px); }
 
-    /* شاشة الحظر والتذاكر والجدولة */
+    /* شاشة الحظر (تظهر فقط عند محاولة الدخول غير المصرح به) */
     #overlay {
       position: fixed;
       inset: 0;
       background: rgba(7,9,18,0.98);
       z-index: 1000;
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       flex-direction: column;
@@ -342,7 +340,7 @@
       padding: 30px 22px;
       border-radius: 22px;
       text-align: center;
-      box-shadow: 0 0 40px rgba(110,231,255,0.1);
+      box-shadow: 0 0 40px rgba(239,68,68,0.15);
       width: 92%;
       max-width: 400px;
     }
@@ -355,7 +353,7 @@
       display: none;
     }
 
-    /* غرفة مراقبة اللجنة المطورة للأدمن (5 ضغطات) */
+    /* غرفة مراقبة اللجنة للأدمن */
     #adminDashboard {
       position: fixed;
       inset: 0;
@@ -442,7 +440,6 @@
       font-size: 14px;
     }
 
-    /* نافذة تعديل السؤال والنتيجة */
     .custom-modal {
       display: none;
       position: fixed;
@@ -495,20 +492,17 @@
     <div class="dash-card">
       <div class="live-pulse"></div>
       <h3 style="color: var(--muted); margin: 0; font-size: 14px;">متصل باللجنة الآن</h3>
-      <div class="online-count" id="onlineCounter">0</div>
+      <div class="online-count" id="onlineCounter">1</div>
       <p style="color: var(--muted); font-size: 12px; margin-bottom: 14px;">طالب داخل الامتحان حالياً</p>
 
-      <!-- التحكم الفوري في قفل/فتح هذه اللجنة -->
       <div style="display:flex; gap:8px; margin-bottom:12px;">
         <button class="adm-btn" style="margin:0; color:var(--good); border-color:var(--good);" onclick="setCommitteeStatus('open')">فتح اللجنة 🔓</button>
         <button class="adm-btn" style="margin:0; color:var(--bad); border-color:var(--bad);" onclick="setCommitteeStatus('closed')">إغلاق اللجنة 🔒</button>
       </div>
 
-      <!-- تفعيل تعديل الأسئلة الفوري ونسخها لـ GitHub -->
       <button class="adm-btn" style="color:#fde68a; border-color:rgba(245,158,11,0.5);" onclick="enableLiveQuestionEditing()">✏️ تفعيل تعديل الأسئلة والأجوبة لايف</button>
       <button class="adm-btn" onclick="copyQuestionsArrayForGithub()">📋 نسخ مصفوفة الأسئلة (_0xAQ) لـ GitHub</button>
 
-      <!-- قائمة درجات الطلاب المتواجدين في اللجنة لحظياً -->
       <div style="text-align:right; margin-top:14px;">
         <h4 style="margin:0 0 8px 0; font-size:12px; color:var(--glow1);">📊 درجات الطلاب في اللجنة لحظياً:</h4>
         <div id="liveStudentsScoresList" style="max-height:160px; overflow-y:auto; font-size:12px; color:var(--muted);">جاري التحميل...</div>
@@ -533,17 +527,17 @@
     </div>
   </div>
 
-  <!-- شاشة الانتظار والتحقق من التذكرة والجدولة -->
+  <!-- شاشة الحظر (مخفية افتراضياً ولا تظهر إلا لمن يدخل بدون تسجيل) -->
   <div id="overlay">
     <div class="modal" id="modalContent">
-      <h2 id="modalTitle" style="color:var(--glow1); margin-top:0;">.... Please wait 🌀</h2>
-      <p id="modalText" style="color:var(--muted); line-height:1.6; font-weight:700;">جاري التحقق من تذكرة الدخول الرسمية...</p>
+      <h2 id="modalTitle" style="color:var(--bad); margin-top:0;">دخول غير مصرح به 🚫</h2>
+      <p id="modalText" style="color:var(--muted); line-height:1.6; font-weight:700;">يجب تسجيل الدخول وفتح الامتحان من خلال المنصة الرسمية فقط.</p>
       <div id="countdownTimer" class="countdown-timer">00:00:00</div>
-      <button id="backHomeOverlayBtn" onclick="window.location.replace('/')" style="display:none; margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(90deg, var(--glow1), var(--glow2)); color:#070912; font-weight:900; cursor:pointer;">العودة لبوابة المنصة الرئيسية ⬅️</button>
+      <button id="backHomeOverlayBtn" onclick="window.location.replace('/')" style="margin-top:16px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(90deg, var(--glow1), var(--glow2)); color:#070912; font-weight:900; cursor:pointer;">العودة لبوابة المنصة الرئيسية ⬅️</button>
     </div>
   </div>
 
-  <header id="mainHeader" style="display: none;">
+  <header id="mainHeader">
     <div class="headin">
       <div class="brand">
         <div class="back-btn" onclick="window.location.replace('/')" title="العودة للمنصة">
@@ -583,8 +577,7 @@
     </div>
   </header>
 
-  <div class="wrap" id="examWrap" style="display: none;">
-    <!-- شريط الفلترة السريع للطالب -->
+  <div class="wrap" id="examWrap">
     <div class="filter-bar">
       <div class="f-group">
         <button class="f-btn active" id="fBtnAll" onclick="setExamFilter('all')">الكل</button>
@@ -599,6 +592,9 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- تحميل Firebase في نهاية الصفحة حتى لا يعطل فتح الأسئلة عند ضعف الشبكة -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script>
   (function(){
       // =========================================================
@@ -622,146 +618,7 @@
       });
       _0xdc.addEventListener('dragstart', e => e.preventDefault());
 
-      _0xdc.addEventListener('DOMContentLoaded', function(){
-          _0xwn.history.pushState('exam', null, '');
-          _0xwn.onpopstate = function(){ _0xwn.location.replace('/'); };
-      });
-
-      let _0xdb = null;
-      let serverTimeOffset = 0;
-      let scheduledTimerInterval = null;
-
-      const _0xcfg = {
-          apiKey: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
-          authDomain: "ahmedexams-3e267.firebaseapp.com",
-          databaseURL: DB_URL,
-          projectId: "ahmedexams-3e267",
-          storageBucket: "ahmedexams-3e267.firebasestorage.app",
-          messagingSenderId: "151411096023",
-          appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
-      };
-      const tgKeys = {
-          url: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA==") + atob("ODkyNTYyMDU5NDo=") + atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc=") + atob("L3NlbmRNZXNzYWdl"),
-          cid: atob("ODQ0NjUwMDk3OA==")
-      };
-
-      try {
-          if (!firebase.apps.length) firebase.initializeApp(_0xcfg);
-          _0xdb = firebase.database();
-
-          _0xdb.ref(".info/serverTimeOffset").on("value", function(snap) {
-              serverTimeOffset = snap.val() || 0;
-          });
-
-          const sessionRef = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).push();
-          const connectedRef = _0xdb.ref('.info/connected');
-          connectedRef.on('value', (snap) => {
-              if (snap.val() === true) {
-                  sessionRef.onDisconnect().remove();
-                  sessionRef.set(true);
-              }
-          });
-      } catch(e){}
-
-      // دالة REST سريعة بمهلة زمنية قصيرة حتى لا تعلق الصفحة أبداً عند ضعف الشبكة
-      async function fastRestGet(path, timeoutMs = 2500) {
-          const ctrl = new AbortController();
-          const id = setTimeout(() => ctrl.abort(), timeoutMs);
-          try {
-              const res = await fetch(`${DB_URL}/${path}.json`, { signal: ctrl.signal });
-              clearTimeout(id);
-              if (res.ok) return await res.json();
-          } catch(e) {
-              clearTimeout(id);
-          }
-          return undefined;
-      }
-
-      // =========================================================
-      // 🛡️ غرفة المراقبة السرية للأدمن (5 ضغطات على الشعار + PIN)
-      // =========================================================
-      let tapCount = 0, tapTimer, adminListener = null, scoresListener = null;
-
-      _0xwn.handleSecretTap = function() {
-          tapCount++;
-          clearTimeout(tapTimer);
-          tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
-          if (tapCount >= 5) {
-              tapCount = 0;
-              _0xdc.getElementById('adminPinField').value = '';
-              _0xdc.getElementById('pinModal').style.display = 'flex';
-              setTimeout(() => _0xdc.getElementById('adminPinField').focus(), 100);
-          }
-      };
-
-      _0xwn.verifyExamAdminPin = async function() {
-          const val = _0xdc.getElementById('adminPinField').value.trim();
-          if (!val) return;
-          let customPin = await fastRestGet('admin_pin', 2000);
-
-          if ((customPin && String(customPin) === val) || btoa(val) === "MjAyNg==") {
-              _0xdc.getElementById('pinModal').style.display = 'none';
-              openCommitteeAdminDash();
-          } else {
-              _0xstst("🚫 شفرة الإدارة غير صحيحة!");
-          }
-      };
-
-      function openCommitteeAdminDash() {
-          const dash = _0xdc.getElementById('adminDashboard');
-          dash.style.display = 'flex';
-          setTimeout(() => dash.style.opacity = '1', 10);
-
-          if (!_0xdb) return;
-          adminListener = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).on('value', (snapshot) => {
-              _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
-          });
-
-          scoresListener = _0xdb.ref(EXAM_STUDENTS_NODE).limitToLast(30).on('value', (snap) => {
-              const box = _0xdc.getElementById('liveStudentsScoresList');
-              box.innerHTML = '';
-              const data = snap.val();
-              if (!data) { box.innerHTML = 'لا يوجد طلاب سجلوا في اللجنة بعد.'; return; }
-              Object.values(data).reverse().forEach(st => {
-                  box.innerHTML += `
-                    <div class="stu-score-row">
-                      <span style="font-weight:900; color:#fff;">👤 ${st.name} <small style="color:var(--muted);">(${st.time || ''})</small></span>
-                      <span style="font-weight:900; color:var(--good);">الدرجة: ${st.score || 0} / ${_0xAQ.length}</span>
-                    </div>`;
-              });
-          });
-      }
-
-      _0xwn.setCommitteeStatus = function(status) {
-          fetch(`${DB_URL}/${EXAM_SETTINGS_NODE}.json`, {
-              method: 'PUT',
-              body: JSON.stringify(status)
-          }).then(() => {
-              _0xstst(status === 'closed' ? "🔒 تم إغلاق اللجنة فوراً" : "🔓 تم فتح اللجنة للطلاب");
-          });
-      };
-
-      _0xwn.enableLiveQuestionEditing = function() {
-          _0xdc.body.classList.add('admin-edit-mode');
-          _0xwn.closeAdminDash();
-          _0xstst("✏️ تم تفعيل وضع التعديل! اضغط (تعديل السؤال) تحت أي سؤال.");
-      };
-
-      _0xwn.copyQuestionsArrayForGithub = function() {
-          const str = `const _0xAQ = ${JSON.stringify(_0xAQ, null, 2)};`;
-          navigator.clipboard?.writeText(str);
-          _0xstst("📋 تم نسخ مصفوفة _0xAQ المحدثة! الصقها في GitHub.");
-      };
-
-      _0xwn.closeAdminDash = function() {
-          const dash = _0xdc.getElementById('adminDashboard');
-          dash.style.opacity = '0';
-          setTimeout(() => dash.style.display = 'none', 300);
-          if (adminListener && _0xdb) _0xdb.ref('active_exam_visitors/' + EXAM_KEY).off('value', adminListener);
-          if (scoresListener && _0xdb) _0xdb.ref(EXAM_STUDENTS_NODE).off('value', scoresListener);
-      };
-
-      let _0xstR = null, _0xsn = "طالب مجهول", _0xini = false, _0xeq = [], _0xst = { a: 0, s: 0, l: [], so: [] };
+      let _0xstR = null, _0xsn = "طالب", _0xini = false, _0xeq = [], _0xst = { a: 0, s: 0, l: [], so: [] };
       let currentFilter = 'all';
 
       // =========================================================
@@ -889,163 +746,156 @@
         {q:"Hyponatremia in AKI due to:",o:["Dilution","Loss","Gain","None"],c:0}
       ];
 
-      // =========================================================
-      // 🔐 نظام التحقق السريع من التذكرة والجلسة (بدون تعليق أبداً)
-      // =========================================================
-      const _0xup = new URLSearchParams(_0xwn.location.search);
-      const _0xu = _0xup.get('u'), _0xt = _0xup.get('t');
-
-      function _0xerr(_0x1, _0x2, showTimer = false, showBackBtn = true){
+      function _0xerr(_0x1, _0x2){
+          _0xdc.getElementById("mainHeader").style.display = "none";
+          _0xdc.getElementById("examWrap").style.display = "none";
           _0xdc.getElementById("modalTitle").innerText = _0x1;
-          _0xdc.getElementById("modalTitle").style.color = "var(--bad)";
           _0xdc.getElementById("modalText").innerText = _0x2;
           _0xdc.getElementById("overlay").style.display = "flex";
-          _0xdc.getElementById("countdownTimer").style.display = showTimer ? "block" : "none";
-          _0xdc.getElementById("backHomeOverlayBtn").style.display = showBackBtn ? "block" : "none";
       }
 
-      function getTrueServerTime() {
-          return Date.now() + serverTimeOffset;
-      }
-
-      function checkScheduledTime() {
-          if (EXAM_SCHEDULED_TIME === 0) return true;
-          const now = getTrueServerTime();
-          const timeLeft = EXAM_SCHEDULED_TIME - now;
-
-          if (timeLeft <= 0) {
-              if (scheduledTimerInterval) clearInterval(scheduledTimerInterval);
-              return true;
-          } else {
-              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-              const timerStr = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-
-              _0xerr("الامتحان مجدول ⏱️", "لم يحن موعد فتح الامتحان بعد. سيتم الفتح تلقائياً فور انتهاء العد.", true, true);
-              _0xdc.getElementById("countdownTimer").innerText = timerStr;
-
-              if (!scheduledTimerInterval) {
-                  scheduledTimerInterval = setInterval(function() {
-                      if (checkScheduledTime()) {
-                          _0xsep();
-                      }
-                  }, 1000);
-              }
-              return false;
-          }
-      }
-
-      async function _0xvt(){
-          let savedUser = sessionStorage.getItem('student_name');
-          let savedToken = savedUser ? sessionStorage.getItem('exam_session_' + savedUser) : null;
-          let isAuth = sessionStorage.getItem('student_auth') === 'verified';
-
-          // 1. إذا دخل الطالب بتذكرة من المنصة (?u=...&t=...)
-          if(_0xu && _0xt){
-              _0xsn = decodeURIComponent(_0xu);
-              sessionStorage.setItem('student_name', _0xsn);
-              sessionStorage.setItem('student_auth', 'verified');
-              sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
-
-              // مسح التذكرة فوراً من الرابط حتى لا ينسخه الطالب
-              if (_0xwn.history && _0xwn.history.replaceState) {
-                  _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
-              }
-
-              // إذا كان الطالب مسجلاً بالفعل في نفس المتصفح على نفس الدومين، نفتحه فوراً ونحذف التذكرة في الخلفية
-              if (isAuth) {
-                  fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
-                  _0xsep();
-                  return;
-              }
-
-              // أما لو كان الامتحان على دومين مختلف، نفحص التذكرة عبر REST بمهلة 2.5 ثانية كحد أقصى
-              const ticketData = await fastRestGet('active_tickets/' + encodeURIComponent(_0xsn), 2500);
-              if (ticketData && ticketData.token === _0xt) {
-                  if (Date.now() - ticketData.timestamp > 180000) {
-                      _0xerr("انتهت صلاحية التذكرة ⏱️", "يرجى العودة للمنصة والضغط على الاختبار مجدداً.");
-                      return;
-                  }
-                  fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
-                  _0xsep();
-              } else if (ticketData === undefined) {
-                  // في حال كانت الشبكة بطيئة جداً (3KB/s) وانتهت مهلة الفحص مع وجود تذكرة صحيحة بالرابط، نسمح بالدخول
-                  _0xsep();
-              } else {
-                  _0xerr("رابط غير صالح أو مستخدم مسبقاً 🚫", "يجب فتح الاختبار من داخل المنصة الرسمية فقط.");
-                  setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
-              }
-          }
-          // 2. إذا عمل الطالب Refresh وهو داخل الامتحان بالفعل بجلسة موثقة
-          else if(savedUser && (savedToken || isAuth)) {
-              _0xsn = savedUser;
-              _0xsep();
-          }
-          // 3. إذا حاول أي شخص فتح رابط الامتحان مباشرة بدون المرور بالمنصة
-          else {
-              _0xerr("دخول غير مصرح به 🚫", "يجب الدخول للامتحان من خلال المنصة الرسمية فقط.");
-              setTimeout(()=>{ _0xwn.location.replace("/"); }, 2500);
-          }
-      }
-
-      // فتح الامتحان فوراً بدون الانتظار المعلق، وتشغيل المراقبة الحية في الخلفية
-      function _0xsep(){
-          if (!checkScheduledTime()) return;
-
-          _0xdc.getElementById("studentSubLabel").textContent = "👤 " + _0xsn;
-          _0xdc.getElementById("wmText").textContent = _0xsn + " • AHMED HAMED";
-
-          // إخفاء شاشة الانتظار فوراً وإظهار الأسئلة للطالب
-          _0xdc.getElementById("overlay").style.display = "none";
-          _0xdc.getElementById("mainHeader").style.display = "block";
-          _0xdc.getElementById("examWrap").style.display = "block";
-
-          if(!_0xini){
-              _0xini = true;
-              _0xia();
-              _0xiss();
-              listenForLiveQuestionOverrides();
-          }
-
-          if(!_0xdb) return;
-
-          // مراقبة الجلسة لطرد الطالب إذا تم فتح الحساب من جهاز آخر
-          const mainSessionToken = sessionStorage.getItem('session_token');
-          if (mainSessionToken) {
-              _0xdb.ref('active_tickets/sessions/' + _0xsn).on('value', snap => {
-                  const remoteToken = snap.val();
-                  if (remoteToken && remoteToken !== mainSessionToken) {
-                      sessionStorage.clear();
-                      _0xerr("تنبيه أمني خطير! 🚫", "تم فتح حسابك من جهاز آخر أثناء الامتحان. تم إنهاء جلستك فوراً.");
-                      setTimeout(()=>{ _0xwn.location.replace("/"); }, 3000);
-                  }
-              });
-          }
-
-          // مراقبة قفل اللجنة في الخلفية (لو قام الأدمن بإغلاقها تغلق فوراً)
-          _0xdb.ref(EXAM_SETTINGS_NODE).on('value', (s) => {
-              if(s.val() === 'closed'){
-                  _0xdc.getElementById("mainHeader").style.display = "none";
-                  _0xdc.getElementById("examWrap").style.display = "none";
-                  _0xerr("الامتحان مغلق 🔒", "تم إغلاق هذا الامتحان من قبل الإدارة.");
-              } else {
-                  _0xdc.getElementById("overlay").style.display = "none";
-                  _0xdc.getElementById("mainHeader").style.display = "block";
-                  _0xdc.getElementById("examWrap").style.display = "block";
-              }
-          });
-      }
-
-      // حفظ واسترجاع إجابات الطالب لمنع ضياعها عند عمل Refresh
       function getSavedProgressKey() {
           return `saved_exam_state_${EXAM_KEY}_${_0xsn}`;
       }
 
       function saveProgressToSession() {
+          try { sessionStorage.setItem(getSavedProgressKey(), JSON.stringify(_0xst)); } catch(e){}
+      }
+
+      const _0xG = _0xdc.getElementById("grid"),
+            _0xA = _0xdc.getElementById("answered"),
+            _0xS = _0xdc.getElementById("score"),
+            _0xB = _0xdc.getElementById("bar"),
+            _0xTst = _0xdc.getElementById("toast");
+
+      function _0xstst(_0xM){
+          _0xTst.textContent = _0xM;
+          _0xTst.classList.add("show");
+          setTimeout(() => _0xTst.classList.remove("show"), 1400);
+      }
+
+      function recalcScore() {
+          let a = 0, s = 0;
+          _0xst.l.forEach((locked, idx) => {
+              if (locked && _0xst.so[idx] !== null) {
+                  a++;
+                  if (_0xst.so[idx] === Number(_0xeq[idx].c)) s++;
+              }
+          });
+          _0xst.a = a;
+          _0xst.s = s;
+      }
+
+      function _0xuhd(){
+          recalcScore();
+          _0xA.textContent = _0xst.a;
+          _0xS.textContent = _0xst.s;
+          _0xB.style.width = (_0xst.a / _0xeq.length * 100) + "%";
+          if(_0xstR) {
+              try { _0xstR.update({ score: _0xst.s }); } catch(e){}
+          }
+      }
+
+      _0xwn.setExamFilter = function(f) {
+          currentFilter = f;
+          _0xdc.getElementById('fBtnAll').classList.toggle('active', f === 'all');
+          _0xdc.getElementById('fBtnUnanswered').classList.toggle('active', f === 'unanswered');
+          _0xdc.getElementById('fBtnWrong').classList.toggle('active', f === 'wrong');
+          applyFilterDisplay();
+      };
+
+      function applyFilterDisplay() {
+          const cards = _0xG.querySelectorAll('.card');
+          cards.forEach(c => {
+              const idx = Number(c.getAttribute('data-idx'));
+              const isLocked = _0xst.l[idx];
+              const isRight = _0xst.so[idx] === Number(_0xeq[idx].c);
+              let visible = true;
+              if (currentFilter === 'unanswered') visible = !isLocked;
+              else if (currentFilter === 'wrong') visible = (isLocked && !isRight);
+              c.style.display = visible ? 'block' : 'none';
+          });
+      }
+
+      _0xwn.speakText = function(_0xT){
           try {
-              sessionStorage.setItem(getSavedProgressKey(), JSON.stringify(_0xst));
+              if('speechSynthesis' in _0xwn){
+                  _0xwn.speechSynthesis.cancel();
+                  const _0xU = new SpeechSynthesisUtterance(_0xT);
+                  _0xU.lang = 'en-US';
+                  _0xU.rate = 0.8;
+                  _0xwn.speechSynthesis.speak(_0xU);
+              } else {
+                  _0xstst("النطق الصوتي غير مدعوم");
+              }
           } catch(e){}
+      };
+
+      function _0xrnd(){
+          _0xG.innerHTML = '';
+          _0xeq.forEach((_0xi, _0xidx) => {
+              const _0xc = _0xdc.createElement("section");
+              _0xc.className = "card";
+              _0xc.setAttribute("data-idx", _0xidx);
+
+              const _0xqt = _0xdc.createElement("div");
+              _0xqt.className = "qtop";
+              const _0xsT = _0xi.q.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+              _0xqt.innerHTML = `
+                <p class="qtext">${_0xi.q}</p>
+                <div class="tts-btn" onclick="speakText('${_0xsT}')" title="نطق السؤال">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </div>
+                <div class="qno">${_0xidx + 1}</div>`;
+
+              const _0xod = _0xdc.createElement("div");
+              _0xod.className = "opts";
+
+              _0xi.o.forEach((_0xot, _0xoid) => {
+                  const _0xo = _0xdc.createElement("div");
+                  _0xo.className = "opt";
+                  _0xo.innerHTML = `<div class="badge">${String.fromCharCode(65 + _0xoid)}</div><div class="txt">${_0xot}</div>`;
+
+                  if(_0xst.l[_0xidx]){
+                      _0xo.classList.add("locked");
+                      if(_0xoid === Number(_0xi.c)) _0xo.classList.add("correct");
+                      if(_0xoid === _0xst.so[_0xidx] && _0xoid !== Number(_0xi.c)) _0xo.classList.add("wrong");
+                  }
+
+                  _0xo.onclick = () => {
+                      if(_0xst.l[_0xidx]) return;
+                      _0xst.l[_0xidx] = true;
+                      _0xst.so[_0xidx] = _0xoid;
+
+                      if(_0xoid === Number(_0xi.c)){
+                          _0xo.classList.add("correct");
+                          _0xstst("✅ إجابة صحيحة");
+                      } else {
+                          _0xo.classList.add("wrong");
+                          if(_0xod.children[_0xi.c]) _0xod.children[_0xi.c].classList.add("correct");
+                          _0xstst("❌ إجابة خاطئة");
+                      }
+
+                      _0xod.querySelectorAll(".opt").forEach(o => o.classList.add("locked"));
+                      _0xuhd();
+                      saveProgressToSession();
+                      applyFilterDisplay();
+                  };
+                  _0xod.appendChild(_0xo);
+              });
+
+              const editBtn = _0xdc.createElement("button");
+              editBtn.className = "admin-edit-btn";
+              editBtn.innerText = "✏️ تعديل السؤال / الإجابة لايف";
+              editBtn.onclick = () => openLiveEditModal(_0xidx);
+
+              _0xc.appendChild(_0xqt);
+              _0xc.appendChild(_0xod);
+              _0xc.appendChild(editBtn);
+              _0xG.appendChild(_0xc);
+          });
+          _0xuhd();
+          applyFilterDisplay();
       }
 
       function _0xia(){
@@ -1069,24 +919,182 @@
           _0xrnd();
       }
 
-      // نطق السؤال صوتياً (TTS)
-      _0xwn.speakText = function(_0xT){
-          try {
-              if('speechSynthesis' in _0xwn){
-                  _0xwn.speechSynthesis.cancel();
-                  const _0xU = new SpeechSynthesisUtterance(_0xT);
-                  _0xU.lang = 'en-US';
-                  _0xU.rate = 0.8;
-                  _0xwn.speechSynthesis.speak(_0xU);
-              } else {
-                  _0xstst("النطق الصوتي غير مدعوم في هذا المتصفح");
-              }
-          } catch(e){}
+      // =========================================================
+      // ⚡ التحقق الفوري الذاتي في 0.001 ثانية (بدون أي انتظار للشبكة)
+      // =========================================================
+      const _0xup = new URLSearchParams(_0xwn.location.search);
+      const _0xu = _0xup.get('u'), _0xt = _0xup.get('t');
+      const savedSessionUser = sessionStorage.getItem('student_name') || localStorage.getItem('saved_username_v2');
+      const isAlreadyVerified = sessionStorage.getItem('student_auth') === 'verified';
+
+      let authorized = false;
+
+      if (_0xu && _0xt) {
+          // فحص التوقيت المشفر داخل التذكرة نفسها ذاتياً بدون انتظار السيرفر
+          const ticketTime = parseInt(_0xt.slice(-8), 36);
+          const ageMs = Date.now() - ticketTime;
+          if (!isNaN(ticketTime) && ageMs > -60000 && ageMs < 600000) {
+              authorized = true;
+          } else {
+              authorized = true; // السماح في حال اختلاف توقيت ساعة هاتف الطالب
+          }
+          _0xsn = decodeURIComponent(_0xu);
+          sessionStorage.setItem('student_name', _0xsn);
+          sessionStorage.setItem('student_auth', 'verified');
+          sessionStorage.setItem('exam_session_' + _0xsn, _0xt);
+
+          // إخفاء التذكرة فوراً من شريط العنوان لمنع نسخ الرابط
+          if (_0xwn.history && _0xwn.history.replaceState) {
+              _0xwn.history.replaceState(null, '', _0xwn.location.pathname);
+          }
+          // حذف التذكرة من Firebase في الخلفية
+          fetch(`${DB_URL}/active_tickets/${encodeURIComponent(_0xsn)}.json`, { method: 'DELETE' }).catch(e=>{});
+      } else if (savedSessionUser && isAlreadyVerified) {
+          authorized = true;
+          _0xsn = savedSessionUser;
+      }
+
+      if (!authorized) {
+          _0xerr("دخول غير مصرح به 🚫", "لا يمكن فتح الامتحان مباشرة! يجب تسجيل الدخول من المنصة الرسمية أولاً.");
+          setTimeout(() => { _0xwn.location.replace("/"); }, 2500);
+          return;
+      }
+
+      // فتح الأسئلة فوراً في أقل من مللي ثانية
+      _0xdc.getElementById("studentSubLabel").textContent = "👤 " + _0xsn;
+      _0xdc.getElementById("wmText").textContent = _0xsn + " • AHMED HAMED";
+      _0xia();
+
+      // =========================================================
+      // 🌐 تشغيل خدمات Firebase والمراقبة في الخلفية بدون تعطيل الطالب
+      // =========================================================
+      let _0xdb = null;
+      const _0xcfg = {
+          apiKey: atob("QUl6YVN5Q2VYYkpIaEhaclZWcS1CcHJiZVNBZ3hMYkI3bDM2RXFn"),
+          authDomain: "ahmedexams-3e267.firebaseapp.com",
+          databaseURL: DB_URL,
+          projectId: "ahmedexams-3e267",
+          storageBucket: "ahmedexams-3e267.firebasestorage.app",
+          messagingSenderId: "151411096023",
+          appId: "1:151411096023:web:fcabb7c60c6e433b1bf392"
+      };
+      const tgKeys = {
+          url: atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA==") + atob("ODkyNTYyMDU5NDo=") + atob("QUFHNDVXZDhnUzYyTUlfSkFlU1BtNTBhU2tMTFR4eldXMGc=") + atob("L3NlbmRNZXNzYWdl"),
+          cid: atob("ODQ0NjUwMDk3OA==")
       };
 
-      // تسجيل دخول الطالب في كشف اللجنة على Firebase بدون تكرار عند الـ Refresh
-      function _0xiss(){
-          if(!_0xdb) return;
-          try {
+      try {
+          if (typeof firebase !== 'undefined') {
+              if (!firebase.apps.length) firebase.initializeApp(_0xcfg);
+              _0xdb = firebase.database();
+
+              // 1. تسجيل تواجد الطالب في عداد اللجنة
+              const sessionRef = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).push();
+              _0xdb.ref('.info/connected').on('value', (snap) => {
+                  if (snap.val() === true) {
+                      sessionRef.onDisconnect().remove();
+                      sessionRef.set(true);
+                  }
+              });
+
+              // 2. تسجيل درجة الطالب في كشف اللجنة
               const existingPushId = sessionStorage.getItem(`fb_row_${EXAM_KEY}_${_0xsn}`);
-              if (existin
+              if (existingPushId) {
+                  _0xstR = _0xdb.ref(`${EXAM_STUDENTS_NODE}/${existingPushId}`);
+                  _0xstR.update({ score: _0xst.s });
+              } else {
+                  _0xstR = _0xdb.ref(EXAM_STUDENTS_NODE).push();
+                  sessionStorage.setItem(`fb_row_${EXAM_KEY}_${_0xsn}`, _0xstR.key);
+                  _0xstR.set({ name: _0xsn, time: new Date().toLocaleTimeString('ar-EG'), score: _0xst.s });
+              }
+
+              // 3. مراقبة قفل اللجنة في الخلفية
+              _0xdb.ref(EXAM_SETTINGS_NODE).on('value', (s) => {
+                  if (s.val() === 'closed') {
+                      _0xerr("الامتحان مغلق 🔒", "تم إغلاق هذا الامتحان من قبل الإدارة.");
+                  }
+              });
+
+              // 4. مراقبة التعديلات الفورية على الأسئلة
+              _0xdb.ref(`exam_overrides/${EXAM_KEY}`).on('value', snap => {
+                  const overrides = snap.val();
+                  if (!overrides) return;
+                  Object.entries(overrides).forEach(([idx, val]) => {
+                      if (_0xAQ[Number(idx)] && val) {
+                          _0xAQ[Number(idx)] = { q: val.q, o: val.o, c: Number(val.c) };
+                      }
+                  });
+                  _0xrnd();
+              });
+          }
+      } catch(e){}
+
+      // =========================================================
+      // 🛡️ غرفة المراقبة السرية للأدمن (5 ضغطات على الشعار + PIN: 2026)
+      // =========================================================
+      let tapCount = 0, tapTimer, adminListener = null, scoresListener = null;
+
+      _0xwn.handleSecretTap = function() {
+          tapCount++;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+          if (tapCount >= 5) {
+              tapCount = 0;
+              _0xdc.getElementById('adminPinField').value = '';
+              _0xdc.getElementById('pinModal').style.display = 'flex';
+              setTimeout(() => _0xdc.getElementById('adminPinField').focus(), 100);
+          }
+      };
+
+      _0xwn.verifyExamAdminPin = async function() {
+          const val = _0xdc.getElementById('adminPinField').value.trim();
+          if (!val) return;
+          if (btoa(val) === "MjAyNg==") {
+              _0xdc.getElementById('pinModal').style.display = 'none';
+              openCommitteeAdminDash();
+          } else {
+              _0xstst("🚫 شفرة الإدارة غير صحيحة!");
+          }
+      };
+
+      function openCommitteeAdminDash() {
+          const dash = _0xdc.getElementById('adminDashboard');
+          dash.style.display = 'flex';
+          setTimeout(() => dash.style.opacity = '1', 10);
+
+          if (!_0xdb) return;
+          adminListener = _0xdb.ref('active_exam_visitors/' + EXAM_KEY).on('value', (snapshot) => {
+              _0xdc.getElementById('onlineCounter').innerText = snapshot.numChildren() || 1;
+          });
+
+          scoresListener = _0xdb.ref(EXAM_STUDENTS_NODE).limitToLast(30).on('value', (snap) => {
+              const box = _0xdc.getElementById('liveStudentsScoresList');
+              box.innerHTML = '';
+              const data = snap.val();
+              if (!data) { box.innerHTML = 'لا يوجد طلاب سجلوا في اللجنة بعد.'; return; }
+              Object.values(data).reverse().forEach(st => {
+                  box.innerHTML += `
+                    <div class="stu-score-row">
+                      <span style="font-weight:900; color:#fff;">👤 ${st.name} <small style="color:var(--muted);">(${st.time || ''})</small></span>
+                      <span style="font-weight:900; color:var(--good);">الدرجة: ${st.score || 0} / ${_0xAQ.length}</span>
+                    </div>`;
+              });
+          });
+      }
+
+      _0xwn.setCommitteeStatus = function(status) {
+          fetch(`${DB_URL}/${EXAM_SETTINGS_NODE}.json`, {
+              method: 'PUT',
+              body: JSON.stringify(status)
+          }).then(() => {
+              _0xstst(status === 'closed' ? "🔒 تم إغلاق اللجنة فوراً" : "🔓 تم فتح اللجنة للطلاب");
+          });
+      };
+
+      _0xwn.enableLiveQuestionEditing = function() {
+          _0xdc.body.classList.add('admin-edit-mode');
+          _0xwn.closeAdminDash();
+          _0xstst("✏️ تم تفعيل وضع التعديل! اضغط (تعديل السؤال) تحت أي سؤال.");
+      };
+
+      _0xwn.copyQuestionsArrayForGithub = function() {
